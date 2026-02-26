@@ -1,0 +1,3 @@
+[submodule "arm_vcpu"]
+	path = arm_vcpu
+	url = https://github.com/arceos-hypervisor/arm_vcpu.git
