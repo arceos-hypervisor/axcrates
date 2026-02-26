@@ -1,3 +1,6 @@
 [submodule "arm_vcpu"]
 	path = arm_vcpu
 	url = https://github.com/arceos-hypervisor/arm_vcpu.git
+[submodule "arm_vgic"]
+	path = arm_vgic
+	url = https://github.com/arceos-hypervisor/arm_vgic.git
