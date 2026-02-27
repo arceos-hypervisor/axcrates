@@ -31,4 +31,16 @@ pub const BUNDLE_VERSION: &str = "0.1.0";
 pub const SUBMODULE_CRATES: &[&str] = &[
     "arm_vcpu",
     "arm_vgic",
+    "axaddrspace",
+    "axdevice",
+    "axdevice_base",
+    "axhvc",
+    "axvcpu",
+    "x86_vlapic",
+    "x86_vcpu",
+    "riscv_vcpu",
+    "riscv-h",
+    "axvmconfig",
+    "axvm",
+    "axvisor_api",
 ];
