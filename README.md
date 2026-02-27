@@ -151,15 +151,6 @@ cd arm_vcpu
 cargo doc --open --target aarch64-unknown-none-softfloat
 ```
 
-作为依赖使用：
-
-```toml
-# 在你的 Cargo.toml 中添加
-[dependencies]
-axvcpu = "0.1.0"      # VCPU 抽象层
-arm_vcpu = "0.1.0"    # ARM VCPU 实现（可选）
-```
-
 ### 开发调试
 
 克隆仓库（推荐）：
@@ -209,29 +200,33 @@ cargo fmt --check
 cargo clippy --target aarch64-unknown-none-softfloat
 ```
 
-运行 QEMU 演示（需配置 `scripts/run_qemu.sh`）：
+提交代码：
 
 ```bash
-# 配置 .cargo/config.toml 中的别名后
-cargo qemu --arch aarch64
-cargo qemu --arch riscv64
+# 提交并推送到远程
+bash scripts/commit.sh "feat: add new feature"
+
+# 创建并推送标签
+bash scripts/tag.sh v0.2.0
 ```
 
-## 发布流程
+发布到 crates.io：
 
-```mermaid
-flowchart LR
-    A[bump.sh] --> B[bundle.sh]
-    B --> C[commit.sh]
-    C --> D[tag.sh]
-    D --> E[cargo login]
-    E --> F[publish.sh]
-    
-    style A fill:#e1f5fe
-    style F fill:#c8e6c9
+```bash
+# 1. 升级版本号
+bash scripts/bump.sh 0.2.0
+
+# 2. 打包子模块
+bash scripts/bundle.sh
+
+# 3. 提交并打标签
+bash scripts/commit.sh "chore: release v0.2.0"
+bash scripts/tag.sh v0.2.0
+
+# 4. 登录并发布
+cargo login
+bash scripts/publish.sh
 ```
-
-
 
 ## 许可证
 
