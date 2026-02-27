@@ -110,8 +110,8 @@ flowchart TB
 | `unpack.sh` | `bash scripts/unpack.sh` | 从 `bundle/submodules.tar.gz` 解包子模块，恢复完整 workspace |
 | `publish.sh` | `bash scripts/publish.sh` | 按依赖顺序发布所有 crate 到 crates.io（需先 `cargo login`） |
 | `bump.sh` | `bash scripts/bump.sh 0.2.0` | 批量更新所有 crate 版本号 |
-| `commit.sh` | `bash scripts/commit.sh "msg"` | Git 提交并推送到远程 |
-| `tag.sh` | `bash scripts/tag.sh v0.2.0` | 创建 Git 标签并推送 |
+| `commit.sh` | `bash scripts/commit.sh "msg" [branch]` | Git 提交并推送到分支（支持新建 feature 分支） |
+| `tag.sh` | `bash scripts/tag.sh v0.2.0` | 创建 Git 标签并推送（需在 main 分支执行） |
 
 ## 快速开始
 
@@ -200,13 +200,19 @@ cargo fmt --check
 cargo clippy --target aarch64-unknown-none-softfloat
 ```
 
-提交代码：
+提交代码（分支保护工作流）：
 
 ```bash
-# 提交并推送到远程
-bash scripts/commit.sh "feat: add new feature"
+# 1. 创建并提交到 feature 分支
+bash scripts/commit.sh "feat: add new feature" feature-xyz
 
-# 创建并推送标签
+# 2. 在 GitHub 上创建 Pull Request
+
+# 3. PR 合并后，切换到 main 分支并拉取最新代码
+git checkout main
+git pull
+
+# 4. 创建标签（需在 main 分支上）
 bash scripts/tag.sh v0.2.0
 ```
 
@@ -219,11 +225,13 @@ bash scripts/bump.sh 0.2.0
 # 2. 打包子模块
 bash scripts/bundle.sh
 
-# 3. 提交并打标签
-bash scripts/commit.sh "chore: release v0.2.0"
-bash scripts/tag.sh v0.2.0
+# 3. 提交到 feature 分支并创建 PR
+bash scripts/commit.sh "chore: release v0.2.0" release-v0.2.0
+# ... PR 合并后 ...
 
-# 4. 登录并发布
+# 4. 切换到 main，打标签并发布
+git checkout main && git pull
+bash scripts/tag.sh v0.2.0
 cargo login
 bash scripts/publish.sh
 ```

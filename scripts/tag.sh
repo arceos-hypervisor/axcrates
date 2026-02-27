@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # 创建并推送 git 标签到远程仓库
-# 用法: bash git-tag-push.sh <tag_name> [commit_hash]
-# 例如: bash git-tag-push.sh v0.2.0
-#       bash git-tag-push.sh v0.2.0-beta abc123
+# 注意：标签应在 main 分支上创建，确保 PR 已合并
+# 用法: bash tag.sh <tag_name> [commit_hash]
+# 例如: bash tag.sh v0.2.0
+#       bash tag.sh v0.2.0-beta abc123
 
 set -e
 
@@ -35,6 +36,29 @@ echo ""
 
 cd "${ROOT_DIR}"
 
+# 检查当前分支
+CURRENT_BRANCH=$(git branch --show-current)
+if [[ "${CURRENT_BRANCH}" != "main" && "${CURRENT_BRANCH}" != "master" ]]; then
+    echo -e "${YELLOW}警告: 当前不在 main/master 分支${NC}"
+    echo -e "${YELLOW}标签通常应在 main 分支上创建（PR 合并后）${NC}"
+    read -p "是否继续? (y/N): " confirm
+    if [[ "${confirm}" != "y" && "${confirm}" != "Y" ]]; then
+        echo -e "${RED}操作取消${NC}"
+        exit 1
+    fi
+fi
+
+# 检查工作区是否干净
+if [[ -n $(git status --porcelain) ]]; then
+    echo -e "${RED}错误: 工作区有未提交的变更，请先提交${NC}"
+    git status --short
+    exit 1
+fi
+
+# 同步远程
+echo -e "${BLUE}同步远程仓库...${NC}"
+git pull --tags
+
 # 检查标签是否已存在
 if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
     echo -e "${YELLOW}标签 ${TAG_NAME} 已存在${NC}"
@@ -63,4 +87,4 @@ echo "标签名称: ${TAG_NAME}"
 echo ""
 echo "下一步:"
 echo "  1. 检查 GitHub Actions 或 CI/CD 状态"
-echo "  2. 发布到 crates.io: bash scripts/publish-all.sh"
+echo "  2. 发布到 crates.io: bash scripts/publish.sh"

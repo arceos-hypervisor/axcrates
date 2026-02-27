@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# 提交并推送所有变更到远程仓库
-# 用法: bash git-commit-push.sh <commit_message>
-# 例如: bash git-commit-push.sh "feat: add new feature"
+# 提交并推送变更到远程仓库
+# 用法: bash commit.sh <commit_message> [branch]
+# 例如: bash commit.sh "feat: add new feature"
+#       bash commit.sh "feat: add new feature" feature-xyz
 
 set -e
 
@@ -17,12 +18,14 @@ NC='\033[0m' # No Color
 
 # 检查参数
 if [[ $# -lt 1 ]]; then
-    echo -e "${RED}用法: $0 <commit_message>${NC}"
+    echo -e "${RED}用法: $0 <commit_message> [branch]${NC}"
     echo "例如: $0 \"feat: add new feature\""
+    echo "      $0 \"feat: add new feature\" feature-xyz"
     exit 1
 fi
 
 COMMIT_MESSAGE="$1"
+BRANCH="${2:-}"
 
 echo -e "${GREEN}=== Git 提交脚本 ===${NC}"
 echo "工作目录: ${ROOT_DIR}"
@@ -50,10 +53,26 @@ git add -A
 echo -e "${BLUE}提交变更...${NC}"
 git commit -m "${COMMIT_MESSAGE}"
 
+# 处理分支
+CURRENT_BRANCH=$(git branch --show-current)
+
+if [[ -n "${BRANCH}" && "${BRANCH}" != "${CURRENT_BRANCH}" ]]; then
+    # 创建并切换到新分支
+    echo -e "${BLUE}创建并切换到分支 ${BRANCH}...${NC}"
+    git checkout -b "${BRANCH}"
+    CURRENT_BRANCH="${BRANCH}"
+fi
+
 # 推送到远程
-echo -e "${BLUE}推送到远程仓库...${NC}"
-git push
+echo -e "${BLUE}推送分支 ${CURRENT_BRANCH} 到远程仓库...${NC}"
+git push -u origin "${CURRENT_BRANCH}"
 
 echo ""
 echo -e "${GREEN}=== 提交完成 ===${NC}"
 echo "提交信息: ${COMMIT_MESSAGE}"
+echo "分支: ${CURRENT_BRANCH}"
+
+if [[ "${CURRENT_BRANCH}" != "main" && "${CURRENT_BRANCH}" != "master" ]]; then
+    echo ""
+    echo -e "${YELLOW}下一步: 创建 Pull Request 合并到 main 分支${NC}"
+fi
