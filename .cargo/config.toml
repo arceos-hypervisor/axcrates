@@ -1,0 +1,7 @@
+[alias]
+# 定义命令：输入 cargo qemu 时，实际执行 cargo run --bin cargo-qemu
+# args 传递后的 "--" 用于将后续参数（如 -arg）传给脚本
+qemu = ["run", "--bin", "cargo-qemu", "--"]
+# 定义命令：输入 cargo uboot 时，实际执行 cargo run --bin cargo-uboot
+# args 传递后的 "--" 用于将后续参数（如 -arg）传给脚本
+uboot = ["run", "--bin", "cargo-uboot", "--"]
