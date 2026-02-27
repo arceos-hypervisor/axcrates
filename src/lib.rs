@@ -18,7 +18,7 @@
 //! extract all the submodules by running:
 //!
 //! ```bash
-//! bash scripts/extract_submodules.sh
+//! bash scripts/unpack.sh
 //! ```
 //!
 //! This will extract all component crates from the bundle directory,

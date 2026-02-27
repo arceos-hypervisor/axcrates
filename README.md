@@ -6,95 +6,6 @@ ArceOS Hypervisor 组件汇总仓库。
 
 本仓库是一个 **meta crate**，用于将 ArceOS Hypervisor 的所有组件打包发布到 crates.io，方便用户通过 `cargo clone` 获取完整的工作区。
 
-这是一个面向虚拟化开发的教学与生产级组件化 Hypervisor 框架，支持多种架构（AArch64、x86_64、RISC-V），可用于学习虚拟化技术或构建生产级 Hypervisor。
-
-## 组件列表
-
-### 核心组件
-
-| 组件 | 描述 |
-|------|------|
-| **axaddrspace** | Guest 地址空间管理模块，提供内存虚拟化支持 |
-| **axvmconfig** | VM 配置工具，支持 TOML 格式的虚拟机配置 |
-| **axhvc** | HyperCall 定义，用于 Guest-Hypervisor 通信 |
-| **axvcpu** | 虚拟 CPU 抽象层，定义 VCPU 通用接口 |
-| **axvisor_api** | Hypervisor 基础 API，提供组件间统一接口 |
-| **axdevice_base** | 设备模拟基础 trait 和结构 |
-| **axdevice** | 设备抽象层，提供可复用的设备模拟组件 |
-| **axvm** | 虚拟机资源管理，整合 VCPU、内存、设备等资源 |
-
-### 架构相关组件
-
-#### AArch64
-| 组件 | 描述 |
-|------|------|
-| **arm_vcpu** | AArch64 VCPU 实现，提供 ARM 虚拟化支持 |
-| **arm_vgic** | ARM 虚拟通用中断控制器 (VGIC) 实现 |
-
-#### x86_64
-| 组件 | 描述 |
-|------|------|
-| **x86_vcpu** | x86_64 VCPU 实现，支持 VMX 扩展 |
-| **x86_vlapic** | x86 虚拟 Local APIC 实现 |
-
-#### RISC-V
-| 组件 | 描述 |
-|------|------|
-| **riscv_vcpu** | RISC-V VCPU 实现，支持 H 扩展 |
-| **riscv-h** | RISC-V 虚拟化相关寄存器定义 |
-
-## 如何使用
-
-### 方式 A：通过 crates.io 获取（推荐）
-
-先安装 cargo-clone：
-
-```bash
-cargo install cargo-clone
-```
-
-拉取集合包并解包完整工作区：
-
-```bash
-cargo clone axcrates
-cd axcrates
-bash scripts/extract_submodules.sh
-```
-
-解包后将得到完整目录（包含所有组件）。
-
-### 方式 B：直接克隆仓库
-
-```bash
-git clone --recurse-submodules https://github.com/arceos-hypervisor/axcrates.git
-cd axcrates
-```
-
-### 获取单独的组件
-
-```bash
-# 核心组件
-cargo clone axaddrspace
-cargo clone axvcpu
-cargo clone axvm
-
-# 架构相关组件
-cargo clone arm_vcpu
-cargo clone arm_vgic
-cargo clone x86_vcpu
-cargo clone riscv_vcpu
-```
-
-## 环境要求
-
-- Rust toolchain: stable
-- 目标架构:
-  - `aarch64-unknown-none-elf` (ARM64)
-  - `x86_64-unknown-none` (x86_64)
-  - `riscv64gc-unknown-none-elf` (RISC-V 64)
-- 组件: `rust-src`, `llvm-tools-preview`
-- QEMU: `qemu-system-aarch64`, `qemu-system-x86_64`, `qemu-system-riscv64`
-
 ## 项目结构
 
 ```
@@ -106,12 +17,12 @@ axcrates/
 │   └── submodules.tar.gz   # 子模块压缩包
 ├── scripts/
 │   ├── crates.txt          # crate 列表
-│   ├── compress_submodules.sh  # 压缩子模块
-│   ├── extract_submodules.sh   # 解压子模块
-│   ├── publish-all.sh      # 发布到 crates.io
-│   ├── bump-version.sh     # 版本升级
-│   ├── git-commit-push.sh  # Git 提交推送
-│   └── git-tag-push.sh     # Git 标签管理
+│   ├── bundle.sh           # 打包子模块
+│   ├── unpack.sh           # 解包子模块
+│   ├── publish.sh          # 发布到 crates.io
+│   ├── bump.sh             # 升级版本号
+│   ├── commit.sh           # Git 提交推送
+│   └── tag.sh              # Git 标签管理
 ├── arm_vcpu/               # AArch64 VCPU
 ├── arm_vgic/               # ARM VGIC
 ├── axaddrspace/            # 地址空间管理
@@ -128,61 +39,199 @@ axcrates/
 └── x86_vlapic/             # x86 vLAPIC
 ```
 
-## 维护者脚本
+### 组件列表
 
-### 打包子模块
+| 组件 | 分类 | 描述 |
+|------|------|------|
+| axaddrspace | 核心 | Guest 地址空间管理，内存虚拟化 |
+| axvmconfig | 核心 | VM 配置工具，TOML 格式支持 |
+| axhvc | 核心 | HyperCall 定义，Guest-Hypervisor 通信 |
+| axvcpu | 核心 | VCPU 抽象层，通用接口定义 |
+| axvisor_api | 核心 | Hypervisor 基础 API |
+| axdevice_base | 核心 | 设备模拟基础 trait |
+| axdevice | 核心 | 设备抽象层 |
+| axvm | 核心 | VM 资源管理 |
+| arm_vcpu | AArch64 | ARM VCPU 实现 |
+| arm_vgic | AArch64 | 虚拟中断控制器 |
+| x86_vcpu | x86_64 | x86 VCPU 实现 (VMX) |
+| x86_vlapic | x86_64 | 虚拟 Local APIC |
+| riscv_vcpu | RISC-V | RISC-V VCPU 实现 |
+| riscv-h | RISC-V | H 扩展寄存器定义 |
+
+### 组件依赖关系图
+
+```mermaid
+flowchart TB
+    subgraph L0["Layer 0 - 基础"]
+        axaddrspace
+        axvmconfig
+        axhvc
+        riscv-h["riscv-h"]
+    end
+
+    subgraph L1["Layer 1 - 核心"]
+        axdevice_base
+        axvisor_api
+        axvcpu
+    end
+
+    subgraph L2["Layer 2 - 中断控制器"]
+        arm_vgic
+        x86_vlapic
+    end
+
+    subgraph L3["Layer 3 - 架构 VCPU"]
+        arm_vcpu
+        x86_vcpu
+        riscv_vcpu
+    end
+
+    subgraph L4["Layer 4 - 设备"]
+        axdevice
+    end
+
+    subgraph L5["Layer 5 - VM"]
+        axvm
+    end
+
+    L0 --> L1
+    L1 --> L2
+    L1 --> L3
+    L2 --> L4
+    L3 --> L4
+    L4 --> L5
+```
+
+### 维护者脚本
+
+| 脚本 | 用法 | 说明 |
+|------|------|------|
+| `bundle.sh` | `bash scripts/bundle.sh` | 将所有子模块打包为 `bundle/submodules.tar.gz`，用于 crates.io 分发 |
+| `unpack.sh` | `bash scripts/unpack.sh` | 从 `bundle/submodules.tar.gz` 解包子模块，恢复完整 workspace |
+| `publish.sh` | `bash scripts/publish.sh` | 按依赖顺序发布所有 crate 到 crates.io（需先 `cargo login`） |
+| `bump.sh` | `bash scripts/bump.sh 0.2.0` | 批量更新所有 crate 版本号 |
+| `commit.sh` | `bash scripts/commit.sh "msg"` | Git 提交并推送到远程 |
+| `tag.sh` | `bash scripts/tag.sh v0.2.0` | 创建 Git 标签并推送 |
+
+## 快速开始
+
+### 环境要求
+
+- Rust toolchain: `nightly-2025-05-20`
+- 目标架构:
+  - `aarch64-unknown-none-softfloat` (ARM64)
+  - `x86_64-unknown-none` (x86_64)
+  - `riscv64gc-unknown-none-elf` (RISC-V 64)
+- 组件: `rust-src`, `llvm-tools`, `rustfmt`, `clippy`
+- QEMU: `qemu-system-aarch64`, `qemu-system-x86_64`, `qemu-system-riscv64`
+
+### 快速体验
+
+通过 crates.io 下载源码并体验组件：
 
 ```bash
-bash scripts/compress_submodules.sh
+# 安装 cargo-clone
+cargo install cargo-clone
+
+# 下载并解包
+cargo clone axcrates
+cd axcrates
+bash scripts/unpack.sh
 ```
 
-### 版本升级
+查看组件文档：
 
 ```bash
-bash scripts/bump-version.sh 0.2.0
+# 查看核心组件文档
+cd axvcpu
+cargo doc --open
+
+# 查看 ARM VCPU 文档
+cd arm_vcpu
+cargo doc --open --target aarch64-unknown-none-softfloat
 ```
 
-### 发布到 crates.io
+作为依赖使用：
+
+```toml
+# 在你的 Cargo.toml 中添加
+[dependencies]
+axvcpu = "0.1.0"      # VCPU 抽象层
+arm_vcpu = "0.1.0"    # ARM VCPU 实现（可选）
+```
+
+### 开发调试
+
+克隆仓库（推荐）：
 
 ```bash
-# 需要先登录 crates.io
-cargo login <your-token>
-
-# 按依赖顺序发布所有 crate
-bash scripts/publish-all.sh
+git clone --recurse-submodules https://github.com/arceos-hypervisor/axcrates.git
+cd axcrates
 ```
 
-### Git 操作
+编译组件：
 
 ```bash
-# 提交并推送
-bash scripts/git-commit-push.sh "feat: add new feature"
+# 编译指定组件
+cd axvcpu
+cargo build
 
-# 创建并推送标签
-bash scripts/git-tag-push.sh v0.2.0
+# 编译指定架构
+cd arm_vcpu
+cargo build --target aarch64-unknown-none-softfloat
+
+cd riscv_vcpu
+cargo build --target riscv64gc-unknown-none-elf
+
+cd x86_vcpu
+cargo build --target x86_64-unknown-none
 ```
 
-## 依赖关系图
+运行测试：
 
+```bash
+# 运行单元测试（支持 std 的组件）
+cd axdevice
+cargo test
+
+# 运行文档测试
+cd axvisor_api
+cargo test --doc
 ```
-Layer 0 (基础组件，无内部依赖):
-  axaddrspace, axvmconfig, axhvc, riscv-h
 
-Layer 1 (核心组件):
-  axdevice_base, axvisor_api, axvcpu
+代码检查：
 
-Layer 2 (中断控制器):
-  arm_vgic, x86_vlapic
+```bash
+# 格式化
+cargo fmt --check
 
-Layer 3 (架构 VCPU):
-  arm_vcpu, x86_vcpu, riscv_vcpu
-
-Layer 4 (设备抽象):
-  axdevice
-
-Layer 5 (VM 管理):
-  axvm
+# Clippy 静态检查
+cargo clippy --target aarch64-unknown-none-softfloat
 ```
+
+运行 QEMU 演示（需配置 `scripts/run_qemu.sh`）：
+
+```bash
+# 配置 .cargo/config.toml 中的别名后
+cargo qemu --arch aarch64
+cargo qemu --arch riscv64
+```
+
+## 发布流程
+
+```mermaid
+flowchart LR
+    A[bump.sh] --> B[bundle.sh]
+    B --> C[commit.sh]
+    C --> D[tag.sh]
+    D --> E[cargo login]
+    E --> F[publish.sh]
+    
+    style A fill:#e1f5fe
+    style F fill:#c8e6c9
+```
+
+
 
 ## 许可证
 
