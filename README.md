@@ -6,6 +6,8 @@ ArceOS Hypervisor 组件汇总仓库。
 
 本仓库是一个 **meta crate**，用于将 ArceOS Hypervisor 的所有组件打包发布到 crates.io，方便用户通过 `cargo clone` 获取完整的工作区。
 
+> **📋 [多仓库协同开发指南](docs/COLLABORATION.md)** - 如果您是项目贡献者，请务必阅读此文档了解开发流程。
+
 ## 项目结构
 
 ```
@@ -17,12 +19,16 @@ axcrates/
 │   └── submodules.tar.gz   # 子模块压缩包
 ├── scripts/
 │   ├── crates.txt          # crate 列表
-│   ├── bundle.sh           # 打包子模块
-│   ├── unpack.sh           # 解包子模块
+│   ├── checkout.sh         # 批量切换分支
+│   ├── check.sh            # 批量代码检查
+│   ├── commit.sh           # 批量提交组件
+│   ├── push.sh             # 批量推送组件
+│   ├── sync.sh             # 批量同步子模块
+│   ├── version.sh          # 批量升级版本号
+│   ├── tag.sh              # 批量创建标签
 │   ├── publish.sh          # 发布到 crates.io
-│   ├── bump.sh             # 升级版本号
-│   ├── commit.sh           # Git 提交推送
-│   └── tag.sh              # Git 标签管理
+│   ├── bundle.sh           # 打包子模块
+│   └── unpack.sh           # 解包子模块
 ├── arm_vcpu/               # AArch64 VCPU
 ├── arm_vgic/               # ARM VGIC
 ├── axaddrspace/            # 地址空间管理
@@ -106,12 +112,18 @@ flowchart TB
 
 | 脚本 | 用法 | 说明 |
 |------|------|------|
-| `bundle.sh` | `bash scripts/bundle.sh` | 将所有子模块打包为 `bundle/submodules.tar.gz`，用于 crates.io 分发 |
-| `unpack.sh` | `bash scripts/unpack.sh` | 从 `bundle/submodules.tar.gz` 解包子模块，恢复完整 workspace |
-| `publish.sh` | `bash scripts/publish.sh` | 按依赖顺序发布所有 crate 到 crates.io（需先 `cargo login`） |
-| `bump.sh` | `bash scripts/bump.sh 0.2.0` | 批量更新所有 crate 版本号 |
-| `commit.sh` | `bash scripts/commit.sh "msg" [branch]` | Git 提交并推送到分支（支持新建 feature 分支） |
-| `tag.sh` | `bash scripts/tag.sh v0.2.0` | 创建 Git 标签并推送（需在 main 分支执行） |
+| `checkout.sh` | `bash scripts/checkout.sh all dev` | 批量切换所有子模块到指定分支 |
+| `check.sh` | `bash scripts/check.sh all` | 批量检查所有组件代码质量 |
+| `commit.sh` | `bash scripts/commit.sh all "msg"` | 批量提交组件变更并推送 |
+| `push.sh` | `bash scripts/push.sh all` | 批量推送所有组件的未推送提交 |
+| `sync.sh` | `bash scripts/sync.sh all dev` | 批量同步所有子模块到远程最新 |
+| `version.sh` | `bash scripts/version.sh all 0.2.0` | 批量更新 crate 版本号 |
+| `tag.sh` | `bash scripts/tag.sh all v0.2.0` | 批量创建 Git 标签并推送 |
+| `publish.sh` | `bash scripts/publish.sh` | 按依赖顺序发布所有 crate 到 crates.io |
+| `pack.sh` | `bash scripts/bundle.sh` | 将所有子模块打包为 `bundle/submodules.tar.gz` |
+| `unpack.sh` | `bash scripts/unpack.sh` | 从 `bundle/submodules.tar.gz` 解包子模块 |
+
+> 📋 详细使用说明请参考 [协同开发方案](docs/COLLABORATION.md) 和 [组件开发及管理规范](docs/组件开发及管理规范.md)。
 
 ## 快速开始
 
@@ -220,7 +232,7 @@ bash scripts/tag.sh v0.2.0
 
 ```bash
 # 1. 升级版本号
-bash scripts/bump.sh 0.2.0
+bash scripts/version.sh all 0.2.0
 
 # 2. 打包子模块
 bash scripts/bundle.sh

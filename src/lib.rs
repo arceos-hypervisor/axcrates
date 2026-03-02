@@ -68,7 +68,7 @@
 pub const BUNDLE_NAME: &str = "axcrates";
 
 /// Version of the bundle.
-pub const BUNDLE_VERSION: &str = "0.1.0";
+pub const BUNDLE_VERSION: &str = "0.2.0";
 
 /// Repository URL.
 pub const REPOSITORY_URL: &str = "https://github.com/arceos-hypervisor/axcrates";
