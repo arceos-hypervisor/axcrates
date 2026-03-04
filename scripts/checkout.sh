@@ -145,21 +145,6 @@ checkout_all() {
         fi
     done
     
-    # 切换主仓库
-    info "切换主仓库到 ${branch} 分支"
-    pushd "${ROOT_DIR}" >/dev/null
-    local current_branch=$(git branch --show-current 2>/dev/null || echo "unknown")
-    if [[ "${current_branch}" == "${branch}" ]]; then
-        success "[axcrates] 已经在 ${branch} 分支"
-    elif git checkout "${branch}" 2>/dev/null || git checkout -b "${branch}" "origin/${branch}" 2>/dev/null; then
-        success "[axcrates] 已切换到 ${branch} 分支"
-        switched+=("axcrates")
-    else
-        warn "[axcrates] 切换失败"
-        failed+=("axcrates")
-    fi
-    popd >/dev/null
-    
     printf '\n%b========== 分支切换汇总 ==========%b\n' "${BLUE}" "${NC}"
     
     if [[ ${#switched[@]} -gt 0 ]]; then
