@@ -91,7 +91,7 @@ update_cargo_toml() {
 # =============================================================================
 
 version_crate() {
-    local crate="$1" version="$2" crate_dir="${ROOT_DIR}/${crate}"
+    local crate="$1" version="$2" crate_dir="${ROOT_DIR}/components/${crate}"
     local cargo_path="${crate_dir}/Cargo.toml"
     
     [[ -d "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
@@ -115,7 +115,7 @@ version_all() {
     info "更新所有组件版本号 (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        local cargo_path="${ROOT_DIR}/${crate}/Cargo.toml"
+        local cargo_path="${ROOT_DIR}/components/${crate}/Cargo.toml"
         if [[ -f "${cargo_path}" ]]; then
             local current_version
             current_version=$(update_cargo_toml "${cargo_path}" "${version}")

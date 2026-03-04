@@ -63,7 +63,7 @@ read_crates() {
 # =============================================================================
 
 checkout_crate() {
-    local crate="$1" branch="$2" crate_dir="${ROOT_DIR}/${crate}"
+    local crate="$1" branch="$2" crate_dir="${ROOT_DIR}/components/${crate}"
     
     [[ -d "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
     [[ -e "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 git 仓库，跳过"; return 0; }
@@ -133,7 +133,7 @@ checkout_all() {
     info "切换所有组件到 ${branch} 分支 (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        if [[ ! -d "${ROOT_DIR}/${crate}" ]]; then
+        if [[ ! -d "${ROOT_DIR}/components/${crate}" ]]; then
             skipped+=("${crate}")
             continue
         fi

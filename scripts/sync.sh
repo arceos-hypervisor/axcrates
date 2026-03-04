@@ -97,7 +97,7 @@ get_current_branch() {
 sync_crate() {
     local crate="$1"
     local branch="$2"
-    local crate_dir="${ROOT_DIR}/${crate}"
+    local crate_dir="${ROOT_DIR}/components/${crate}"
     
     [[ -d "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
     
@@ -106,7 +106,7 @@ sync_crate() {
     # 检查是否已初始化
     if ! is_initialized "${crate_dir}"; then
         info "[${crate}] 子模块未初始化，正在初始化..."
-        git submodule update --init "${crate}" >/dev/null 2>&1 || {
+        git submodule update --init "components/${crate}" >/dev/null 2>&1 || {
             warn "[${crate}] 初始化失败，跳过"
             return 0
         }
@@ -186,7 +186,7 @@ sync_all() {
             synced+=("${crate}")
         else
             # 检查失败原因
-            local crate_dir="${ROOT_DIR}/${crate}"
+            local crate_dir="${ROOT_DIR}/components/${crate}"
             if [[ -d "${crate_dir}" ]] && has_local_changes "${crate_dir}"; then
                 skipped+=("${crate} (有本地修改)")
             else

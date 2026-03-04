@@ -41,7 +41,7 @@ while IFS= read -r line; do
     [[ -z "${line}" ]] && continue
     # Remove leading ./ from tar listing if present
     crate="${line#./}"
-    if [[ -d "${ROOT_DIR}/${crate}" ]]; then
+    if [[ -d "${ROOT_DIR}/components/${crate}" ]]; then
         EXISTING+=("${crate}")
     fi
 done < <(tar -tzf "${ARCHIVE_PATH}" | grep -E '^[^/]+/?$' | sed 's|/$||')
@@ -62,11 +62,12 @@ fi
 
 # Extract archive
 echo -e "${GREEN}Extracting...${NC}"
-cd "${ROOT_DIR}"
+mkdir -p "${ROOT_DIR}/components"
+cd "${ROOT_DIR}/components"
 tar -xzf "${ARCHIVE_PATH}"
 
 echo -e "${GREEN}=== Extraction Complete ===${NC}"
-echo -e "${GREEN}All submodules have been extracted to: ${ROOT_DIR}${NC}"
+echo -e "${GREEN}All submodules have been extracted to: ${ROOT_DIR}/components/${NC}"
 
 # List extracted crates
 echo ""

@@ -140,7 +140,7 @@ create_tag() {
 # =============================================================================
 
 tag_crate() {
-    local crate="$1" tag="$2" crate_dir="${ROOT_DIR}/${crate}"
+    local crate="$1" tag="$2" crate_dir="${ROOT_DIR}/components/${crate}"
     
     [[ -d "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
     [[ -e "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 git 仓库，跳过"; return 0; }
@@ -171,7 +171,7 @@ tag_all() {
     info "为所有组件创建标签: ${tag} (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        local crate_dir="${ROOT_DIR}/${crate}"
+        local crate_dir="${ROOT_DIR}/components/${crate}"
         if [[ ! -d "${crate_dir}" ]] || [[ ! -e "${crate_dir}/.git" ]]; then
             skipped+=("${crate}")
             continue

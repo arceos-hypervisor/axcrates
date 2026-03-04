@@ -65,46 +65,46 @@ echo ""
 
 # ── Layer 0：无内部依赖 ────────────────────────────────────────────────────────
 echo -e "${BLUE}=== Layer 0: 基础组件（无内部依赖）===${NC}"
-publish_crate "axaddrspace" "axaddrspace"
-publish_crate "axvmconfig" "axvmconfig"
-publish_crate "axhvc" "axhvc"
-publish_crate "riscv-h" "riscv-h"
+publish_crate "components/axaddrspace" "axaddrspace"
+publish_crate "components/axvmconfig" "axvmconfig"
+publish_crate "components/axhvc" "axhvc"
+publish_crate "components/riscv-h" "riscv-h"
 
 wait_index
 
 # ── Layer 1：依赖 L0 ───────────────────────────────────────────────────────────
 echo -e "${BLUE}=== Layer 1: 核心组件 ===${NC}"
-publish_crate "axdevice_base" "axdevice_base"
-publish_crate "axvisor_api/axvisor_api_proc" "axvisor_api_proc"
-publish_crate "axvisor_api" "axvisor_api"
-publish_crate "axvcpu" "axvcpu"
+publish_crate "components/axdevice_base" "axdevice_base"
+publish_crate "components/axvisor_api/axvisor_api_proc" "axvisor_api_proc"
+publish_crate "components/axvisor_api" "axvisor_api"
+publish_crate "components/axvcpu" "axvcpu"
 
 wait_index
 
 # ── Layer 2：依赖 L0-L1 ────────────────────────────────────────────────────────
 echo -e "${BLUE}=== Layer 2: 架构相关中断控制器 ===${NC}"
-publish_crate "arm_vgic" "arm_vgic"
-publish_crate "x86_vlapic" "x86_vlapic"
+publish_crate "components/arm_vgic" "arm_vgic"
+publish_crate "components/x86_vlapic" "x86_vlapic"
 
 wait_index
 
 # ── Layer 3：依赖 L0-L2 ────────────────────────────────────────────────────────
 echo -e "${BLUE}=== Layer 3: 架构相关 VCPU ===${NC}"
-publish_crate "arm_vcpu" "arm_vcpu"
-publish_crate "x86_vcpu" "x86_vcpu"
-publish_crate "riscv_vcpu" "riscv_vcpu"
+publish_crate "components/arm_vcpu" "arm_vcpu"
+publish_crate "components/x86_vcpu" "x86_vcpu"
+publish_crate "components/riscv_vcpu" "riscv_vcpu"
 
 wait_index
 
 # ── Layer 4：依赖 L0-L3 ────────────────────────────────────────────────────────
 echo -e "${BLUE}=== Layer 4: 设备抽象层 ===${NC}"
-publish_crate "axdevice" "axdevice"
+publish_crate "components/axdevice" "axdevice"
 
 wait_index
 
 # ── Layer 5：依赖 L0-L4 ────────────────────────────────────────────────────────
 echo -e "${BLUE}=== Layer 5: 虚拟机管理 ===${NC}"
-publish_crate "axvm" "axvm"
+publish_crate "components/axvm" "axvm"
 
 wait_index
 

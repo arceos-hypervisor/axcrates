@@ -63,7 +63,7 @@ read_crates() {
 # =============================================================================
 
 reset_crate() {
-    local crate="$1" crate_dir="${ROOT_DIR}/${1}"
+    local crate="$1" crate_dir="${ROOT_DIR}/components/${1}"
     
     [[ -d "${crate_dir}" ]] || die "组件 ${crate} 不存在"
     

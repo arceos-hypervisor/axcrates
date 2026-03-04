@@ -102,7 +102,7 @@ is_worktree_clean() {
 push_crate() {
     local crate="$1"
     local target_branch="${2:-}"
-    local crate_dir="${ROOT_DIR}/${crate}"
+    local crate_dir="${ROOT_DIR}/components/${crate}"
     
     [[ -d "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
     [[ -d "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 Git 仓库，跳过"; return 0; }
@@ -185,7 +185,7 @@ push_all() {
     for crate in "${crates[@]}"; do
         if push_crate "${crate}" "${target_branch}"; then
             # 判断是否实际推送了（有未推送提交且工作区干净）
-            local crate_dir="${ROOT_DIR}/${crate}"
+            local crate_dir="${ROOT_DIR}/components/${crate}"
             if [[ -d "${crate_dir}/.git" ]]; then
                 pushd "${crate_dir}" >/dev/null
                 local branch

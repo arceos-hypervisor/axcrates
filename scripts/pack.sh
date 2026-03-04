@@ -34,7 +34,7 @@ fi
 CRATES=()
 while IFS= read -r crate; do
     [[ -z "${crate}" ]] && continue
-    CRATE_PATH="${ROOT_DIR}/${crate}"
+    CRATE_PATH="${ROOT_DIR}/components/${crate}"
     if [[ -d "${CRATE_PATH}" ]]; then
         CRATES+=("${crate}")
         echo -e "${BLUE}Found: ${crate}${NC}"
@@ -58,7 +58,7 @@ fi
 # Use -h to dereference symlinks (follow symbolic links)
 # Exclude target and .git directories to reduce size
 echo -e "${GREEN}Creating archive: ${ARCHIVE_PATH}${NC}"
-cd "${ROOT_DIR}"
+cd "${ROOT_DIR}/components"
 tar -czhf "${ARCHIVE_PATH}" \
     --exclude='target' \
     --exclude='.git' \

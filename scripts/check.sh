@@ -111,7 +111,7 @@ check_doc() {
 }
 
 check_crate() {
-    local crate="$1" target="$2" crate_dir="${ROOT_DIR}/${1}"
+    local crate="$1" target="$2" crate_dir="${ROOT_DIR}/components/${1}"
     
     [[ -d "${crate_dir}" ]] || die "组件 ${crate} 不存在"
     [[ -f "${crate_dir}/Cargo.toml" ]] || { warn "跳过 ${crate} (不是 Rust 项目)"; return 0; }

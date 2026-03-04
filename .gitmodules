@@ -1,42 +1,42 @@
 [submodule "arm_vcpu"]
-	path = arm_vcpu
+	path = components/arm_vcpu
 	url = git@github.com:arceos-hypervisor/arm_vcpu.git
 [submodule "arm_vgic"]
-	path = arm_vgic
+	path = components/arm_vgic
 	url = git@github.com:arceos-hypervisor/arm_vgic.git
 [submodule "axaddrspace"]
-	path = axaddrspace
+	path = components/axaddrspace
 	url = git@github.com:arceos-hypervisor/axaddrspace.git
 [submodule "axdevice"]
-	path = axdevice
+	path = components/axdevice
 	url = git@github.com:arceos-hypervisor/axdevice.git
 [submodule "axdevice_base"]
-	path = axdevice_base
+	path = components/axdevice_base
 	url = git@github.com:arceos-hypervisor/axdevice_base.git
 [submodule "axhvc"]
-	path = axhvc
+	path = components/axhvc
 	url = git@github.com:arceos-hypervisor/axhvc.git
 [submodule "axvcpu"]
-	path = axvcpu
+	path = components/axvcpu
 	url = git@github.com:arceos-hypervisor/axvcpu.git
 [submodule "x86_vlapic"]
-	path = x86_vlapic
+	path = components/x86_vlapic
 	url = git@github.com:arceos-hypervisor/x86_vlapic.git
 [submodule "x86_vcpu"]
-	path = x86_vcpu
+	path = components/x86_vcpu
 	url = git@github.com:arceos-hypervisor/x86_vcpu.git
 [submodule "riscv_vcpu"]
-	path = riscv_vcpu
+	path = components/riscv_vcpu
 	url = git@github.com:arceos-hypervisor/riscv_vcpu.git
 [submodule "riscv-h"]
-	path = riscv-h
+	path = components/riscv-h
 	url = git@github.com:arceos-hypervisor/riscv-h.git
 [submodule "axvmconfig"]
-	path = axvmconfig
+	path = components/axvmconfig
 	url = git@github.com:arceos-hypervisor/axvmconfig.git
 [submodule "axvm"]
-	path = axvm
+	path = components/axvm
 	url = git@github.com:arceos-hypervisor/axvm.git
 [submodule "axvisor_api"]
-	path = axvisor_api
+	path = components/axvisor_api
 	url = git@github.com:arceos-hypervisor/axvisor_api.git

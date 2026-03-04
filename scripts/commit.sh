@@ -89,7 +89,7 @@ get_current_branch() {
 commit_crate() {
     local crate="$1"
     local message="$2"
-    local crate_dir="${ROOT_DIR}/${crate}"
+    local crate_dir="${ROOT_DIR}/components/${crate}"
 
     [[ -d "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
     [[ -d "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 Git 仓库，跳过"; return 0; }
@@ -149,7 +149,7 @@ commit_all() {
     for crate in "${crates[@]}"; do
         if commit_crate "${crate}" "${message}"; then
             # 检查是否真的提交了（有变更）
-            if [[ -n $(cd "${ROOT_DIR}/${crate}" 2>/dev/null && git status --porcelain 2>/dev/null) ]]; then
+            if [[ -n $(cd "${ROOT_DIR}/components/${crate}" 2>/dev/null && git status --porcelain 2>/dev/null) ]]; then
                 skipped+=("${crate}")
             else
                 committed+=("${crate}")
