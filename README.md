@@ -51,9 +51,10 @@ axcrates/
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
 | arceos-hypervisor | 18 | 17 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> 其他独立 |
-| arceos-org | 37 | 19 | **arceos：** arceos_api, axalloc, axconfig, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axconfig-gen：** axconfig-gen, axconfig-macros <br> **axplat_crates：** axplat, axplat-macros <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> 其他独立 |
+| arceos-org | 36 | 19 | **arceos：** arceos_api, axalloc, axconfig, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axconfig-gen：** axconfig-gen, axconfig-macros <br> **axplat_crates：** axplat, axplat-macros <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> 其他独立 |
 | rcore-os | 1 | 1 | 每个组件独立仓库 |
-| **总计** | **56** | **37** | |
+| Starry-OS | 2 | 2 | 每个组件独立仓库 |
+| **总计** | **57** | **39** | |
 
 ### 2.1 arceos-hypervisor 组织组件
 
@@ -85,7 +86,6 @@ axcrates/
 | arceos_api | [![Crates.io](https://img.shields.io/crates/v/arceos_api)](https://crates.io/crates/arceos_api) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | ArceOS API |
 | axalloc | [![Crates.io](https://img.shields.io/crates/v/axalloc)](https://crates.io/crates/axalloc) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 内存分配模块 |
 | axallocator | [![Crates.io](https://img.shields.io/crates/v/axallocator)](https://crates.io/crates/axallocator) | https://github.com/arceos-org/allocator | `components/axallocator` | 内存分配器接口 |
-| axbacktrace | [![Crates.io](https://img.shields.io/crates/v/axbacktrace)](https://crates.io/crates/axbacktrace) | https://github.com/Starry-OS/axbacktrace | `components/axbacktrace` | 调用栈回溯 |
 | axconfig | [![Crates.io](https://img.shields.io/crates/v/axconfig)](https://crates.io/crates/axconfig) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 配置模块 |
 | axconfig-gen | [![Crates.io](https://img.shields.io/crates/v/axconfig-gen)](https://crates.io/crates/axconfig-gen) | https://github.com/arceos-org/axconfig-gen | `components/axconfig-gen` | 配置生成工具 |
 | axconfig-macros | [![Crates.io](https://img.shields.io/crates/v/axconfig-macros)](https://crates.io/crates/axconfig-macros) | https://github.com/arceos-org/axconfig-gen | `components/axconfig-gen` (同仓库) | 配置宏 |
@@ -126,7 +126,14 @@ axcrates/
 |---------|:--------:|---------|---------------|------|
 | bitmap-allocator | [![Crates.io](https://img.shields.io/crates/v/bitmap-allocator)](https://crates.io/crates/bitmap-allocator) | https://github.com/rcore-os/bitmap-allocator | `components/bitmap-allocator` | 位图分配器 |
 
-### 2.4 组件依赖关系
+### 2.4 Starry-OS 组织组件
+
+| 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
+|---------|:--------:|---------|---------------|------|
+| axbacktrace | [![Crates.io](https://img.shields.io/crates/v/axbacktrace)](https://crates.io/crates/axbacktrace) | https://github.com/Starry-OS/axbacktrace | `components/axbacktrace` | 调用栈回溯 |
+| axpoll | [![Crates.io](https://img.shields.io/crates/v/axpoll)](https://crates.io/crates/axpoll) | https://github.com/Starry-OS/axpoll | `components/axpoll` | IO 多路复用 |
+
+### 2.5 组件依赖关系
 
 #### AxVisor
 
