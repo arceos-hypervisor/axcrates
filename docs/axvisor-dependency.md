@@ -45,8 +45,6 @@ flowchart TB
         axcpu["axcpu"]
         axplat["axplat"]
         axsched["axsched"]
-        axpoll["axpoll"]
-        axbacktrace["axbacktrace"]
 
         %% 基础库
         axerrno["axerrno"]
@@ -68,6 +66,11 @@ flowchart TB
         %% allocator相关
         axallocator["axallocator"]
         bitmap_allocator["bitmap-allocator"]
+    end
+
+    subgraph starry_os["Starry-OS 组织"]
+        axpoll["axpoll"]
+        axbacktrace["axbacktrace"]
     end
 
     subgraph drivercraft["drivercraft 组织"]
@@ -425,18 +428,20 @@ flowchart TB
     %% 样式设置
     classDef hypervisor fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef arceos fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef starry fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     classDef driver fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
     classDef external fill:#f5f5f5,stroke:#616161,stroke-width:1px
 
     class axaddrspace,axdevice,axdevice_base,axvmconfig,axvcpu,axvisor_api,axvisor_api_proc,axvm,x86_vcpu,x86_vlapic,arm_vcpu,arm_vgic,riscv_vcpu,riscv_h,range_alloc,axhvc,axklib hypervisor
-    class axruntime,axstd,axhal,axalloc,axconfig,axtask,axmm,axlog,axsync,axfeat,arceos_api,axio,axcpu,axplat,axsched,axpoll,axbacktrace,axerrno,memory_addr,memory_set,page_table_entry,page_table_multiarch,percpu,lazyinit,kspin,kernel_guard,crate_interface,cpumask,timer_list,ctor_bare,handler_table,linked_list,axallocator,bitmap_allocator arceos
+    class axruntime,axstd,axhal,axalloc,axconfig,axtask,axmm,axlog,axsync,axfeat,arceos_api,axio,axcpu,axplat,axsched,axerrno,memory_addr,memory_set,page_table_entry,page_table_multiarch,percpu,lazyinit,kspin,kernel_guard,crate_interface,cpumask,timer_list,ctor_bare,handler_table,linked_list,axallocator,bitmap_allocator arceos
+    class axpoll,axbacktrace starry
     class rdrive,rdif_block,rdif_clk,rdif_intc,rdif_base,rdif_pcie,pcie,dma_api driver
     class log,spin,bitflags,cfg_if,bit_field,hashbrown,fdt_parser,byte_unit,extern_trait external
 ```
 
-## 2. 四大组织组件依赖关系图
+## 2. 五大组织组件依赖关系图
 
-只包含 **arceos-hypervisor**、**arceos-org**、**rcore-os**、**drivercraft** 四个组织的组件：
+只包含 **arceos-hypervisor**、**arceos-org**、**Starry-OS**、**rcore-os**、**drivercraft** 五个组织的组件：
 
 ```mermaid
 flowchart TB
@@ -479,8 +484,6 @@ flowchart TB
         axcpu["axcpu"]
         axplat["axplat"]
         axsched["axsched"]
-        axpoll["axpoll"]
-        axbacktrace["axbacktrace"]
 
         %% 基础库
         axerrno["axerrno"]
@@ -502,6 +505,11 @@ flowchart TB
         %% allocator相关
         axallocator["axallocator"]
         bitmap_allocator["bitmap-allocator<br/>(rcore-os)"]
+    end
+
+    subgraph starry_os["Starry-OS 组织"]
+        axpoll["axpoll"]
+        axbacktrace["axbacktrace"]
     end
 
     subgraph drivercraft["drivercraft 组织"]
@@ -766,11 +774,13 @@ flowchart TB
     %% 样式设置
     classDef hypervisor fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef arceos fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef starry fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     classDef driver fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
-    classDef rcore fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef rcore fill:#f3e5f1,stroke:#880e4f,stroke-width:2px
 
     class axaddrspace,axdevice,axdevice_base,axvmconfig,axvcpu,axvisor_api,axvisor_api_proc,axvm,x86_vcpu,x86_vlapic,arm_vcpu,arm_vgic,riscv_vcpu,riscv_h,range_alloc,axhvc,axklib hypervisor
-    class axruntime,axstd,axhal,axalloc,axconfig,axtask,axmm,axlog,axsync,axfeat,arceos_api,axio,axcpu,axplat,axsched,axpoll,axbacktrace,axerrno,memory_addr,memory_set,page_table_entry,page_table_multiarch,percpu,lazyinit,kspin,kernel_guard,crate_interface,cpumask,timer_list,ctor_bare,handler_table,linked_list,axallocator arceos
+    class axruntime,axstd,axhal,axalloc,axconfig,axtask,axmm,axlog,axsync,axfeat,arceos_api,axio,axcpu,axplat,axsched,axerrno,memory_addr,memory_set,page_table_entry,page_table_multiarch,percpu,lazyinit,kspin,kernel_guard,crate_interface,cpumask,timer_list,ctor_bare,handler_table,linked_list,axallocator arceos
+    class axpoll,axbacktrace starry
     class rdrive,rdif_block,rdif_clk,rdif_intc,rdif_base,rdif_pcie,pcie,dma_api driver
     class bitmap_allocator rcore
 ```
@@ -843,7 +853,9 @@ flowchart TD
 | | **总计** | **69** | |
 
 
-## 4 四大组织组件层级图
+## 4 五大组织组件层级图
+
+只包含 **arceos-hypervisor**、**arceos-org**、**Starry-OS**、**rcore-os**、**drivercraft** 五个组织的组件：
 
 ```mermaid
 flowchart TD
@@ -855,17 +867,19 @@ flowchart TD
     
     L2["<b>层级 2: ArceOS API / 运行时层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axstd • arceos_api • axruntime • axfeat<br/><font color='#1565c0'>[arceos-hypervisor]</font><br/>x86_vcpu • x86_vlapic • arm_vcpu • arm_vgic • riscv_vcpu • riscv_h"]
     
-    L3A["<b>层级 3a: ArceOS 核心模块层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axhal • axtask • axmm • axalloc • axsync<br/>axlog • axio • axbacktrace"]
+    L3A["<b>层级 3a: ArceOS 核心模块层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axhal • axtask • axmm • axalloc • axsync<br/>axlog • axio"]
     
     L3B["<b>层级 3b: 驱动框架层</b><br/><font color='#ef6c00'>[drivercraft]</font><br/>rdrive • rdif-intc • rdif-block • rdif-clk"]
     
-    L4["<b>层级 4: HAL / 平台抽象层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axcpu • axplat • axconfig • axsched • axpoll"]
+    L4["<b>层级 4: HAL / 平台抽象层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axcpu • axplat • axconfig • axsched"]
     
     L5A["<b>层级 5a: 基础组件层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axerrno • memory_addr • memory_set • page_table_entry • page_table_multiarch<br/>percpu • lazyinit • kspin • kernel_guard • crate_interface<br/>cpumask • axallocator • timer_list • ctor_bare • handler_table • linked_list_r4l"]
     
     L5B["<b>层级 5b: 驱动基础层</b><br/><font color='#ef6c00'>[drivercraft]</font><br/>rdif-base • pcie • dma-api • rdif-pcie"]
     
     L5C["<b>层级 5c: Hypervisor 基础层</b><br/><font color='#1565c0'>[arceos-hypervisor]</font><br/>range-alloc-arceos"]
+    
+    L5D["<b>层级 5d: Starry-OS 基础层</b><br/><font color='#c2185b'>[Starry-OS]</font><br/>axpoll • axbacktrace"]
     
     L6["<b>层级 6: 最底层库</b><br/><font color='#c2185b'>[rcore-os]</font><br/>bitmap-allocator"]
 
@@ -909,18 +923,19 @@ flowchart TD
     class L6 l6
 ```
 
-### 四大组织组件层级列表
+### 五大组织组件层级列表
 
 | 层级 | 组织 | 数量 | 组件列表 |
 |------|------|------|----------|
 | **0** | arceos-hypervisor | 1 | `axvisor` |
 | **1** | arceos-hypervisor | 9 | `axvm` `axvcpu` `axaddrspace` `axdevice` `axdevice_base` `axvisor_api` `axvmconfig` `axhvc` `axklib` |
 | **2** | arceos-org | 6 | `axstd` `arceos_api` `axruntime` `axfeat` `x86_vcpu` `x86_vlapic` |
-| **3a** | arceos-org | 8 | `axhal` `axtask` `axmm` `axalloc` `axsync` `axlog` `axio` `axbacktrace` |
+| **3a** | arceos-org | 7 | `axhal` `axtask` `axmm` `axalloc` `axsync` `axlog` `axio` |
 | **3b** | drivercraft | 4 | `rdrive` `rdif-intc` `rdif-block` `rdif-clk` |
 | **4** | arceos-org | 5 | `axcpu` `axplat` `axconfig` `axsched` `axpoll` |
 | **5a** | arceos-org | 16 | `axerrno` `memory_addr` `memory_set` `page_table_entry` `page_table_multiarch` `percpu` `lazyinit` `kspin` `kernel_guard` `crate_interface` `cpumask` `axallocator` `timer_list` `ctor_bare` `handler_table` `linked_list_r4l` |
 | **5b** | drivercraft | 4 | `rdif-base` `pcie` `dma-api` `rdif-pcie` |
 | **5c** | arceos-hypervisor | 1 | `range-alloc-arceos` |
+| **5d** | Starry-OS | 2 | `axpoll` `axbacktrace` |
 | **6** | rcore-os | 1 | `bitmap-allocator` |
 | | **总计** | **51** | |
