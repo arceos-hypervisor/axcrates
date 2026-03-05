@@ -51,11 +51,11 @@ axcrates/
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
 | arceos-hypervisor | 20 | 19 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> **arm_vcpu：** arm_vcpu, arm_vgic <br> **riscv_vcpu：** riscv_vcpu, riscv_vplic, riscv-h <br> **x86_vcpu：** x86_vcpu, x86_vlapic <br> 其他独立 |
-| arceos-org | 52 | 20 | **arceos：** arceos_api, axalloc, axconfig, axdriver, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axplat_crates：** axplat, axplat-macros, axplat-aarch64-*, axplat-riscv64-*, axplat-loongarch64-*, axplat-x86-* <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> **axdriver_crates：** axdriver_base, axdriver_pci <br> 其他独立 |
+| arceos-org | 51 | 25 | **arceos：** arceos_api, axalloc, axconfig, axdriver, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axplat_crates：** axplat, axplat-macros, axplat-aarch64-*, axplat-riscv64-*, axplat-loongarch64-*, axplat-x86-* <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> **axdriver_crates：** axdriver_base, axdriver_pci <br> **独立 submodule：** axallocator, axcpu, axerrno, axio, axsched, cpumask, crate_interface, handler_table, kernel_guard, kspin, lazyinit, linked_list_r4l, timer_list, axconfig-gen, int_ratio, arm_pl011, arm_pl031, riscv_plic |
 | rcore-os | 6 | 1 | **bitmap-allocator** (独立) <br> **virtio-drivers** (独立) <br> **arm-gic-driver** (独立) <br> **any-uart** (独立) <br> **somehal：** somehal, page-table-generic, bindeps-simple, kasm-*, kdef-*, num-align, pie-* |
 | Starry-OS | 2 | 2 | **axpoll** (独立) <br> **axbacktrace** (独立) |
 | drivercraft | 4 | 0 | **rdrive：** rdrive, rdrive-macros, rdif-base, rdif-block, rdif-clk, rdif-def, rdif-intc, rdif-pcie, dma-api, aarch64-cpu-ext, release-dep |
-| **总计** | **98** | **42** | |
+| **总计** | **97** | **45** | |
 
 > **注**：此外还依赖约 300+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -136,7 +136,6 @@ axcrates/
 | axplat-loongarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-loongarch64-qemu-virt)](https://crates.io/crates/axplat-loongarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | LoongArch QEMU 平台 |
 | axplat-x86-pc | [![Crates.io](https://img.shields.io/crates/v/axplat-x86-pc)](https://crates.io/crates/axplat-x86-pc) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | x86 PC 平台 |
 | int_ratio | [![Crates.io](https://img.shields.io/crates/v/int_ratio)](https://crates.io/crates/int_ratio) | https://github.com/arceos-org/int_ratio | `components/int_ratio` | 整数比例 |
-| aarch64_sysreg | [![Crates.io](https://img.shields.io/crates/v/aarch64_sysreg)](https://crates.io/crates/aarch64_sysreg) | https://github.com/arceos-org/aarch64_sysreg | `components/aarch64_sysreg` | ARM64 系统寄存器 |
 | arm_pl011 | [![Crates.io](https://img.shields.io/crates/v/arm_pl011)](https://crates.io/crates/arm_pl011) | https://github.com/arceos-org/arm_pl011 | `components/arm_pl011` | ARM PL011 UART |
 | arm_pl031 | [![Crates.io](https://img.shields.io/crates/v/arm_pl031)](https://crates.io/crates/arm_pl031) | https://github.com/arceos-org/arm_pl031 | `components/arm_pl031` | ARM PL031 RTC |
 | riscv_plic | [![Crates.io](https://img.shields.io/crates/v/riscv_plic)](https://crates.io/crates/riscv_plic) | https://github.com/arceos-org/riscv_plic | `components/riscv_plic` | RISC-V PLIC |

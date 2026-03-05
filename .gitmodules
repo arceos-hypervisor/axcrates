@@ -118,3 +118,18 @@
 [submodule "components/axpoll"]
 	path = components/axpoll
 	url = git@github.com:Starry-OS/axpoll.git
+[submodule "components/int_ratio"]
+	path = components/int_ratio
+	url = git@github.com:arceos-org/int_ratio.git
+[submodule "components/arm_pl011"]
+	path = components/arm_pl011
+	url = git@github.com:arceos-org/arm_pl011.git
+[submodule "components/arm_pl031"]
+	path = components/arm_pl031
+	url = git@github.com:arceos-org/arm_pl031.git
+[submodule "components/riscv_plic"]
+	path = components/riscv_plic
+	url = git@github.com:arceos-org/riscv_plic.git
+[submodule "components/axdriver_crates"]
+	path = components/axdriver_crates
+	url = git@github.com:arceos-org/axdriver_crates.git
