@@ -115,3 +115,6 @@
 [submodule "components/bitmap-allocator"]
 	path = components/bitmap-allocator
 	url = git@github.com:rcore-os/bitmap-allocator.git
+[submodule "components/axpoll"]
+	path = components/axpoll
+	url = git@github.com:Starry-OS/axpoll.git
