@@ -16,9 +16,14 @@ flowchart TB
         axvmconfig["axvmconfig"]
         axvcpu["axvcpu"]
         axvisor_api["axvisor_api"]
+        axvisor_api_proc["axvisor_api_proc"]
         axvm["axvm"]
         x86_vcpu["x86_vcpu"]
         x86_vlapic["x86_vlapic"]
+        arm_vcpu["arm_vcpu"]
+        arm_vgic["arm_vgic"]
+        riscv_vcpu["riscv_vcpu"]
+        riscv_h["riscv-h"]
         range_alloc["range-alloc-arceos"]
         axhvc["axhvc"]
         axklib["axklib"]
@@ -154,6 +159,8 @@ flowchart TB
     axvisor_api --> crate_interface
     axvisor_api --> memory_addr
 
+    axvisor_api_proc --> axvisor_api
+
     axvm --> axaddrspace
     axvm --> axdevice
     axvm --> axdevice_base
@@ -186,6 +193,30 @@ flowchart TB
 
     axklib --> axerrno
     axklib --> memory_addr
+
+    %% ARM 架构组件依赖
+    arm_vcpu --> axaddrspace
+    arm_vcpu --> axdevice_base
+    arm_vcpu --> axerrno
+    arm_vcpu --> axvcpu
+    arm_vcpu --> axvisor_api
+    arm_vcpu --> percpu
+
+    arm_vgic --> axaddrspace
+    arm_vgic --> axdevice_base
+    arm_vgic --> axerrno
+    arm_vgic --> axvisor_api
+    arm_vgic --> memory_addr
+
+    %% RISC-V 架构组件依赖
+    riscv_vcpu --> axaddrspace
+    riscv_vcpu --> axdevice_base
+    riscv_vcpu --> axerrno
+    riscv_vcpu --> axvcpu
+    riscv_vcpu --> axvisor_api
+    riscv_vcpu --> percpu
+
+    riscv_h --> axerrno
 
     %% arceos-org 依赖关系
     axruntime --> axalloc
@@ -397,7 +428,7 @@ flowchart TB
     classDef driver fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
     classDef external fill:#f5f5f5,stroke:#616161,stroke-width:1px
 
-    class axaddrspace,axdevice,axdevice_base,axvmconfig,axvcpu,axvisor_api,axvm,x86_vcpu,x86_vlapic,range_alloc,axhvc,axklib hypervisor
+    class axaddrspace,axdevice,axdevice_base,axvmconfig,axvcpu,axvisor_api,axvisor_api_proc,axvm,x86_vcpu,x86_vlapic,arm_vcpu,arm_vgic,riscv_vcpu,riscv_h,range_alloc,axhvc,axklib hypervisor
     class axruntime,axstd,axhal,axalloc,axconfig,axtask,axmm,axlog,axsync,axfeat,arceos_api,axio,axcpu,axplat,axsched,axpoll,axbacktrace,axerrno,memory_addr,memory_set,page_table_entry,page_table_multiarch,percpu,lazyinit,kspin,kernel_guard,crate_interface,cpumask,timer_list,ctor_bare,handler_table,linked_list,axallocator,bitmap_allocator arceos
     class rdrive,rdif_block,rdif_clk,rdif_intc,rdif_base,rdif_pcie,pcie,dma_api driver
     class log,spin,bitflags,cfg_if,bit_field,hashbrown,fdt_parser,byte_unit,extern_trait external
@@ -419,9 +450,14 @@ flowchart TB
         axvmconfig["axvmconfig"]
         axvcpu["axvcpu"]
         axvisor_api["axvisor_api"]
+        axvisor_api_proc["axvisor_api_proc"]
         axvm["axvm"]
         x86_vcpu["x86_vcpu"]
         x86_vlapic["x86_vlapic"]
+        arm_vcpu["arm_vcpu"]
+        arm_vgic["arm_vgic"]
+        riscv_vcpu["riscv_vcpu"]
+        riscv_h["riscv-h"]
         range_alloc["range-alloc-arceos"]
         axhvc["axhvc"]
         axklib["axklib"]
@@ -567,6 +603,30 @@ flowchart TB
     axklib --> axerrno
     axklib --> memory_addr
 
+    %% ARM 架构组件依赖
+    arm_vcpu --> axaddrspace
+    arm_vcpu --> axdevice_base
+    arm_vcpu --> axerrno
+    arm_vcpu --> axvcpu
+    arm_vcpu --> axvisor_api
+    arm_vcpu --> percpu
+
+    arm_vgic --> axaddrspace
+    arm_vgic --> axdevice_base
+    arm_vgic --> axerrno
+    arm_vgic --> axvisor_api
+    arm_vgic --> memory_addr
+
+    %% RISC-V 架构组件依赖
+    riscv_vcpu --> axaddrspace
+    riscv_vcpu --> axdevice_base
+    riscv_vcpu --> axerrno
+    riscv_vcpu --> axvcpu
+    riscv_vcpu --> axvisor_api
+    riscv_vcpu --> percpu
+
+    riscv_h --> axerrno
+
     %% arceos-org 依赖关系
     axruntime --> axalloc
     axruntime --> axbacktrace
@@ -709,7 +769,7 @@ flowchart TB
     classDef driver fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
     classDef rcore fill:#fce4ec,stroke:#c2185b,stroke-width:2px
 
-    class axaddrspace,axdevice,axdevice_base,axvmconfig,axvcpu,axvisor_api,axvm,x86_vcpu,x86_vlapic,range_alloc,axhvc,axklib hypervisor
+    class axaddrspace,axdevice,axdevice_base,axvmconfig,axvcpu,axvisor_api,axvisor_api_proc,axvm,x86_vcpu,x86_vlapic,arm_vcpu,arm_vgic,riscv_vcpu,riscv_h,range_alloc,axhvc,axklib hypervisor
     class axruntime,axstd,axhal,axalloc,axconfig,axtask,axmm,axlog,axsync,axfeat,arceos_api,axio,axcpu,axplat,axsched,axpoll,axbacktrace,axerrno,memory_addr,memory_set,page_table_entry,page_table_multiarch,percpu,lazyinit,kspin,kernel_guard,crate_interface,cpumask,timer_list,ctor_bare,handler_table,linked_list,axallocator arceos
     class rdrive,rdif_block,rdif_clk,rdif_intc,rdif_base,rdif_pcie,pcie,dma_api driver
     class bitmap_allocator rcore
@@ -725,9 +785,9 @@ flowchart TD
     
     L0["<b>层级 0: 应用层</b><br/>axvisor"]
     
-    L1["<b>层级 1: Hypervisor 核心层</b><br/>axvm • axvcpu • axaddrspace • axdevice • axdevice_base<br/>axvisor_api • axvmconfig • axhvc • axklib"]
+    L1["<b>层级 1: Hypervisor 核心层</b><br/>axvm • axvcpu • axaddrspace • axdevice • axdevice_base<br/>axvisor_api • axvisor_api_proc • axvmconfig • axhvc • axklib"]
     
-    L2["<b>层级 2: ArceOS API / 运行时层</b><br/>axstd • arceos_api • axruntime • axfeat<br/>x86_vcpu • x86_vlapic"]
+    L2["<b>层级 2: ArceOS API / 运行时层</b><br/>axstd • arceos_api • axruntime • axfeat<br/>x86_vcpu • x86_vlapic • arm_vcpu • arm_vgic • riscv_vcpu • riscv_h"]
     
     L3["<b>层级 3: ArceOS 核心模块层</b><br/>axhal • axtask • axmm • axalloc • axsync<br/>axlog • axio • axbacktrace • rdrive"]
     
@@ -774,13 +834,13 @@ flowchart TD
 | 层级 | 名称 | 数量 | 组件列表 |
 |------|------|------|----------|
 | **0** | 应用层 | 1 | `axvisor` |
-| **1** | Hypervisor 核心层 | 9 | `axvm` `axvcpu` `axaddrspace` `axdevice` `axdevice_base` `axvisor_api` `axvmconfig` `axhvc` `axklib` |
-| **2** | ArceOS API / 运行时层 | 6 | `axstd` `arceos_api` `axruntime` `axfeat` `x86_vcpu` `x86_vlapic` |
+| **1** | Hypervisor 核心层 | 10 | `axvm` `axvcpu` `axaddrspace` `axdevice` `axdevice_base` `axvisor_api` `axvisor_api_proc` `axvmconfig` `axhvc` `axklib` |
+| **2** | ArceOS API / 运行时层 | 10 | `axstd` `arceos_api` `axruntime` `axfeat` `x86_vcpu` `x86_vlapic` `arm_vcpu` `arm_vgic` `riscv_vcpu` `riscv_h` |
 | **3** | ArceOS 核心模块层 | 9 | `axhal` `axtask` `axmm` `axalloc` `axsync` `axlog` `axio` `axbacktrace` `rdrive` |
 | **4** | HAL / 平台抽象层 | 8 | `axcpu` `axplat` `axconfig` `axsched` `axpoll` `rdif-intc` `rdif-block` `rdif-clk` |
 | **5** | 基础组件层 | 21 | `axerrno` `memory_addr` `memory_set` `page_table_entry` `page_table_multiarch` `percpu` `lazyinit` `kspin` `kernel_guard` `crate_interface` `cpumask` `axallocator` `rdif-base` `pcie` `dma-api` `range-alloc-arceos` `timer_list` `ctor_bare` `handler_table` `linked_list_r4l` `rdif-pcie` |
 | **6** | 最底层库 | 10 | `bitmap-allocator` `log` `spin` `bitflags` `cfg-if` `bit_field` `hashbrown` `fdt-parser` `byte-unit` `extern-trait` |
-| | **总计** | **64** | |
+| | **总计** | **69** | |
 
 
 ## 4 四大组织组件层级图
@@ -791,9 +851,9 @@ flowchart TD
     
     L0["<b>层级 0: 应用层</b><br/><font color='#1565c0'>[arceos-hypervisor]</font> axvisor"]
     
-    L1["<b>层级 1: Hypervisor 核心层</b><br/><font color='#1565c0'>[arceos-hypervisor]</font><br/>axvm • axvcpu • axaddrspace • axdevice • axdevice_base<br/>axvisor_api • axvmconfig • axhvc • axklib"]
+    L1["<b>层级 1: Hypervisor 核心层</b><br/><font color='#1565c0'>[arceos-hypervisor]</font><br/>axvm • axvcpu • axaddrspace • axdevice • axdevice_base<br/>axvisor_api • axvisor_api_proc • axvmconfig • axhvc • axklib"]
     
-    L2["<b>层级 2: ArceOS API / 运行时层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axstd • arceos_api • axruntime • axfeat • x86_vcpu • x86_vlapic"]
+    L2["<b>层级 2: ArceOS API / 运行时层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axstd • arceos_api • axruntime • axfeat<br/><font color='#1565c0'>[arceos-hypervisor]</font><br/>x86_vcpu • x86_vlapic • arm_vcpu • arm_vgic • riscv_vcpu • riscv_h"]
     
     L3A["<b>层级 3a: ArceOS 核心模块层</b><br/><font color='#2e7d32'>[arceos-org]</font><br/>axhal • axtask • axmm • axalloc • axsync<br/>axlog • axio • axbacktrace"]
     
