@@ -289,36 +289,20 @@ cd arm_vcpu && cargo build --target aarch64-unknown-none-softfloat
 | percpu-macros | [![Crates.io](https://img.shields.io/crates/v/percpu-macros)](https://crates.io/crates/percpu-macros) | https://github.com/arceos-org/percpu | Per-CPU 宏 |
 | timer_list | N/A | https://github.com/arceos-org/timer_list | 定时器列表 |
 
-### 7.3 drivercraft 组织组件
-
-| 组件名称 | crates.io | 仓库地址 | 描述 |
-|---------|:--------:|---------|------|
-| rdrive | [![Crates.io](https://img.shields.io/crates/v/rdrive)](https://crates.io/crates/rdrive) | https://github.com/drivercraft/rdrive | 统一驱动框架 |
-| rdrive-macros | [![Crates.io](https://img.shields.io/crates/v/rdrive-macros)](https://crates.io/crates/rdrive-macros) | https://github.com/drivercraft/rdrive | 驱动框架宏 |
-| rdif-base | N/A | https://github.com/drivercraft/rdrive | 驱动接口基础 |
-| rdif-block | N/A | https://github.com/drivercraft/rdrive | 块设备接口 |
-| rdif-clk | N/A | https://github.com/drivercraft/rdrive | 时钟接口 |
-| rdif-def | N/A | https://github.com/drivercraft/rdrive | 驱动接口定义 |
-| rdif-intc | N/A | https://github.com/drivercraft/rdrive | 中断控制器接口 |
-| rdif-pcie | N/A | https://github.com/drivercraft/rdrive | PCIe 接口 |
-| pcie | N/A | https://github.com/drivercraft/rdrive | PCIe 驱动 |
-| dma-api | N/A | https://github.com/drivercraft/dma-api | DMA API 抽象 |
-
-### 7.4 rcore-os 组织组件
+### 7.3 rcore-os 组织组件
 
 | 组件名称 | crates.io | 仓库地址 | 描述 |
 |---------|:--------:|---------|------|
 | bitmap-allocator | [![Crates.io](https://img.shields.io/crates/v/bitmap-allocator)](https://crates.io/crates/bitmap-allocator) | https://github.com/rcore-os/bitmap-allocator | 位图分配器 |
 
-### 7.5 统计汇总
+### 7.4 统计汇总
 
 | 组织 | 组件数量 | Submodule 数量 |
 |-----|---------|---------------|
 | arceos-hypervisor | 17 | 17 |
 | arceos-org | 35 | 19 |
-| drivercraft | 10 | 2 |
 | rcore-os | 1 | 1 |
-| **总计** | **63** | **39** |
+| **总计** | **53** | **37** |
 
 ---
 

@@ -112,12 +112,6 @@
 [submodule "components/axbacktrace"]
 	path = components/axbacktrace
 	url = git@github.com:Starry-OS/axbacktrace.git
-[submodule "components/rdrive"]
-	path = components/rdrive
-	url = git@github.com:drivercraft/rdrive.git
-[submodule "components/dma-api"]
-	path = components/dma-api
-	url = git@github.com:drivercraft/dma-api.git
 [submodule "components/bitmap-allocator"]
 	path = components/bitmap-allocator
 	url = git@github.com:rcore-os/bitmap-allocator.git
