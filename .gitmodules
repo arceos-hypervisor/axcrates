@@ -43,3 +43,6 @@
 [submodule "components/axklib"]
 	path = components/axklib
 	url = git@github.com:arceos-hypervisor/axklib.git
+[submodule "os/axvisor"]
+	path = os/axvisor
+	url = git@github.com:arceos-hypervisor/axvisor.git
