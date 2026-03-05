@@ -133,3 +133,6 @@
 [submodule "components/axdriver_crates"]
 	path = components/axdriver_crates
 	url = git@github.com:arceos-org/axdriver_crates.git
+[submodule "components/riscv_vplic"]
+	path = components/riscv_vplic
+	url = git@github.com:arceos-hypervisor/riscv_vplic.git
