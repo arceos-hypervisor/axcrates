@@ -51,80 +51,80 @@ axcrates/
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
 | arceos-hypervisor | 18 | 17 | 每个组件独立仓库 |
-| arceos-org | 37 | 19 | arceos 仓库内有 11 个组件, axmm_crates 仓库中有 2 个组件, axconfig-gen(2), axplat_crates(2), page_table_multiarch(2), percpu(2), 其他独立 |
+| arceos-org | 37 | 19 | **arceos：** arceos_api, axalloc, axconfig, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axconfig-gen：** axconfig-gen, axconfig-macros <br> **axplat_crates：** axplat, axplat-macros <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> 其他独立 |
 | rcore-os | 1 | 1 | 每个组件独立仓库 |
 | **总计** | **56** | **37** | |
 
 ### 2.1 arceos-hypervisor 组织组件
 
-| 组件名称 | crates.io | 仓库地址 | 描述 |
-|---------|:--------:|---------|------|
-| axvisor | [![Crates.io](https://img.shields.io/crates/v/axvisor)](https://crates.io/crates/axvisor) | https://github.com/arceos-hypervisor/axvisor | ArceOS Hypervisor 主项目 |
-| axaddrspace | [![Crates.io](https://img.shields.io/crates/v/axaddrspace)](https://crates.io/crates/axaddrspace) | https://github.com/arceos-hypervisor/axaddrspace | Guest 地址空间管理 |
-| axdevice | [![Crates.io](https://img.shields.io/crates/v/axdevice)](https://crates.io/crates/axdevice) | https://github.com/arceos-hypervisor/axdevice | 设备抽象层 |
-| axdevice_base | [![Crates.io](https://img.shields.io/crates/v/axdevice_base)](https://crates.io/crates/axdevice_base) | https://github.com/arceos-hypervisor/axdevice_base | 设备模拟基础 trait |
-| axhvc | [![Crates.io](https://img.shields.io/crates/v/axhvc)](https://crates.io/crates/axhvc) | https://github.com/arceos-hypervisor/axhvc | HyperCall 定义 |
-| axklib | [![Crates.io](https://img.shields.io/crates/v/axklib)](https://crates.io/crates/axklib) | https://github.com/arceos-hypervisor/axklib | 内核库 |
-| axvcpu | [![Crates.io](https://img.shields.io/crates/v/axvcpu)](https://crates.io/crates/axvcpu) | https://github.com/arceos-hypervisor/axvcpu | VCPU 抽象层 |
-| axvisor_api | [![Crates.io](https://img.shields.io/crates/v/axvisor_api)](https://crates.io/crates/axvisor_api) | https://github.com/arceos-hypervisor/axvisor_api | Hypervisor API |
-| axvisor_api_proc | [![Crates.io](https://img.shields.io/crates/v/axvisor_api_proc)](https://crates.io/crates/axvisor_api_proc) | https://github.com/arceos-hypervisor/axvisor_api | Hypervisor API 宏 |
-| axvm | [![Crates.io](https://img.shields.io/crates/v/axvm)](https://crates.io/crates/axvm) | https://github.com/arceos-hypervisor/axvm | VM 资源管理 |
-| axvmconfig | [![Crates.io](https://img.shields.io/crates/v/axvmconfig)](https://crates.io/crates/axvmconfig) | https://github.com/arceos-hypervisor/axvmconfig | VM 配置工具 |
-| range-alloc | [![Crates.io](https://img.shields.io/crates/v/range-alloc)](https://crates.io/crates/range-alloc) | https://github.com/arceos-hypervisor/range-alloc | 范围分配器 |
-| x86_vcpu | [![Crates.io](https://img.shields.io/crates/v/x86_vcpu)](https://crates.io/crates/x86_vcpu) | https://github.com/arceos-hypervisor/x86_vcpu | x86 VCPU 实现 |
-| x86_vlapic | [![Crates.io](https://img.shields.io/crates/v/x86_vlapic)](https://crates.io/crates/x86_vlapic) | https://github.com/arceos-hypervisor/x86_vlapic | x86 虚拟 Local APIC |
-| arm_vcpu | [![Crates.io](https://img.shields.io/crates/v/arm_vcpu)](https://crates.io/crates/arm_vcpu) | https://github.com/arceos-hypervisor/arm_vcpu | ARM VCPU 实现 |
-| arm_vgic | [![Crates.io](https://img.shields.io/crates/v/arm_vgic)](https://crates.io/crates/arm_vgic) | https://github.com/arceos-hypervisor/arm_vgic | ARM 虚拟中断控制器 |
-| riscv_vcpu | [![Crates.io](https://img.shields.io/crates/v/riscv_vcpu)](https://crates.io/crates/riscv_vcpu) | https://github.com/arceos-hypervisor/riscv_vcpu | RISC-V VCPU 实现 |
-| riscv-h | [![Crates.io](https://img.shields.io/crates/v/riscv-h)](https://crates.io/crates/riscv-h) | https://github.com/arceos-hypervisor/riscv-h | RISC-V H 扩展寄存器 |
+| 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
+|---------|:--------:|---------|---------------|------|
+| axvisor | [![Crates.io](https://img.shields.io/crates/v/axvisor)](https://crates.io/crates/axvisor) | https://github.com/arceos-hypervisor/axvisor | `os/axvisor` | ArceOS Hypervisor 主项目 |
+| axaddrspace | [![Crates.io](https://img.shields.io/crates/v/axaddrspace)](https://crates.io/crates/axaddrspace) | https://github.com/arceos-hypervisor/axaddrspace | `components/axaddrspace` | Guest 地址空间管理 |
+| axdevice | [![Crates.io](https://img.shields.io/crates/v/axdevice)](https://crates.io/crates/axdevice) | https://github.com/arceos-hypervisor/axdevice | `components/axdevice` | 设备抽象层 |
+| axdevice_base | [![Crates.io](https://img.shields.io/crates/v/axdevice_base)](https://crates.io/crates/axdevice_base) | https://github.com/arceos-hypervisor/axdevice_base | `components/axdevice_base` | 设备模拟基础 trait |
+| axhvc | [![Crates.io](https://img.shields.io/crates/v/axhvc)](https://crates.io/crates/axhvc) | https://github.com/arceos-hypervisor/axhvc | `components/axhvc` | HyperCall 定义 |
+| axklib | [![Crates.io](https://img.shields.io/crates/v/axklib)](https://crates.io/crates/axklib) | https://github.com/arceos-hypervisor/axklib | `components/axklib` | 内核库 |
+| axvcpu | [![Crates.io](https://img.shields.io/crates/v/axvcpu)](https://crates.io/crates/axvcpu) | https://github.com/arceos-hypervisor/axvcpu | `components/axvcpu` | VCPU 抽象层 |
+| axvisor_api | [![Crates.io](https://img.shields.io/crates/v/axvisor_api)](https://crates.io/crates/axvisor_api) | https://github.com/arceos-hypervisor/axvisor_api | `components/axvisor_api` | Hypervisor API |
+| axvisor_api_proc | [![Crates.io](https://img.shields.io/crates/v/axvisor_api_proc)](https://crates.io/crates/axvisor_api_proc) | https://github.com/arceos-hypervisor/axvisor_api | `components/axvisor_api` | Hypervisor API 宏（同仓库） |
+| axvm | [![Crates.io](https://img.shields.io/crates/v/axvm)](https://crates.io/crates/axvm) | https://github.com/arceos-hypervisor/axvm | `components/axvm` | VM 资源管理 |
+| axvmconfig | [![Crates.io](https://img.shields.io/crates/v/axvmconfig)](https://crates.io/crates/axvmconfig) | https://github.com/arceos-hypervisor/axvmconfig | `components/axvmconfig` | VM 配置工具 |
+| range-alloc | [![Crates.io](https://img.shields.io/crates/v/range-alloc)](https://crates.io/crates/range-alloc) | https://github.com/arceos-hypervisor/range-alloc | `components/range-alloc-arceos` | 范围分配器 |
+| x86_vcpu | [![Crates.io](https://img.shields.io/crates/v/x86_vcpu)](https://crates.io/crates/x86_vcpu) | https://github.com/arceos-hypervisor/x86_vcpu | `components/x86_vcpu` | x86 VCPU 实现 |
+| x86_vlapic | [![Crates.io](https://img.shields.io/crates/v/x86_vlapic)](https://crates.io/crates/x86_vlapic) | https://github.com/arceos-hypervisor/x86_vlapic | `components/x86_vlapic` | x86 虚拟 Local APIC |
+| arm_vcpu | [![Crates.io](https://img.shields.io/crates/v/arm_vcpu)](https://crates.io/crates/arm_vcpu) | https://github.com/arceos-hypervisor/arm_vcpu | `components/arm_vcpu` | ARM VCPU 实现 |
+| arm_vgic | [![Crates.io](https://img.shields.io/crates/v/arm_vgic)](https://crates.io/crates/arm_vgic) | https://github.com/arceos-hypervisor/arm_vgic | `components/arm_vgic` | ARM 虚拟中断控制器 |
+| riscv_vcpu | [![Crates.io](https://img.shields.io/crates/v/riscv_vcpu)](https://crates.io/crates/riscv_vcpu) | https://github.com/arceos-hypervisor/riscv_vcpu | `components/riscv_vcpu` | RISC-V VCPU 实现 |
+| riscv-h | [![Crates.io](https://img.shields.io/crates/v/riscv-h)](https://crates.io/crates/riscv-h) | https://github.com/arceos-hypervisor/riscv-h | `components/riscv-h` | RISC-V H 扩展寄存器 |
 
 ### 2.2 arceos-org 组织组件
 
-| 组件名称 | crates.io | 仓库地址 | 描述 |
-|---------|:--------:|---------|------|
-| arceos_api | [![Crates.io](https://img.shields.io/crates/v/arceos_api)](https://crates.io/crates/arceos_api) | https://github.com/arceos-org/arceos | ArceOS API |
-| axalloc | [![Crates.io](https://img.shields.io/crates/v/axalloc)](https://crates.io/crates/axalloc) | https://github.com/arceos-org/arceos | 内存分配模块 |
-| axallocator | [![Crates.io](https://img.shields.io/crates/v/axallocator)](https://crates.io/crates/axallocator) | https://github.com/arceos-org/allocator | 内存分配器接口 |
-| axbacktrace | [![Crates.io](https://img.shields.io/crates/v/axbacktrace)](https://crates.io/crates/axbacktrace) | https://github.com/Starry-OS/axbacktrace | 调用栈回溯 |
-| axconfig | [![Crates.io](https://img.shields.io/crates/v/axconfig)](https://crates.io/crates/axconfig) | https://github.com/arceos-org/arceos | 配置模块 |
-| axconfig-gen | [![Crates.io](https://img.shields.io/crates/v/axconfig-gen)](https://crates.io/crates/axconfig-gen) | https://github.com/arceos-org/axconfig-gen | 配置生成工具 |
-| axconfig-macros | [![Crates.io](https://img.shields.io/crates/v/axconfig-macros)](https://crates.io/crates/axconfig-macros) | https://github.com/arceos-org/axconfig-gen | 配置宏 |
-| axcpu | [![Crates.io](https://img.shields.io/crates/v/axcpu)](https://crates.io/crates/axcpu) | https://github.com/arceos-org/axcpu | CPU 抽象层 |
-| axerrno | [![Crates.io](https://img.shields.io/crates/v/axerrno)](https://crates.io/crates/axerrno) | https://github.com/arceos-org/axerrno | 错误码定义 |
-| axfeat | [![Crates.io](https://img.shields.io/crates/v/axfeat)](https://crates.io/crates/axfeat) | https://github.com/arceos-org/arceos | 特性管理 |
-| axhal | [![Crates.io](https://img.shields.io/crates/v/axhal)](https://crates.io/crates/axhal) | https://github.com/arceos-org/arceos | 硬件抽象层 |
-| axio | [![Crates.io](https://img.shields.io/crates/v/axio)](https://crates.io/crates/axio) | https://github.com/arceos-org/axio | IO 抽象 |
-| axlog | [![Crates.io](https://img.shields.io/crates/v/axlog)](https://crates.io/crates/axlog) | https://github.com/arceos-org/arceos | 日志模块 |
-| axmm | [![Crates.io](https://img.shields.io/crates/v/axmm)](https://crates.io/crates/axmm) | https://github.com/arceos-org/arceos | 内存管理模块 |
-| axplat | [![Crates.io](https://img.shields.io/crates/v/axplat)](https://crates.io/crates/axplat) | https://github.com/arceos-org/axplat_crates | 平台抽象层 |
-| axplat-macros | [![Crates.io](https://img.shields.io/crates/v/axplat-macros)](https://crates.io/crates/axplat-macros) | https://github.com/arceos-org/axplat_crates | 平台抽象层宏 |
-| axruntime | [![Crates.io](https://img.shields.io/crates/v/axruntime)](https://crates.io/crates/axruntime) | https://github.com/arceos-org/arceos | 运行时模块 |
-| axsched | [![Crates.io](https://img.shields.io/crates/v/axsched)](https://crates.io/crates/axsched) | https://github.com/arceos-org/axsched | 调度器 |
-| axstd | [![Crates.io](https://img.shields.io/crates/v/axstd)](https://crates.io/crates/axstd) | https://github.com/arceos-org/arceos | 标准库 |
-| axsync | [![Crates.io](https://img.shields.io/crates/v/axsync)](https://crates.io/crates/axsync) | https://github.com/arceos-org/arceos | 同步原语 |
-| axtask | [![Crates.io](https://img.shields.io/crates/v/axtask)](https://crates.io/crates/axtask) | https://github.com/arceos-org/arceos | 任务管理 |
-| cpumask | [![Crates.io](https://img.shields.io/crates/v/cpumask)](https://crates.io/crates/cpumask) | https://github.com/arceos-org/cpumask | CPU 掩码 |
-| crate_interface | [![Crates.io](https://img.shields.io/crates/v/crate_interface)](https://crates.io/crates/crate_interface) | https://github.com/arceos-org/crate_interface | Crate 接口宏 |
-| ctor_bare_macros | [![Crates.io](https://img.shields.io/crates/v/ctor_bare_macros)](https://crates.io/crates/ctor_bare_macros) | https://github.com/arceos-org/ctor_bare | 裸机构造器宏 |
-| ctor_bare |  [![Crates.io](https://img.shields.io/crates/v/ctor_bare)](https://crates.io/crates/ctor_bare)  | https://github.com/arceos-org/ctor_bare | 裸机构造器 |
-| handler_table | [![Crates.io](https://img.shields.io/crates/v/handler_table)](https://crates.io/crates/handler_table) | https://github.com/arceos-org/handler_table | 处理函数表 |
-| kernel_guard | [![Crates.io](https://img.shields.io/crates/v/kernel_guard)](https://crates.io/crates/kernel_guard) | https://github.com/arceos-org/kernel_guard | 内核临界区保护 |
-| kspin | [![Crates.io](https://img.shields.io/crates/v/kspin)](https://crates.io/crates/kspin) | https://github.com/arceos-org/kspin | 内核自旋锁 |
-| lazyinit | [![Crates.io](https://img.shields.io/crates/v/lazyinit)](https://crates.io/crates/lazyinit) | https://github.com/arceos-org/lazyinit | 延迟初始化 |
-| linked_list_r4l | [![Crates.io](https://img.shields.io/crates/v/linked_list_r4l)](https://crates.io/crates/linked_list_r4l) | https://github.com/arceos-org/linked_list_r4l | 链表实现 |
-| memory_addr | [![Crates.io](https://img.shields.io/crates/v/memory_addr)](https://crates.io/crates/memory_addr) | https://github.com/arceos-org/axmm_crates | 内存地址类型 |
-| memory_set | [![Crates.io](https://img.shields.io/crates/v/memory_set)](https://crates.io/crates/memory_set) | https://github.com/arceos-org/axmm_crates | 内存区域集合 |
-| page_table_entry | [![Crates.io](https://img.shields.io/crates/v/page_table_entry)](https://crates.io/crates/page_table_entry) | https://github.com/arceos-org/page_table_multiarch | 页表项 |
-| page_table_multiarch | [![Crates.io](https://img.shields.io/crates/v/page_table_multiarch)](https://crates.io/crates/page_table_multiarch) | https://github.com/arceos-org/page_table_multiarch | 多架构页表 |
-| percpu | [![Crates.io](https://img.shields.io/crates/v/percpu)](https://crates.io/crates/percpu) | https://github.com/arceos-org/percpu | Per-CPU 变量 |
-| percpu-macros | [![Crates.io](https://img.shields.io/crates/v/percpu-macros)](https://crates.io/crates/percpu-macros) | https://github.com/arceos-org/percpu | Per-CPU 宏 |
-| timer_list |  [![Crates.io](https://img.shields.io/crates/v/timer_list)](https://crates.io/crates/timer_list) | https://github.com/arceos-org/timer_list | 定时器列表 |
+| 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
+|---------|:--------:|---------|---------------|------|
+| arceos_api | [![Crates.io](https://img.shields.io/crates/v/arceos_api)](https://crates.io/crates/arceos_api) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | ArceOS API |
+| axalloc | [![Crates.io](https://img.shields.io/crates/v/axalloc)](https://crates.io/crates/axalloc) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 内存分配模块 |
+| axallocator | [![Crates.io](https://img.shields.io/crates/v/axallocator)](https://crates.io/crates/axallocator) | https://github.com/arceos-org/allocator | `components/axallocator` | 内存分配器接口 |
+| axbacktrace | [![Crates.io](https://img.shields.io/crates/v/axbacktrace)](https://crates.io/crates/axbacktrace) | https://github.com/Starry-OS/axbacktrace | `components/axbacktrace` | 调用栈回溯 |
+| axconfig | [![Crates.io](https://img.shields.io/crates/v/axconfig)](https://crates.io/crates/axconfig) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 配置模块 |
+| axconfig-gen | [![Crates.io](https://img.shields.io/crates/v/axconfig-gen)](https://crates.io/crates/axconfig-gen) | https://github.com/arceos-org/axconfig-gen | `components/axconfig-gen` | 配置生成工具 |
+| axconfig-macros | [![Crates.io](https://img.shields.io/crates/v/axconfig-macros)](https://crates.io/crates/axconfig-macros) | https://github.com/arceos-org/axconfig-gen | `components/axconfig-gen` (同仓库) | 配置宏 |
+| axcpu | [![Crates.io](https://img.shields.io/crates/v/axcpu)](https://crates.io/crates/axcpu) | https://github.com/arceos-org/axcpu | `components/axcpu` | CPU 抽象层 |
+| axerrno | [![Crates.io](https://img.shields.io/crates/v/axerrno)](https://crates.io/crates/axerrno) | https://github.com/arceos-org/axerrno | `components/axerrno` | 错误码定义 |
+| axfeat | [![Crates.io](https://img.shields.io/crates/v/axfeat)](https://crates.io/crates/axfeat) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 特性管理 |
+| axhal | [![Crates.io](https://img.shields.io/crates/v/axhal)](https://crates.io/crates/axhal) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 硬件抽象层 |
+| axio | [![Crates.io](https://img.shields.io/crates/v/axio)](https://crates.io/crates/axio) | https://github.com/arceos-org/axio | `components/axio` | IO 抽象 |
+| axlog | [![Crates.io](https://img.shields.io/crates/v/axlog)](https://crates.io/crates/axlog) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 日志模块 |
+| axmm | [![Crates.io](https://img.shields.io/crates/v/axmm)](https://crates.io/crates/axmm) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 内存管理模块 |
+| axplat | [![Crates.io](https://img.shields.io/crates/v/axplat)](https://crates.io/crates/axplat) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` | 平台抽象层 |
+| axplat-macros | [![Crates.io](https://img.shields.io/crates/v/axplat-macros)](https://crates.io/crates/axplat-macros) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | 平台抽象层宏 |
+| axruntime | [![Crates.io](https://img.shields.io/crates/v/axruntime)](https://crates.io/crates/axruntime) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 运行时模块 |
+| axsched | [![Crates.io](https://img.shields.io/crates/v/axsched)](https://crates.io/crates/axsched) | https://github.com/arceos-org/axsched | `components/axsched` | 调度器 |
+| axstd | [![Crates.io](https://img.shields.io/crates/v/axstd)](https://crates.io/crates/axstd) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 标准库 |
+| axsync | [![Crates.io](https://img.shields.io/crates/v/axsync)](https://crates.io/crates/axsync) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 同步原语 |
+| axtask | [![Crates.io](https://img.shields.io/crates/v/axtask)](https://crates.io/crates/axtask) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 任务管理 |
+| cpumask | [![Crates.io](https://img.shields.io/crates/v/cpumask)](https://crates.io/crates/cpumask) | https://github.com/arceos-org/cpumask | `components/cpumask` | CPU 掩码 |
+| crate_interface | [![Crates.io](https://img.shields.io/crates/v/crate_interface)](https://crates.io/crates/crate_interface) | https://github.com/arceos-org/crate_interface | `components/crate_interface` | Crate 接口宏 |
+| ctor_bare_macros | [![Crates.io](https://img.shields.io/crates/v/ctor_bare_macros)](https://crates.io/crates/ctor_bare_macros) | https://github.com/arceos-org/ctor_bare | `components/ctor_bare` (同仓库) | 裸机构造器宏 |
+| ctor_bare |  [![Crates.io](https://img.shields.io/crates/v/ctor_bare)](https://crates.io/crates/ctor_bare)  | https://github.com/arceos-org/ctor_bare | `components/ctor_bare` | 裸机构造器 |
+| handler_table | [![Crates.io](https://img.shields.io/crates/v/handler_table)](https://crates.io/crates/handler_table) | https://github.com/arceos-org/handler_table | `components/handler_table` | 处理函数表 |
+| kernel_guard | [![Crates.io](https://img.shields.io/crates/v/kernel_guard)](https://crates.io/crates/kernel_guard) | https://github.com/arceos-org/kernel_guard | `components/kernel_guard` | 内核临界区保护 |
+| kspin | [![Crates.io](https://img.shields.io/crates/v/kspin)](https://crates.io/crates/kspin) | https://github.com/arceos-org/kspin | `components/kspin` | 内核自旋锁 |
+| lazyinit | [![Crates.io](https://img.shields.io/crates/v/lazyinit)](https://crates.io/crates/lazyinit) | https://github.com/arceos-org/lazyinit | `components/lazyinit` | 延迟初始化 |
+| linked_list_r4l | [![Crates.io](https://img.shields.io/crates/v/linked_list_r4l)](https://crates.io/crates/linked_list_r4l) | https://github.com/arceos-org/linked_list_r4l | `components/linked_list_r4l` | 链表实现 |
+| memory_addr | [![Crates.io](https://img.shields.io/crates/v/memory_addr)](https://crates.io/crates/memory_addr) | https://github.com/arceos-org/axmm_crates | `components/axmm_crates` | 内存地址类型 |
+| memory_set | [![Crates.io](https://img.shields.io/crates/v/memory_set)](https://crates.io/crates/memory_set) | https://github.com/arceos-org/axmm_crates | `components/axmm_crates` (同仓库) | 内存区域集合 |
+| page_table_entry | [![Crates.io](https://img.shields.io/crates/v/page_table_entry)](https://crates.io/crates/page_table_entry) | https://github.com/arceos-org/page_table_multiarch | `components/page_table_multiarch` | 页表项 |
+| page_table_multiarch | [![Crates.io](https://img.shields.io/crates/v/page_table_multiarch)](https://crates.io/crates/page_table_multiarch) | https://github.com/arceos-org/page_table_multiarch | `components/page_table_multiarch` (同仓库) | 多架构页表 |
+| percpu | [![Crates.io](https://img.shields.io/crates/v/percpu)](https://crates.io/crates/percpu) | https://github.com/arceos-org/percpu | `components/percpu` | Per-CPU 变量 |
+| percpu-macros | [![Crates.io](https://img.shields.io/crates/v/percpu-macros)](https://crates.io/crates/percpu-macros) | https://github.com/arceos-org/percpu | `components/percpu` (同仓库) | Per-CPU 宏 |
+| timer_list |  [![Crates.io](https://img.shields.io/crates/v/timer_list)](https://crates.io/crates/timer_list) | https://github.com/arceos-org/timer_list | `components/timer_list` | 定时器列表 |
 
 ### 2.3 rcore-os 组织组件
 
-| 组件名称 | crates.io | 仓库地址 | 描述 |
-|---------|:--------:|---------|------|
-| bitmap-allocator | [![Crates.io](https://img.shields.io/crates/v/bitmap-allocator)](https://crates.io/crates/bitmap-allocator) | https://github.com/rcore-os/bitmap-allocator | 位图分配器 |
+| 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
+|---------|:--------:|---------|---------------|------|
+| bitmap-allocator | [![Crates.io](https://img.shields.io/crates/v/bitmap-allocator)](https://crates.io/crates/bitmap-allocator) | https://github.com/rcore-os/bitmap-allocator | `components/bitmap-allocator` | 位图分配器 |
 
 ### 2.4 组件依赖关系
 
