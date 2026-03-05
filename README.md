@@ -2,22 +2,15 @@
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
+---
+
+## 一、简介
+
 ArceOS 组件统一管理仓库，通过 Git Submodule 关联所有组件，提供统一的版本管理和协同开发脚本。
 
 > 📋 详细文档请参考 [协同开发方案](docs/协同开发方案.md) 和 [组件开发及管理规范](https://github.com/orgs/arceos-hypervisor/discussions/371)。
 
----
-
-## 一、仓库架构
-
-### 1.1 开发方式
-
-| 方式 | 适用场景 | 特点 |
-|------|----------|------|
-| **独立子仓库开发** | 单组件修改 | 直接克隆子仓库，轻量快捷 |
-| **axcrates 统一仓库开发** | 跨组件协作 | 通过主仓库统一管理所有组件 |
-
-### 1.2 目录结构
+### 1.1 目录结构
 
 ```
 axcrates/
@@ -27,7 +20,6 @@ axcrates/
 │   ├── axdevice/       # 设备抽象层
 │   ├── axvcpu/         # VCPU 抽象层
 │   ├── axvm/           # VM 管理
-│   ├── rdrive/         # 驱动框架
 │   └── ...             # 其他组件
 ├── os/
 │   └── axvisor/        # Axvisor 主项目 submodule
@@ -35,116 +27,7 @@ axcrates/
 └── docs/               # 文档
 ```
 
-### 1.3 组件依赖关系
-
-```
-Layer 0 (基础)     Layer 1 (核心)     Layer 2 (中断)     Layer 3 (架构VCPU)  Layer 4 (设备)   Layer 5 (VM)
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  ┌─────────────┐
-│ axaddrspace │───►│ axdevice_   │───►│  arm_vgic   │───►│  arm_vcpu   │───►│             │  │             │
-│ axvmconfig  │    │    base     │    │ x86_vlapic  │    │  x86_vcpu   │───►│  axdevice   │─►│    axvm     │
-│ axhvc       │    │ axvisor_api │    └─────────────┘    │ riscv_vcpu  │    │             │  │             │
-│ riscv-h     │    │   axvcpu    │                       └─────────────┘    └─────────────┘  └─────────────┘
-└─────────────┘    └─────────────┘
-```
-
----
-
-## 二、环境准备
-
-### 2.1 Git 配置
-
-```bash
-# 配置用户信息
-git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
-
-# 配置 SSH 密钥（如已有可跳过）
-ssh-keygen -t ed25519 -C "your.email@example.com"
-cat ~/.ssh/id_ed25519.pub  # 添加到 GitHub SSH keys
-```
-
-### 2.2 Rust 工具链
-
-```bash
-# 安装 Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
-
-# 安装目标架构
-rustup target add aarch64-unknown-none-softfloat
-rustup target add x86_64-unknown-none
-rustup target add riscv64gc-unknown-none-elf
-
-# 安装必要组件
-rustup component add rust-src llvm-tools rustfmt clippy
-```
-
----
-
-## 三、开发工作流
-
-### 3.1 工作流选择
-
-```
-开始开发
-    │
-    ├── 只修改单个组件？ ──► 独立子仓库开发 (3.2)
-    │
-    └── 需要修改多个组件？ ──► axcrates 统一开发 (3.3)
-```
-
-### 3.2 独立子仓库开发
-
-适用于只修改单个组件的场景：
-
-```bash
-# 1. 克隆子仓库
-git clone git@github.com:arceos-hypervisor/axvcpu.git
-cd axvcpu
-
-# 2. 创建功能分支
-git checkout dev && git pull
-git checkout -b feature/new-api
-
-# 3. 修改代码并检查
-cargo fmt --check
-cargo clippy -- -D warnings
-cargo build
-
-# 4. 提交并推送
-git add . && git commit -m "feat: add new API"
-git push origin feature/new-api
-
-# 5. 创建 PR（dev 分支可直接合并，main 分支需 review）
-```
-
-### 3.3 axcrates 统一开发
-
-适用于跨组件协作或版本发布：
-
-```bash
-# 1. 克隆主仓库（包含所有子模块）
-git clone --recurse-submodules git@github.com:arceos-hypervisor/axcrates.git
-cd axcrates
-
-# 2. 切换所有组件到目标分支
-bash scripts/checkout.sh all dev
-
-# 3. 修改组件代码...
-
-# 4. 批量代码检查
-bash scripts/check.sh all
-
-# 5. 批量提交
-bash scripts/commit.sh all "feat: update APIs"
-
-# 6. 批量推送
-bash scripts/push.sh all
-```
-
----
-
-## 四、维护脚本
+### 1.2 维护脚本
 
 | 脚本 | 用法 | 说明 |
 |------|------|------|
@@ -163,72 +46,16 @@ bash scripts/push.sh all
 
 ---
 
-## 五、版本发布
+## 二、组件
 
-所有组件使用相同版本号，通过 axcrates 仓库统一发布：
+| 组织 | 组件数量 | Submodule 数量 | 备注 |
+|-----|---------|---------------|------|
+| arceos-hypervisor | 17 | 17 | 每个组件独立仓库 |
+| arceos-org | 34 | 19 | arceos(11), axmm_crates(2), page_table_multiarch(2), percpu(2), 其他独立 |
+| rcore-os | 1 | 1 | 每个组件独立仓库 |
+| **总计** | **52** | **37** | |
 
-### 5.1 预览版（dev 分支）
-
-```bash
-# 1. 升级版本号
-bash scripts/version.sh all 0.2.0-preview.1
-
-# 2. 提交并推送
-bash scripts/commit.sh all "chore: release v0.2.0-preview.1"
-bash scripts/push.sh all
-
-# 3. 创建标签（可选）
-bash scripts/tag.sh all v0.2.0-preview.1
-
-# 4. 发布到 crates.io（可选）
-cargo login && bash scripts/publish.sh
-```
-
-### 5.2 稳定版（main 分支）
-
-```bash
-# 1. 升级版本号
-bash scripts/version.sh all 0.2.0
-
-# 2. 提交
-bash scripts/commit.sh all "chore: release v0.2.0"
-
-# 3. 创建 PR 到 main 分支并合并
-
-# 4. 合并后，同步并打标签
-git checkout main && git pull --recurse-submodules
-bash scripts/sync.sh all main
-bash scripts/tag.sh all v0.2.0
-
-# 5. 发布到 crates.io
-cargo login && bash scripts/publish.sh
-```
-
----
-
-## 六、快速体验
-
-```bash
-# 通过 crates.io 下载
-cargo install cargo-clone
-cargo clone axcrates
-cd axcrates
-bash scripts/unpack.sh
-
-# 查看文档
-cd axvcpu && cargo doc --open
-
-# 编译组件
-cd arm_vcpu && cargo build --target aarch64-unknown-none-softfloat
-```
-
----
-
-## 七、依赖组件详情
-
-以下列出了 os/axvisor 依赖的所有来自 `arceos-hypervisor`、`arceos-org`、`drivercraft`、`rcore-os` 组织的组件详情。每个组件单独一行，不合并。
-
-### 7.1 arceos-hypervisor 组织组件
+### 2.1 arceos-hypervisor 组织组件
 
 | 组件名称 | crates.io | 仓库地址 | 描述 |
 |---------|:--------:|---------|------|
@@ -250,7 +77,7 @@ cd arm_vcpu && cargo build --target aarch64-unknown-none-softfloat
 | riscv_vcpu | [![Crates.io](https://img.shields.io/crates/v/riscv_vcpu)](https://crates.io/crates/riscv_vcpu) | https://github.com/arceos-hypervisor/riscv_vcpu | RISC-V VCPU 实现 |
 | riscv-h | [![Crates.io](https://img.shields.io/crates/v/riscv-h)](https://crates.io/crates/riscv-h) | https://github.com/arceos-hypervisor/riscv-h | RISC-V H 扩展寄存器 |
 
-### 7.2 arceos-org 组织组件
+### 2.2 arceos-org 组织组件
 
 | 组件名称 | crates.io | 仓库地址 | 描述 |
 |---------|:--------:|---------|------|
@@ -275,37 +102,191 @@ cd arm_vcpu && cargo build --target aarch64-unknown-none-softfloat
 | axtask | [![Crates.io](https://img.shields.io/crates/v/axtask)](https://crates.io/crates/axtask) | https://github.com/arceos-org/arceos | 任务管理 |
 | cpumask | [![Crates.io](https://img.shields.io/crates/v/cpumask)](https://crates.io/crates/cpumask) | https://github.com/arceos-org/cpumask | CPU 掩码 |
 | crate_interface | [![Crates.io](https://img.shields.io/crates/v/crate_interface)](https://crates.io/crates/crate_interface) | https://github.com/arceos-org/crate_interface | Crate 接口宏 |
-| ctor_bare | N/A | https://github.com/arceos-org/ctor_bare | 裸机构造器 |
+| ctor_bare |  [![Crates.io](https://img.shields.io/crates/v/ctor_bare)](https://crates.io/crates/ctor_bare)  | https://github.com/arceos-org/ctor_bare | 裸机构造器 |
 | handler_table | [![Crates.io](https://img.shields.io/crates/v/handler_table)](https://crates.io/crates/handler_table) | https://github.com/arceos-org/handler_table | 处理函数表 |
 | kernel_guard | [![Crates.io](https://img.shields.io/crates/v/kernel_guard)](https://crates.io/crates/kernel_guard) | https://github.com/arceos-org/kernel_guard | 内核临界区保护 |
 | kspin | [![Crates.io](https://img.shields.io/crates/v/kspin)](https://crates.io/crates/kspin) | https://github.com/arceos-org/kspin | 内核自旋锁 |
 | lazyinit | [![Crates.io](https://img.shields.io/crates/v/lazyinit)](https://crates.io/crates/lazyinit) | https://github.com/arceos-org/lazyinit | 延迟初始化 |
-| linked_list_r4l | N/A | https://github.com/arceos-org/linked_list_r4l | 链表实现 |
+| linked_list_r4l | [![Crates.io](https://img.shields.io/crates/v/linked_list_r4l)](https://crates.io/crates/linked_list_r4l) | https://github.com/arceos-org/linked_list_r4l | 链表实现 |
 | memory_addr | [![Crates.io](https://img.shields.io/crates/v/memory_addr)](https://crates.io/crates/memory_addr) | https://github.com/arceos-org/axmm_crates | 内存地址类型 |
 | memory_set | [![Crates.io](https://img.shields.io/crates/v/memory_set)](https://crates.io/crates/memory_set) | https://github.com/arceos-org/axmm_crates | 内存区域集合 |
 | page_table_entry | [![Crates.io](https://img.shields.io/crates/v/page_table_entry)](https://crates.io/crates/page_table_entry) | https://github.com/arceos-org/page_table_multiarch | 页表项 |
 | page_table_multiarch | [![Crates.io](https://img.shields.io/crates/v/page_table_multiarch)](https://crates.io/crates/page_table_multiarch) | https://github.com/arceos-org/page_table_multiarch | 多架构页表 |
 | percpu | [![Crates.io](https://img.shields.io/crates/v/percpu)](https://crates.io/crates/percpu) | https://github.com/arceos-org/percpu | Per-CPU 变量 |
 | percpu-macros | [![Crates.io](https://img.shields.io/crates/v/percpu-macros)](https://crates.io/crates/percpu-macros) | https://github.com/arceos-org/percpu | Per-CPU 宏 |
-| timer_list | N/A | https://github.com/arceos-org/timer_list | 定时器列表 |
+| timer_list |  [![Crates.io](https://img.shields.io/crates/v/timer_list)](https://crates.io/crates/timer_list) | https://github.com/arceos-org/timer_list | 定时器列表 |
 
-### 7.3 rcore-os 组织组件
+### 2.3 rcore-os 组织组件
 
 | 组件名称 | crates.io | 仓库地址 | 描述 |
 |---------|:--------:|---------|------|
 | bitmap-allocator | [![Crates.io](https://img.shields.io/crates/v/bitmap-allocator)](https://crates.io/crates/bitmap-allocator) | https://github.com/rcore-os/bitmap-allocator | 位图分配器 |
 
-### 7.4 统计汇总
+### 2.4 组件依赖关系
 
-| 组织 | 组件数量 | Submodule 数量 |
-|-----|---------|---------------|
-| arceos-hypervisor | 17 | 17 |
-| arceos-org | 35 | 19 |
-| rcore-os | 1 | 1 |
-| **总计** | **53** | **37** |
+TODO
 
 ---
 
-## 许可证
+## 三、环境准备
+
+### 3.1 Git 配置
+
+```bash
+# 配置用户信息
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# 配置 SSH 密钥（如已有可跳过）
+ssh-keygen -t ed25519 -C "your.email@example.com"
+cat ~/.ssh/id_ed25519.pub  # 添加到 GitHub SSH keys
+```
+
+### 3.2 Rust 工具链
+
+```bash
+# 安装 Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+
+# 安装目标架构
+rustup target add aarch64-unknown-none-softfloat
+rustup target add x86_64-unknown-none
+rustup target add riscv64gc-unknown-none-elf
+
+# 安装必要组件
+rustup component add rust-src llvm-tools rustfmt clippy
+```
+
+---
+
+## 四、快速开始
+
+```bash
+# 通过 crates.io 下载
+cargo install cargo-clone
+cargo clone axcrates
+cd axcrates
+bash scripts/unpack.sh
+
+# 查看文档
+cd axvcpu && cargo doc --open
+
+# 编译组件
+cd arm_vcpu && cargo build --target aarch64-unknown-none-softfloat
+```
+
+---
+
+## 五、开发
+
+### 5.1 开发方式选择
+
+| 方式 | 适用场景 | 特点 |
+|------|----------|------|
+| **独立子仓库开发** | 单组件修改 | 直接克隆子仓库，轻量快捷 |
+| **axcrates 统一仓库开发** | 跨组件协作 | 通过主仓库统一管理所有组件 |
+
+```
+开始开发
+    │
+    ├── 只修改单个组件？ ──► 独立子仓库开发 (5.2)
+    │
+    └── 需要修改多个组件？ ──► axcrates 统一开发 (5.3)
+```
+
+### 5.2 单组件开发
+
+适用于只修改单个组件的场景：
+
+```bash
+# 1. 克隆子仓库
+git clone git@github.com:arceos-hypervisor/axvcpu.git
+cd axvcpu
+
+# 2. 创建功能分支
+git checkout dev && git pull
+git checkout -b feature/new-api
+
+# 3. 修改代码并检查
+cargo fmt --check
+cargo clippy -- -D warnings
+cargo build
+
+# 4. 提交并推送
+git add . && git commit -m "feat: add new API"
+git push origin feature/new-api
+
+# 5. 创建 PR（dev 分支可直接合并，main 分支需 review）
+```
+
+### 5.3 多组件开发
+
+适用于跨组件协作或版本发布：
+
+```bash
+# 1. 克隆主仓库（包含所有子模块）
+git clone --recurse-submodules git@github.com:arceos-hypervisor/axcrates.git
+cd axcrates
+
+# 2. 切换所有组件到目标分支
+bash scripts/checkout.sh all dev
+
+# 3. 修改组件代码...
+
+# 4. 批量代码检查
+bash scripts/check.sh all
+
+# 5. 批量提交
+bash scripts/commit.sh all "feat: update APIs"
+
+# 6. 批量推送
+bash scripts/push.sh all
+```
+
+### 5.4 版本发布
+
+所有组件使用相同版本号，通过 axcrates 仓库统一发布：
+
+#### 5.4.1 预览版（dev 分支）
+
+```bash
+# 1. 升级版本号
+bash scripts/version.sh all 0.2.0-preview.1
+
+# 2. 提交并推送
+bash scripts/commit.sh all "chore: release v0.2.0-preview.1"
+bash scripts/push.sh all
+
+# 3. 创建标签（可选）
+bash scripts/tag.sh all v0.2.0-preview.1
+
+# 4. 发布到 crates.io（可选）
+cargo login && bash scripts/publish.sh
+```
+
+#### 5.4.2 稳定版（main 分支）
+
+```bash
+# 1. 升级版本号
+bash scripts/version.sh all 0.2.0
+
+# 2. 提交
+bash scripts/commit.sh all "chore: release v0.2.0"
+
+# 3. 创建 PR 到 main 分支并合并
+
+# 4. 合并后，同步并打标签
+git checkout main && git pull --recurse-submodules
+bash scripts/sync.sh all main
+bash scripts/tag.sh all v0.2.0
+
+# 5. 发布到 crates.io
+cargo login && bash scripts/publish.sh
+```
+
+---
+
+## 六、许可证
 
 [Apache-2.0](LICENSE)
