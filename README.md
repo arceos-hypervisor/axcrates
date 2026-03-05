@@ -51,7 +51,7 @@ axcrates/
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
 | arceos-hypervisor | 17 | 17 | 每个组件独立仓库 |
-| arceos-org | 34 | 19 | arceos(11), axmm_crates(2), page_table_multiarch(2), percpu(2), 其他独立 |
+| arceos-org | 34 | 19 | arceos 仓库内有 11 个组件, axmm_crates 仓库中有 2 个组件, page_table_multiarch(2), percpu(2), 其他独立 |
 | rcore-os | 1 | 1 | 每个组件独立仓库 |
 | **总计** | **52** | **37** | |
 
