@@ -50,11 +50,17 @@ axcrates/
 
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
-| arceos-hypervisor | 18 | 17 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> 其他独立 |
-| arceos-org | 36 | 19 | **arceos：** arceos_api, axalloc, axconfig, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axconfig-gen：** axconfig-gen, axconfig-macros <br> **axplat_crates：** axplat, axplat-macros <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> 其他独立 |
-| rcore-os | 1 | 1 | 每个组件独立仓库 |
-| Starry-OS | 2 | 2 | 每个组件独立仓库 |
-| **总计** | **57** | **39** | |
+| arceos-hypervisor | 20 | 19 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> **arm_vcpu：** arm_vcpu, arm_vgic <br> **riscv_vcpu：** riscv_vcpu, riscv_vplic, riscv-h <br> **x86_vcpu：** x86_vcpu, x86_vlapic <br> 其他独立 |
+| arceos-org | 52 | 20 | **arceos：** arceos_api, axalloc, axconfig, axdriver, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axplat_crates：** axplat, axplat-macros, axplat-aarch64-*, axplat-riscv64-*, axplat-loongarch64-*, axplat-x86-* <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> **axdriver_crates：** axdriver_base, axdriver_pci <br> 其他独立 |
+| rcore-os | 6 | 1 | **bitmap-allocator** (独立) <br> **virtio-drivers** (独立) <br> **arm-gic-driver** (独立) <br> **any-uart** (独立) <br> **somehal：** somehal, page-table-generic, bindeps-simple, kasm-*, kdef-*, num-align, pie-* |
+| Starry-OS | 2 | 2 | **axpoll** (独立) <br> **axbacktrace** (独立) |
+| drivercraft | 4 | 0 | **rdrive：** rdrive, rdrive-macros, rdif-base, rdif-block, rdif-clk, rdif-def, rdif-intc, rdif-pcie, dma-api, aarch64-cpu-ext, release-dep |
+| **总计** | **98** | **42** | |
+
+> **注**：此外还依赖约 300+ 个第三方库，主要包括：
+> - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
+> - **rust-osdev**：x86 等底层硬件库
+> - **其他 crates.io 库**：log, spin, bitflags, cfg-if, hashbrown, fdt-parser 等
 
 ### 2.1 arceos-hypervisor 组织组件
 
@@ -119,12 +125,39 @@ axcrates/
 | percpu | [![Crates.io](https://img.shields.io/crates/v/percpu)](https://crates.io/crates/percpu) | https://github.com/arceos-org/percpu | `components/percpu` | Per-CPU 变量 |
 | percpu-macros | [![Crates.io](https://img.shields.io/crates/v/percpu-macros)](https://crates.io/crates/percpu-macros) | https://github.com/arceos-org/percpu | `components/percpu` (同仓库) | Per-CPU 宏 |
 | timer_list |  [![Crates.io](https://img.shields.io/crates/v/timer_list)](https://crates.io/crates/timer_list) | https://github.com/arceos-org/timer_list | `components/timer_list` | 定时器列表 |
+| axdriver | [![Crates.io](https://img.shields.io/crates/v/axdriver)](https://crates.io/crates/axdriver) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | ArceOS 驱动框架 |
+| axdriver_base | [![Crates.io](https://img.shields.io/crates/v/axdriver_base)](https://crates.io/crates/axdriver_base) | https://github.com/arceos-org/axdriver_crates | `components/axdriver_crates` | 驱动基础 trait |
+| axdriver_pci | [![Crates.io](https://img.shields.io/crates/v/axdriver_pci)](https://crates.io/crates/axdriver_pci) | https://github.com/arceos-org/axdriver_crates | `components/axdriver_crates` (同仓库) | PCI 驱动 |
+| axplat | [![Crates.io](https://img.shields.io/crates/v/axplat)](https://crates.io/crates/axplat) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` | 平台抽象层 |
+| axplat-macros | [![Crates.io](https://img.shields.io/crates/v/axplat-macros)](https://crates.io/crates/axplat-macros) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | 平台抽象层宏 |
+| axplat-aarch64-peripherals | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-peripherals)](https://crates.io/crates/axplat-aarch64-peripherals) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | ARM64 外设平台 |
+| axplat-aarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-qemu-virt)](https://crates.io/crates/axplat-aarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | ARM64 QEMU 平台 |
+| axplat-riscv64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-riscv64-qemu-virt)](https://crates.io/crates/axplat-riscv64-qemu-virt) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | RISC-V QEMU 平台 |
+| axplat-loongarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-loongarch64-qemu-virt)](https://crates.io/crates/axplat-loongarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | LoongArch QEMU 平台 |
+| axplat-x86-pc | [![Crates.io](https://img.shields.io/crates/v/axplat-x86-pc)](https://crates.io/crates/axplat-x86-pc) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | x86 PC 平台 |
+| int_ratio | [![Crates.io](https://img.shields.io/crates/v/int_ratio)](https://crates.io/crates/int_ratio) | https://github.com/arceos-org/int_ratio | `components/int_ratio` | 整数比例 |
+| aarch64_sysreg | [![Crates.io](https://img.shields.io/crates/v/aarch64_sysreg)](https://crates.io/crates/aarch64_sysreg) | https://github.com/arceos-org/aarch64_sysreg | `components/aarch64_sysreg` | ARM64 系统寄存器 |
+| arm_pl011 | [![Crates.io](https://img.shields.io/crates/v/arm_pl011)](https://crates.io/crates/arm_pl011) | https://github.com/arceos-org/arm_pl011 | `components/arm_pl011` | ARM PL011 UART |
+| arm_pl031 | [![Crates.io](https://img.shields.io/crates/v/arm_pl031)](https://crates.io/crates/arm_pl031) | https://github.com/arceos-org/arm_pl031 | `components/arm_pl031` | ARM PL031 RTC |
+| riscv_plic | [![Crates.io](https://img.shields.io/crates/v/riscv_plic)](https://crates.io/crates/riscv_plic) | https://github.com/arceos-org/riscv_plic | `components/riscv_plic` | RISC-V PLIC |
 
 ### 2.3 rcore-os 组织组件
 
 | 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
 |---------|:--------:|---------|---------------|------|
 | bitmap-allocator | [![Crates.io](https://img.shields.io/crates/v/bitmap-allocator)](https://crates.io/crates/bitmap-allocator) | https://github.com/rcore-os/bitmap-allocator | `components/bitmap-allocator` | 位图分配器 |
+| virtio-drivers | [![Crates.io](https://img.shields.io/crates/v/virtio-drivers)](https://crates.io/crates/virtio-drivers) | https://github.com/rcore-os/virtio-drivers | 无 (crates.io) | VirtIO 驱动 |
+| arm-gic-driver | [![Crates.io](https://img.shields.io/crates/v/arm-gic-driver)](https://crates.io/crates/arm-gic-driver) | https://github.com/rcore-os/arm-gic-driver | 无 (crates.io) | ARM GIC 驱动 |
+| any-uart | [![Crates.io](https://img.shields.io/crates/v/any-uart)](https://crates.io/crates/any-uart) | https://github.com/rcore-os/any-uart | 无 (crates.io) | 通用 UART 驱动 |
+| somehal | [![Crates.io](https://img.shields.io/crates/v/somehal)](https://crates.io/crates/somehal) | https://github.com/rcore-os/somehal | 无 (crates.io) | 硬件抽象层 |
+| page-table-generic | [![Crates.io](https://img.shields.io/crates/v/page-table-generic)](https://crates.io/crates/page-table-generic) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 通用页表 |
+| bindeps-simple | [![Crates.io](https://img.shields.io/crates/v/bindeps-simple)](https://crates.io/crates/bindeps-simple) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 简单二进制依赖 |
+| kasm-aarch64 | [![Crates.io](https://img.shields.io/crates/v/kasm-aarch64)](https://crates.io/crates/kasm-aarch64) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | ARM64 汇编 |
+| kdef-pgtable | [![Crates.io](https://img.shields.io/crates/v/kdef-pgtable)](https://crates.io/crates/kdef-pgtable) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 页表定义 |
+| num-align | [![Crates.io](https://img.shields.io/crates/v/num-align)](https://crates.io/crates/num-align) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 数字对齐 |
+| pie-boot-if | [![Crates.io](https://img.shields.io/crates/v/pie-boot-if)](https://crates.io/crates/pie-boot-if) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | PIE 启动接口 |
+| pie-boot-loader-aarch64 | [![Crates.io](https://img.shields.io/crates/v/pie-boot-loader-aarch64)](https://crates.io/crates/pie-boot-loader-aarch64) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | ARM64 PIE 加载器 |
+| pie-boot-macros | [![Crates.io](https://img.shields.io/crates/v/pie-boot-macros)](https://crates.io/crates/pie-boot-macros) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | PIE 启动宏 |
 
 ### 2.4 Starry-OS 组织组件
 
@@ -133,7 +166,24 @@ axcrates/
 | axbacktrace | [![Crates.io](https://img.shields.io/crates/v/axbacktrace)](https://crates.io/crates/axbacktrace) | https://github.com/Starry-OS/axbacktrace | `components/axbacktrace` | 调用栈回溯 |
 | axpoll | [![Crates.io](https://img.shields.io/crates/v/axpoll)](https://crates.io/crates/axpoll) | https://github.com/Starry-OS/axpoll | `components/axpoll` | IO 多路复用 |
 
-### 2.5 组件依赖关系
+### 2.5 drivercraft 组织组件
+
+| 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
+|---------|:--------:|---------|---------------|------|
+| rdrive | [![Crates.io](https://img.shields.io/crates/v/rdrive)](https://crates.io/crates/rdrive) | https://github.com/drivercraft/rdrive | 无 (crates.io) | Rust 驱动框架 |
+| rdrive-macros | [![Crates.io](https://img.shields.io/crates/v/rdrive-macros)](https://crates.io/crates/rdrive-macros) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 驱动框架宏 |
+| rdif-base | [![Crates.io](https://img.shields.io/crates/v/rdif-base)](https://crates.io/crates/rdif-base) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 驱动接口基础 |
+| rdif-block | [![Crates.io](https://img.shields.io/crates/v/rdif-block)](https://crates.io/crates/rdif-block) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 块设备接口 |
+| rdif-clk | [![Crates.io](https://img.shields.io/crates/v/rdif-clk)](https://crates.io/crates/rdif-clk) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 时钟接口 |
+| rdif-def | [![Crates.io](https://img.shields.io/crates/v/rdif-def)](https://crates.io/crates/rdif-def) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 接口定义 |
+| rdif-intc | [![Crates.io](https://img.shields.io/crates/v/rdif-intc)](https://crates.io/crates/rdif-intc) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 中断控制器接口 |
+| rdif-pcie | [![Crates.io](https://img.shields.io/crates/v/rdif-pcie)](https://crates.io/crates/rdif-pcie) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | PCIe 接口 |
+| dma-api | [![Crates.io](https://img.shields.io/crates/v/dma-api)](https://crates.io/crates/dma-api) | https://github.com/drivercraft/dma-api | 无 (crates.io) | DMA API |
+| aarch64-cpu-ext | [![Crates.io](https://img.shields.io/crates/v/aarch64-cpu-ext)](https://crates.io/crates/aarch64-cpu-ext) | https://github.com/drivercraft/aarch64-cpu-ext | 无 (crates.io) | ARM64 CPU 扩展 |
+| pcie | [![Crates.io](https://img.shields.io/crates/v/pcie)](https://crates.io/crates/pcie) | https://github.com/drivercraft/pcie | 无 (crates.io) | PCIe 驱动 |
+| release-dep | [![Crates.io](https://img.shields.io/crates/v/release-dep)](https://crates.io/crates/release-dep) | https://github.com/drivercraft/release-dep | 无 (crates.io) | 发布依赖 |
+
+### 2.6 组件依赖关系
 
 #### AxVisor
 
