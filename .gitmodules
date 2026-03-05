@@ -46,3 +46,78 @@
 [submodule "os/axvisor"]
 	path = os/axvisor
 	url = git@github.com:arceos-hypervisor/axvisor.git
+[submodule "components/range-alloc-arceos"]
+	path = components/range-alloc-arceos
+	url = git@github.com:arceos-hypervisor/range-alloc.git
+[submodule "components/axallocator"]
+	path = components/axallocator
+	url = git@github.com:arceos-org/allocator.git
+[submodule "components/axerrno"]
+	path = components/axerrno
+	url = git@github.com:arceos-org/axerrno.git
+[submodule "components/axio"]
+	path = components/axio
+	url = git@github.com:arceos-org/axio.git
+[submodule "components/axsched"]
+	path = components/axsched
+	url = git@github.com:arceos-org/axsched.git
+[submodule "components/cpumask"]
+	path = components/cpumask
+	url = git@github.com:arceos-org/cpumask.git
+[submodule "components/crate_interface"]
+	path = components/crate_interface
+	url = git@github.com:arceos-org/crate_interface.git
+[submodule "components/ctor_bare"]
+	path = components/ctor_bare
+	url = git@github.com:arceos-org/ctor_bare.git
+[submodule "components/handler_table"]
+	path = components/handler_table
+	url = git@github.com:arceos-org/handler_table.git
+[submodule "components/kernel_guard"]
+	path = components/kernel_guard
+	url = git@github.com:arceos-org/kernel_guard.git
+[submodule "components/kspin"]
+	path = components/kspin
+	url = git@github.com:arceos-org/kspin.git
+[submodule "components/lazyinit"]
+	path = components/lazyinit
+	url = git@github.com:arceos-org/lazyinit.git
+[submodule "components/linked_list_r4l"]
+	path = components/linked_list_r4l
+	url = git@github.com:arceos-org/linked_list_r4l.git
+[submodule "components/axmm_crates"]
+	path = components/axmm_crates
+	url = git@github.com:arceos-org/axmm_crates.git
+[submodule "components/page_table_multiarch"]
+	path = components/page_table_multiarch
+	url = git@github.com:arceos-org/page_table_multiarch.git
+[submodule "components/percpu"]
+	path = components/percpu
+	url = git@github.com:arceos-org/percpu.git
+[submodule "components/timer_list"]
+	path = components/timer_list
+	url = git@github.com:arceos-org/timer_list.git
+[submodule "components/axconfig-gen"]
+	path = components/axconfig-gen
+	url = git@github.com:arceos-org/axconfig-gen.git
+[submodule "components/axcpu"]
+	path = components/axcpu
+	url = git@github.com:arceos-org/axcpu.git
+[submodule "components/axplat_crates"]
+	path = components/axplat_crates
+	url = git@github.com:arceos-org/axplat_crates.git
+[submodule "components/arceos"]
+	path = components/arceos
+	url = git@github.com:arceos-org/arceos.git
+[submodule "components/axbacktrace"]
+	path = components/axbacktrace
+	url = git@github.com:Starry-OS/axbacktrace.git
+[submodule "components/rdrive"]
+	path = components/rdrive
+	url = git@github.com:drivercraft/rdrive.git
+[submodule "components/dma-api"]
+	path = components/dma-api
+	url = git@github.com:drivercraft/dma-api.git
+[submodule "components/bitmap-allocator"]
+	path = components/bitmap-allocator
+	url = git@github.com:rcore-os/bitmap-allocator.git
