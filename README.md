@@ -50,7 +50,7 @@ axcrates/
 
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
-| arceos-hypervisor | 19 | 20 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> **arm_vcpu：** arm_vcpu, arm_vgic <br> **riscv_vcpu：** riscv_vcpu, riscv_vplic, riscv-h <br> **x86_vcpu：** x86_vcpu, x86_vlapic <br> 其他独立 |
+| arceos-hypervisor | 19 | 18 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> **arm_vcpu：** arm_vcpu, arm_vgic <br> **riscv_vcpu：** riscv_vcpu, riscv_vplic, riscv-h <br> **x86_vcpu：** x86_vcpu, x86_vlapic <br> 其他独立 |
 | arceos-org | 48 | 25 | **arceos：** arceos_api, axalloc, axconfig, axdriver, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axplat_crates：** axplat, axplat-macros, axplat-aarch64-*, axplat-riscv64-*, axplat-loongarch64-*, axplat-x86-* <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> **axdriver_crates：** axdriver_base, axdriver_pci <br> **独立 submodule：** axallocator, axcpu, axerrno, axio, axsched, cpumask, crate_interface, handler_table, kernel_guard, kspin, lazyinit, linked_list_r4l, timer_list, axconfig-gen, int_ratio, arm_pl011, arm_pl031, riscv_plic |
 | rcore-os | 13 | 1 | **bitmap-allocator** (独立) <br> **virtio-drivers** (独立) <br> **arm-gic-driver** (独立) <br> **any-uart** (独立) <br> **somehal：** somehal, page-table-generic, bindeps-simple, kasm-*, kdef-*, num-align, pie-* |
 | Starry-OS | 2 | 2 | **axpoll** (独立) <br> **axbacktrace** (独立) |
@@ -74,7 +74,7 @@ axcrates/
 | axklib | [![Crates.io](https://img.shields.io/crates/v/axklib)](https://crates.io/crates/axklib) | https://github.com/arceos-hypervisor/axklib | `components/axklib` | 内核库 |
 | axvcpu | [![Crates.io](https://img.shields.io/crates/v/axvcpu)](https://crates.io/crates/axvcpu) | https://github.com/arceos-hypervisor/axvcpu | `components/axvcpu` | VCPU 抽象层 |
 | axvisor_api | [![Crates.io](https://img.shields.io/crates/v/axvisor_api)](https://crates.io/crates/axvisor_api) | https://github.com/arceos-hypervisor/axvisor_api | `components/axvisor_api` | Hypervisor API |
-| axvisor_api_proc | [![Crates.io](https://img.shields.io/crates/v/axvisor_api_proc)](https://crates.io/crates/axvisor_api_proc) | https://github.com/arceos-hypervisor/axvisor_api | `components/axvisor_api` | Hypervisor API 宏（同仓库） |
+| axvisor_api_proc | [![Crates.io](https://img.shields.io/crates/v/axvisor_api_proc)](https://crates.io/crates/axvisor_api_proc) | https://github.com/arceos-hypervisor/axvisor_api | 与 axvisor_api 同仓库 | Hypervisor API 宏 |
 | axvm | [![Crates.io](https://img.shields.io/crates/v/axvm)](https://crates.io/crates/axvm) | https://github.com/arceos-hypervisor/axvm | `components/axvm` | VM 资源管理 |
 | axvmconfig | [![Crates.io](https://img.shields.io/crates/v/axvmconfig)](https://crates.io/crates/axvmconfig) | https://github.com/arceos-hypervisor/axvmconfig | `components/axvmconfig` | VM 配置工具 |
 | range-alloc | [![Crates.io](https://img.shields.io/crates/v/range-alloc)](https://crates.io/crates/range-alloc) | https://github.com/arceos-hypervisor/range-alloc | `components/range-alloc-arceos` | 范围分配器 |
