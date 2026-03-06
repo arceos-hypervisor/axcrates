@@ -178,18 +178,18 @@ axcrates/
 
 | 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
 |---------|:--------:|---------|---------------|------|
-| rdrive | [![Crates.io](https://img.shields.io/crates/v/rdrive)](https://crates.io/crates/rdrive) | https://github.com/drivercraft/rdrive | 无 (crates.io) | Rust 驱动框架 |
-| rdrive-macros | [![Crates.io](https://img.shields.io/crates/v/rdrive-macros)](https://crates.io/crates/rdrive-macros) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 驱动框架宏 |
-| rdif-base | [![Crates.io](https://img.shields.io/crates/v/rdif-base)](https://crates.io/crates/rdif-base) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 驱动接口基础 |
-| rdif-block | [![Crates.io](https://img.shields.io/crates/v/rdif-block)](https://crates.io/crates/rdif-block) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 块设备接口 |
-| rdif-clk | [![Crates.io](https://img.shields.io/crates/v/rdif-clk)](https://crates.io/crates/rdif-clk) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 时钟接口 |
-| rdif-def | [![Crates.io](https://img.shields.io/crates/v/rdif-def)](https://crates.io/crates/rdif-def) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 接口定义 |
-| rdif-intc | [![Crates.io](https://img.shields.io/crates/v/rdif-intc)](https://crates.io/crates/rdif-intc) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | 中断控制器接口 |
-| rdif-pcie | [![Crates.io](https://img.shields.io/crates/v/rdif-pcie)](https://crates.io/crates/rdif-pcie) | https://github.com/drivercraft/rdrive | 无 (crates.io) (同仓库) | PCIe 接口 |
-| dma-api | [![Crates.io](https://img.shields.io/crates/v/dma-api)](https://crates.io/crates/dma-api) | https://github.com/drivercraft/dma-api | 无 (crates.io) | DMA API |
-| aarch64-cpu-ext | [![Crates.io](https://img.shields.io/crates/v/aarch64-cpu-ext)](https://crates.io/crates/aarch64-cpu-ext) | https://github.com/drivercraft/aarch64-cpu-ext | 无 (crates.io) | ARM64 CPU 扩展 |
-| pcie | [![Crates.io](https://img.shields.io/crates/v/pcie)](https://crates.io/crates/pcie) | https://github.com/drivercraft/pcie | 无 (crates.io) | PCIe 驱动 |
-| release-dep | [![Crates.io](https://img.shields.io/crates/v/release-dep)](https://crates.io/crates/release-dep) | https://github.com/drivercraft/release-dep | 无 (crates.io) | 发布依赖 |
+| rdrive | [![Crates.io](https://img.shields.io/crates/v/rdrive)](https://crates.io/crates/rdrive) | https://github.com/drivercraft/rdrive | 暂不添加为 SUBMODULE | Rust 驱动框架 |
+| rdrive-macros | [![Crates.io](https://img.shields.io/crates/v/rdrive-macros)](https://crates.io/crates/rdrive-macros) | https://github.com/drivercraft/rdrive | 与 `rdrive` 同仓库 | 驱动框架宏 |
+| rdif-base | [![Crates.io](https://img.shields.io/crates/v/rdif-base)](https://crates.io/crates/rdif-base) | https://github.com/drivercraft/rdrive | 与 `rdrive` 同仓库 | 驱动接口基础 |
+| rdif-block | [![Crates.io](https://img.shields.io/crates/v/rdif-block)](https://crates.io/crates/rdif-block) | https://github.com/drivercraft/rdrive | 与 `rdrive` 同仓库 | 块设备接口 |
+| rdif-clk | [![Crates.io](https://img.shields.io/crates/v/rdif-clk)](https://crates.io/crates/rdif-clk) | https://github.com/drivercraft/rdrive | 与 `rdrive` 同仓库 | 时钟接口 |
+| rdif-def | [![Crates.io](https://img.shields.io/crates/v/rdif-def)](https://crates.io/crates/rdif-def) | https://github.com/drivercraft/rdrive | 与 `rdrive` 同仓库 | 接口定义 |
+| rdif-intc | [![Crates.io](https://img.shields.io/crates/v/rdif-intc)](https://crates.io/crates/rdif-intc) | https://github.com/drivercraft/rdrive | 与 `rdrive` 同仓库 | 中断控制器接口 |
+| rdif-pcie | [![Crates.io](https://img.shields.io/crates/v/rdif-pcie)](https://crates.io/crates/rdif-pcie) | https://github.com/drivercraft/rdrive | 与 `rdrive` 同仓库 | PCIe 接口 |
+| dma-api | [![Crates.io](https://img.shields.io/crates/v/dma-api)](https://crates.io/crates/dma-api) | https://github.com/drivercraft/dma-api | 暂不添加为 SUBMODULE  | DMA API |
+| aarch64-cpu-ext | [![Crates.io](https://img.shields.io/crates/v/aarch64-cpu-ext)](https://crates.io/crates/aarch64-cpu-ext) | https://github.com/drivercraft/aarch64-cpu-ext | 暂不添加为 SUBMODULE  | ARM64 CPU 扩展 |
+| pcie | [![Crates.io](https://img.shields.io/crates/v/pcie)](https://crates.io/crates/pcie) | https://github.com/drivercraft/pcie | 暂不添加为 SUBMODULE  | PCIe 驱动 |
+| release-dep | [![Crates.io](https://img.shields.io/crates/v/release-dep)](https://crates.io/crates/release-dep) | https://github.com/drivercraft/release-dep | 暂不添加为 SUBMODULE  | 发布依赖 |
 
 ### 2.6 组件依赖关系
 
