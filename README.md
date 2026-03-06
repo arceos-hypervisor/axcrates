@@ -53,9 +53,9 @@ axcrates/
 | arceos-hypervisor | 19 | 18 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> **arm_vcpu：** arm_vcpu, arm_vgic <br> **riscv_vcpu：** riscv_vcpu, riscv_vplic, riscv-h <br> **x86_vcpu：** x86_vcpu, x86_vlapic <br> 其他独立 |
 | arceos-org | 48 | 25 | **arceos：** arceos_api, axalloc, axconfig, axdriver, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axplat_crates：** axplat, axplat-macros, axplat-aarch64-*, axplat-riscv64-*, axplat-loongarch64-*, axplat-x86-* <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> **axdriver_crates：** axdriver_base, axdriver_pci <br> **独立 submodule：** axallocator, axcpu, axerrno, axio, axsched, cpumask, crate_interface, handler_table, kernel_guard, kspin, lazyinit, linked_list_r4l, timer_list, axconfig-gen, int_ratio, arm_pl011, arm_pl031, riscv_plic |
 | rcore-os | 13 | 1 | **bitmap-allocator** (独立) <br> **virtio-drivers** (独立) <br> **arm-gic-driver** (独立) <br> **any-uart** (独立) <br> **somehal：** somehal, page-table-generic, bindeps-simple, kasm-*, kdef-*, num-align, pie-* |
-| Starry-OS | 2 | 2 | **axpoll** (独立) <br> **axbacktrace** (独立) |
-| drivercraft | 12 | 0 | **rdrive：** rdrive, rdrive-macros, rdif-base, rdif-block, rdif-clk, rdif-def, rdif-intc, rdif-pcie, dma-api, aarch64-cpu-ext, release-dep |
-| **总计** | **94** | **46** | |
+| Starry-OS | 5 | 5 | **axpoll** (独立) <br> **axbacktrace** (独立) <br> **axfs-ng-vfs** (独立) <br> **rsext4** (独立) <br> **scope-local** (独立) |
+| drivercraft | 12 | 0 | **rdrive：** rdrive, rdrive-macros, rdif-base, rdif-block, rdif-clk, rdif-def, rdif-intc, rdif-pcie  dma-api, aarch64-cpu-ext, release-dep |
+| **总计** | **97** | **49** | |
 
 > **注**：此外还依赖约 300+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -163,6 +163,9 @@ axcrates/
 |---------|:--------:|---------|---------------|------|
 | axbacktrace | [![Crates.io](https://img.shields.io/crates/v/axbacktrace)](https://crates.io/crates/axbacktrace) | https://github.com/Starry-OS/axbacktrace | `components/axbacktrace` | 调用栈回溯 |
 | axpoll | [![Crates.io](https://img.shields.io/crates/v/axpoll)](https://crates.io/crates/axpoll) | https://github.com/Starry-OS/axpoll | `components/axpoll` | IO 多路复用 |
+| axfs-ng-vfs | [![Crates.io](https://img.shields.io/crates/v/axfs-ng-vfs)](https://crates.io/crates/axfs-ng-vfs) | https://github.com/Starry-OS/axfs-ng-vfs | `components/axfs-ng-vfs` | 虚拟文件系统层 |
+| rsext4 | [![Crates.io](https://img.shields.io/crates/v/rsext4)](https://crates.io/crates/rsext4) | https://github.com/Starry-OS/rsext4 | `components/rsext4` | 轻量级 ext4 文件系统 |
+| scope-local | [![Crates.io](https://img.shields.io/crates/v/scope-local)](https://crates.io/crates/scope-local) | https://github.com/Starry-OS/scope-local | `components/scope-local` | 作用域本地存储 |
 
 ### 2.5 drivercraft 组织组件
 

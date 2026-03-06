@@ -136,3 +136,12 @@
 [submodule "components/riscv_vplic"]
 	path = components/riscv_vplic
 	url = git@github.com:arceos-hypervisor/riscv_vplic.git
+[submodule "components/axfs-ng-vfs"]
+	path = components/axfs-ng-vfs
+	url = https://github.com/Starry-OS/axfs-ng-vfs.git
+[submodule "components/rsext4"]
+	path = components/rsext4
+	url = https://github.com/Starry-OS/rsext4.git
+[submodule "components/scope-local"]
+	path = components/scope-local
+	url = https://github.com/Starry-OS/scope-local
