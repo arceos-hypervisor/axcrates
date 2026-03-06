@@ -54,8 +54,8 @@ axcrates/
 | arceos-org | 55 | 26 | **arceos：** arceos_api、axalloc、axconfig、axdriver、axfeat、axhal、axlog、axmm、axruntime、axstd、axsync、axtask、axfs、axfs_devfs、axfs_ramfs、axfs_vfs <br> **axmm_crates：** memory_addr、memory_set <br> **axplat_crates：** axplat、axplat-macros、axplat-aarch64-*、axplat-riscv64-*、axplat-loongarch64-*、axplat-x86-* <br> **page_table_multiarch：** page_table_entry、page_table_multiarch <br> **percpu：** percpu、percpu-macros <br> **ctor_bare：** ctor_bare、ctor_bare_macros <br> **axdriver_crates：** axdriver_base、axdriver_pci、axdriver_block、axdriver_virtio <br> 其他组件为独立仓库 |
 | rcore-os | 13 | 5 | **somehal：** somehal、page-table-generic、bindeps-simple、kasm-*、kdef-*、num-align、pie-* <br> 其他组件为独立仓库 |
 | Starry-OS | 5 | 5 | 组件均为独立仓库 |
-| drivercraft | 12 | 0 | **rdrive：** rdrive、rdrive-macros、rdif-base、rdif-block、rdif-clk、rdif-def、rdif-intc、rdif-pcie  dma-api、aarch64-cpu-ext、release-dep |
-| **总计** | **105** | **55** | |
+| drivercraft | 22 | 0 | **rdrive：** rdrive、rdrive-macros、rdif-base、rdif-block、rdif-clk、rdif-def、rdif-intc、rdif-pcie <br> **ostool：** fitimage、jkconfig、ostool、uboot-shell <br> 其他组件为独立仓库 |
+| **总计** | **115** | **55** | |
 
 > **注**：此外还依赖约 300+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -191,6 +191,16 @@ axcrates/
 | aarch64-cpu-ext | [![Crates.io](https://img.shields.io/crates/v/aarch64-cpu-ext)](https://crates.io/crates/aarch64-cpu-ext) | https://github.com/drivercraft/aarch64-cpu-ext | 暂不添加为 SUBMODULE  | ARM64 CPU 扩展 |
 | pcie | [![Crates.io](https://img.shields.io/crates/v/pcie)](https://crates.io/crates/pcie) | https://github.com/drivercraft/pcie | 暂不添加为 SUBMODULE  | PCIe 驱动 |
 | release-dep | [![Crates.io](https://img.shields.io/crates/v/release-dep)](https://crates.io/crates/release-dep) | https://github.com/drivercraft/release-dep | 暂不添加为 SUBMODULE  | 发布依赖 |
+| fitimage | [![Crates.io](https://img.shields.io/crates/v/fitimage)](https://crates.io/crates/fitimage) | https://github.com/drivercraft/ostool | 与 `ostool` 同仓库 | FIT 镜像工具 |
+| jkconfig | [![Crates.io](https://img.shields.io/crates/v/jkconfig)](https://crates.io/crates/jkconfig) | https://github.com/drivercraft/ostool | 与 `ostool` 同仓库 | 配置工具 |
+| mbarrier | [![Crates.io](https://img.shields.io/crates/v/mbarrier)](https://crates.io/crates/mbarrier) | https://github.com/drivercraft/mbarrier | 暂不添加为 SUBMODULE | 内存屏障 |
+| ostool | [![Crates.io](https://img.shields.io/crates/v/ostool)](https://crates.io/crates/ostool) | https://github.com/drivercraft/ostool | 暂不添加为 SUBMODULE | 操作系统工具 |
+| phytium-mci | [![Crates.io](https://img.shields.io/crates/v/phytium-mci)](https://crates.io/crates/phytium-mci) | https://github.com/drivercraft/phytium-mci | 暂不添加为 SUBMODULE | Phytium MCI 驱动 |
+| rk3568_clk | [![Crates.io](https://img.shields.io/crates/v/rk3568_clk)](https://crates.io/crates/rk3568_clk) | https://github.com/drivercraft/rk3568-clk | 暂不添加为 SUBMODULE | RK3568 时钟驱动 |
+| rk3588-clk | [![Crates.io](https://img.shields.io/crates/v/rk3588-clk)](https://crates.io/crates/rk3588-clk) | https://github.com/drivercraft/rk3588-clk | 暂不添加为 SUBMODULE | RK3588 时钟驱动 |
+| rockchip-pm | [![Crates.io](https://img.shields.io/crates/v/rockchip-pm)](https://crates.io/crates/rockchip-pm) | https://github.com/drivercraft/rockchip-pm | 暂不添加为 SUBMODULE | Rockchip 电源管理 |
+| sdmmc | [![Crates.io](https://img.shields.io/crates/v/sdmmc)](https://crates.io/crates/sdmmc) | https://github.com/drivercraft/sdmmc | 暂不添加为 SUBMODULE | SD/MMC 驱动 |
+| uboot-shell | [![Crates.io](https://img.shields.io/crates/v/uboot-shell)](https://crates.io/crates/uboot-shell) | https://github.com/drivercraft/ostool | 与 `ostool` 同仓库 | U-Boot Shell 工具 |
 
 ### 2.6 组件依赖关系
 
