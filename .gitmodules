@@ -166,3 +166,15 @@
 [submodule "os/StarryOS"]
 	path = os/StarryOS
 	url = git@github.com:Starry-OS/StarryOS.git
+[submodule "components/starry-process"]
+	path = components/starry-process
+	url = https://github.com/Starry-OS/starry-process
+[submodule "components/starry-signal"]
+	path = components/starry-signal
+	url = https://github.com/Starry-OS/starry-signal
+[submodule "components/starry-vm"]
+	path = components/starry-vm
+	url = https://github.com/Starry-OS/starry-vm
+[submodule "components/starry-smoltcp"]
+	path = components/starry-smoltcp
+	url = https://github.com/Starry-OS/smoltcp
