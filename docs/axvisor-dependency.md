@@ -2,10 +2,19 @@
 
 本文档基于 `Cargo.lock` 解析 axvisor 的完整依赖关系。
 
+**统计时间**: 2026-03-06
 
-## 组件依赖关系图
+## 1. 统计概览
 
-### 五大组织完整依赖图
+| 指标 | 数值 |
+|------|------|
+| Cargo.lock 总 crate 数 | **583** |
+| 五大组织 crate 数 | **115** |
+| 外部依赖 crate 数 | **468** |
+
+## 2. 组件依赖关系图
+
+### 2.1 五大组织完整依赖图
 
 ```mermaid
 flowchart TB
@@ -621,60 +630,55 @@ flowchart TB
     class uboot_shell drivercraft
 ```
 
-## 组件层级架构
+## 3. 组件层级架构
 
 ```mermaid
-flowchart TD
+flowchart TB
     direction TB
-    
-    L0["<b>层级 0: 应用层</b><br/>axvisor"]
-    
-    L1["<b>层级 1: Hypervisor 核心层</b><br/>axvm • axvcpu • axaddrspace • axdevice • axdevice_base<br/>axvisor_api • axvisor_api_proc • axvmconfig • axhvc • axklib"]
-    
-    L2["<b>层级 2: ArceOS API / 运行时层</b><br/>axstd • arceos_api • axruntime • axfeat<br/>x86_vcpu • x86_vlapic • arm_vcpu • arm_vgic • riscv_vcpu • riscv_h"]
-    
-    L3["<b>层级 3: ArceOS 核心模块层</b><br/>axhal • axtask • axmm • axalloc • axsync<br/>axlog • axio • axbacktrace • rdrive"]
-    
-    L4["<b>层级 4: HAL / 平台抽象层</b><br/>axcpu • axplat • axconfig • axsched • axpoll<br/>rdif-intc • rdif-block • rdif-clk"]
-    
-    L5["<b>层级 5: 基础组件层</b><br/>axerrno • memory_addr • memory_set • page_table_entry • page_table_multiarch<br/>percpu • lazyinit • kspin • kernel_guard • crate_interface<br/>cpumask • axallocator • rdif-base • pcie • dma-api<br/>range-alloc-arceos • timer_list • ctor_bare • handler_table • linked_list_r4l • rdif-pcie"]
-    
-    L6["<b>层级 6: 最底层库</b><br/>bitmap-allocator • log • spin • bitflags • cfg-if<br/>bit_field • hashbrown • fdt-parser • byte-unit • extern-trait"]
+    L0["<b>层级 0: 应用层</b><br/><font color="#1565c0">[arceos-hypervisor]</font><br/>axvisor"]
+    L1["<b>层级 1: Hypervisor 核心层</b><br/><font color="#1565c0">[arceos-hypervisor]</font><br/>axvm • axvcpu • axaddrspace • axdevice • axdevice-base • axvisor-api • axvisor-api-proc • axvmconfig • axhvc • axklib • arm-vcpu • arm-vgic • x86-vcpu • x86-vlapic • riscv-vcpu • riscv-vplic • riscv-h • aarch64-sysreg • range-alloc-arceos • axplat-dyn"]
+    L2["<b>层级 2: ArceOS API/运行时层</b><br/><font color="#2e7d32">[arceos-org]</font><br/>axstd • arceos-api • axruntime • axfeat"]
+    L3["<b>层级 3: ArceOS 核心模块层</b><br/><font color="#2e7d32">[arceos-org]</font><br/>axhal • axtask • axmm • axalloc • axsync • axlog • axio<br/><font color="#c2185b">[starry-os]</font><br/>axpoll • axbacktrace"]
+    L4["<b>层级 4: 驱动/文件系统层</b><br/><font color="#2e7d32">[arceos-org]</font><br/>axdriver • axdriver-base • axdriver-block • axdriver-pci • axdriver-virtio • axfs • axfs-devfs • axfs-ramfs • axfs-vfs<br/><font color="#ef6c00">[drivercraft]</font><br/>rdrive • rdrive-macros • rdif-intc • rdif-block • rdif-clk • rdif-def • rdif-base • rdif-pcie<br/><font color="#c2185b">[starry-os]</font><br/>axfs-ng-vfs • rsext4 • scope-local"]
+    L5["<b>层级 5: HAL/平台抽象层</b><br/><font color="#2e7d32">[arceos-org]</font><br/>axcpu • axplat • axplat-macros • axconfig • axconfig-gen • axconfig-macros • axsched • axallocator • axplat-aarch64-qemu-virt • axplat-riscv64-qemu-virt • axplat-x86-pc • axplat-loongarch64-qemu-virt • axplat-aarch64-peripherals • arm-pl011 • arm-pl031 • riscv-plic • cap-access • int-ratio"]
+    L6["<b>层级 6: 基础组件层</b><br/><font color="#2e7d32">[arceos-org]</font><br/>axerrno • memory-addr • memory-set • page-table-entry • page-table-multiarch • percpu • percpu-macros • lazyinit • kspin • kernel-guard • crate-interface • cpumask • timer-list • ctor-bare • ctor-bare-macros • handler-table • linked-list-r4l<br/><font color="#ef6c00">[drivercraft]</font><br/>pcie • dma-api • aarch64-cpu-ext • phytium-mci • rk3568-clk • rk3588-clk • rockchip-pm • sdmmc • fitimage • jkconfig • ostool • uboot-shell • mbarrier • release-dep"]
+    L7["<b>层级 7: 最底层库</b><br/><font color="#880e4f">[rcore-os]</font><br/>bitmap-allocator • any-uart • arm-gic-driver • virtio-drivers • kasm-aarch64 • kdef-pgtable • num-align • page-table-generic • pie-boot-if • pie-boot-loader-aarch64 • pie-boot-macros • somehal • bindeps-simple"]
 
     L0 --> L1
-    L0 --> L2
     L1 --> L2
     L2 --> L3
     L3 --> L4
     L4 --> L5
     L5 --> L6
+    L6 --> L7
     
     %% 跨层依赖
-    L0 -.-> L5
-    L0 -.-> L6
+    L0 -.-> L4
     L1 -.-> L5
     L2 -.-> L5
     L3 -.-> L5
 
-    classDef l0 fill:#ffcdd2,stroke:#c62828,stroke-width:3px,color:#000
-    classDef l1 fill:#bbdefb,stroke:#1565c0,stroke-width:2px,color:#000
-    classDef l2 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000
-    classDef l3 fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px,color:#000
-    classDef l4 fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px,color:#000
-    classDef l5 fill:#b2ebf2,stroke:#00838f,stroke-width:2px,color:#000
-    classDef l6 fill:#f5f5f5,stroke:#616161,stroke-width:2px,color:#000
-
+    classDef l0 fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000
     class L0 l0
+    classDef l1 fill:#bbdefb,stroke:#1565c0,stroke-width:2px,color:#000
     class L1 l1
+    classDef l2 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000
     class L2 l2
+    classDef l3 fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px,color:#000
     class L3 l3
+    classDef l4 fill:#fff9c4,stroke:#f9a825,stroke-width:2px,color:#000
     class L4 l4
+    classDef l5 fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px,color:#000
     class L5 l5
+    classDef l6 fill:#b2ebf2,stroke:#00838f,stroke-width:2px,color:#000
     class L6 l6
+    classDef l7 fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
+    class L7 l7
 ```
 
+## 4. 组件统计
 
-### 各组织组件数量
+### 5.1 各组织组件数量
 
 | 组织 | 数量 |
 |------|------|
@@ -685,7 +689,7 @@ flowchart TD
 | drivercraft | 22 |
 | **合计** | **115** |
 
-### 各组织组件列表
+### 5.2 各组织组件列表
 
 #### arceos-hypervisor (20 个)
 
@@ -827,4 +831,25 @@ flowchart TD
 | 21 | `sdmmc` | 12 |
 | 22 | `uboot-shell` | 2 |
 
+### 5.3 各架构特有组件
 
+#### aarch64 (ARM64)
+
+- **arceos-org**: `axplat-aarch64-qemu-virt` • `axplat-aarch64-peripherals`
+- **arceos-hypervisor**: `arm-vcpu` • `arm-vgic` • `axplat-dyn`
+- **drivercraft**: `aarch64-cpu-ext` • `phytium-mci` • `release-dep`
+- **rcore-os**: `any-uart` • `arm-gic-driver` • `kasm-aarch64` • `pie-boot-loader-aarch64` • `bindeps-simple` • `somehal`
+
+#### riscv64
+
+- **arceos-org**: `axplat-riscv64-qemu-virt` • `riscv-plic`
+- **arceos-hypervisor**: `riscv-vcpu` • `riscv-vplic` • `riscv-h`
+
+#### x86_64
+
+- **arceos-org**: `axplat-x86-pc`
+- **arceos-hypervisor**: `x86-vcpu` • `x86-vlapic`
+
+#### loongarch64
+
+- **arceos-org**: `axplat-loongarch64-qemu-virt`
