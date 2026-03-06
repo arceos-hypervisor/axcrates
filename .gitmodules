@@ -160,3 +160,6 @@
 [submodule "components/aarch64_sysreg"]
 	path = components/aarch64_sysreg
 	url = https://github.com/arceos-hypervisor/aarch64_sysreg
+[submodule "components/cap_access"]
+	path = components/cap_access
+	url = https://github.com/arceos-org/cap_access
