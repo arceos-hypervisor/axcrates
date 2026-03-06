@@ -1,8 +1,6 @@
 # Axvisor 依赖关系分析
 
-本文档基于 `Cargo.lock` 解析 axvisor 的完整依赖关系。
-
-**统计时间**: 2026-03-06
+本文档展示了 os/axvisor 的组件依赖关系。
 
 ## 1. 统计概览
 
@@ -14,7 +12,6 @@
 
 ## 2. 组件依赖关系图
 
-### 2.1 五大组织完整依赖图
 
 ```mermaid
 flowchart TB
@@ -676,180 +673,37 @@ flowchart TB
     class L7 l7
 ```
 
-## 4. 组件统计
 
-### 5.1 各组织组件数量
+## 4. 层级架构列表
 
-| 组织 | 数量 |
-|------|------|
-| arceos-hypervisor | 20 |
-| arceos-org | 55 |
-| starry-os | 5 |
-| rcore-os | 13 |
-| drivercraft | 22 |
-| **合计** | **115** |
+### 4.1 内部依赖列表
 
-### 5.2 各组织组件列表
+| 层级 | 名称 | 数量 | 组件名称 |
+|------|------|------|----------|
+| L0 | 应用层 | 1 | `axvisor` |
+| L1 | Hypervisor 核心层 | 20 | `axvm` `axvcpu` `axaddrspace` `axdevice` `axdevice-base` `axvisor-api` `axvisor-api-proc` `axvmconfig` `axhvc` `axklib` `arm-vcpu` `arm-vgic` `x86-vcpu` `x86-vlapic` `riscv-vcpu` `riscv-vplic` `riscv-h` `aarch64-sysreg` `range-alloc-arceos` `axplat-dyn` |
+| L2 | ArceOS API/运行时层 | 4 | `axstd` `arceos-api` `axruntime` `axfeat` |
+| L3 | ArceOS 核心模块层 | 9 | `axhal` `axtask` `axmm` `axalloc` `axsync` `axlog` `axio` `axpoll` `axbacktrace` |
+| L4 | 驱动/文件系统层 | 20 | `axdriver` `axdriver-base` `axdriver-block` `axdriver-pci` `axdriver-virtio` `axfs` `axfs-devfs` `axfs-ramfs` `axfs-vfs` `rdrive` `rdrive-macros` `rdif-intc` `rdif-block` `rdif-clk` `rdif-def` `rdif-base` `rdif-pcie` `axfs-ng-vfs` `rsext4` `scope-local` |
+| L5 | HAL/平台抽象层 | 18 | `axcpu` `axplat` `axplat-macros` `axconfig` `axconfig-gen` `axconfig-macros` `axsched` `axallocator` `axplat-aarch64-qemu-virt` `axplat-riscv64-qemu-virt` `axplat-x86-pc` `axplat-loongarch64-qemu-virt` `axplat-aarch64-peripherals` `arm-pl011` `arm-pl031` `riscv-plic` `cap-access` `int-ratio` |
+| L6 | 基础组件层 | 31 | `axerrno` `memory-addr` `memory-set` `page-table-entry` `page-table-multiarch` `percpu` `percpu-macros` `lazyinit` `kspin` `kernel-guard` `crate-interface` `cpumask` `timer-list` `ctor-bare` `ctor-bare-macros` `handler-table` `linked-list-r4l` `pcie` `dma-api` `aarch64-cpu-ext` `phytium-mci` `rk3568-clk` `rk3588-clk` `rockchip-pm` `sdmmc` `fitimage` `jkconfig` `ostool` `uboot-shell` `mbarrier` `release-dep` |
+| L7 | 最底层库 | 13 | `bitmap-allocator` `any-uart` `arm-gic-driver` `virtio-drivers` `kasm-aarch64` `kdef-pgtable` `num-align` `page-table-generic` `pie-boot-if` `pie-boot-loader-aarch64` `pie-boot-macros` `somehal` `bindeps-simple` |
+| **合计** | - | **116** | - |
 
-#### arceos-hypervisor (20 个)
 
-| 序号 | 组件名称 | 直接依赖数 |
-|------|----------|------------|
-| 1 | `aarch64_sysreg` | 0 |
-| 2 | `arm_vcpu` | 10 |
-| 3 | `arm_vgic` | 11 |
-| 4 | `axaddrspace` | 12 |
-| 5 | `axdevice` | 11 |
-| 6 | `axdevice_base` | 5 |
-| 7 | `axhvc` | 1 |
-| 8 | `axklib` | 3 |
-| 9 | `axvcpu` | 5 |
-| 10 | `axvisor` | 63 |
-| 11 | `axvisor_api` | 4 |
-| 12 | `axvisor_api_proc` | 4 |
-| 13 | `axvm` | 18 |
-| 14 | `axvmconfig` | 9 |
-| 15 | `range-alloc-arceos` | 0 |
-| 16 | `riscv-h` | 5 |
-| 17 | `riscv_vcpu` | 19 |
-| 18 | `riscv_vplic` | 8 |
-| 19 | `x86_vcpu` | 19 |
-| 20 | `x86_vlapic` | 9 |
+### 4.2 外部依赖列表
 
-#### arceos-org (55 个)
-
-| 序号 | 组件名称 | 直接依赖数 |
-|------|----------|------------|
-| 1 | `arceos_api` | 12 |
-| 2 | `arm_pl011` | 1 |
-| 3 | `arm_pl031` | 1 |
-| 4 | `axalloc` | 7 |
-| 5 | `axallocator` | 4 |
-| 6 | `axconfig` | 1 |
-| 7 | `axconfig-gen` | 2 |
-| 8 | `axconfig-macros` | 4 |
-| 9 | `axcpu` | 16 |
-| 10 | `axdriver` | 21 |
-| 11 | `axdriver_base` | 0 |
-| 12 | `axdriver_block` | 2 |
-| 13 | `axdriver_pci` | 1 |
-| 14 | `axdriver_virtio` | 4 |
-| 15 | `axerrno` | 3 |
-| 16 | `axfeat` | 10 |
-| 17 | `axfs` | 26 |
-| 18 | `axfs_devfs` | 3 |
-| 19 | `axfs_ramfs` | 3 |
-| 20 | `axfs_vfs` | 3 |
-| 21 | `axhal` | 18 |
-| 22 | `axio` | 4 |
-| 23 | `axlog` | 4 |
-| 24 | `axmm` | 9 |
-| 25 | `axplat` | 8 |
-| 26 | `axplat-aarch64-peripherals` | 12 |
-| 27 | `axplat-aarch64-qemu-virt` | 6 |
-| 28 | `axplat-loongarch64-qemu-virt` | 9 |
-| 29 | `axplat-macros` | 3 |
-| 30 | `axplat-riscv64-qemu-virt` | 10 |
-| 31 | `axplat-x86-pc` | 16 |
-| 32 | `axruntime` | 20 |
-| 33 | `axsched` | 1 |
-| 34 | `axstd` | 7 |
-| 35 | `axsync` | 4 |
-| 36 | `axtask` | 17 |
-| 37 | `cap_access` | 1 |
-| 38 | `cpumask` | 1 |
-| 39 | `crate_interface` | 3 |
-| 40 | `ctor_bare` | 1 |
-| 41 | `ctor_bare_macros` | 3 |
-| 42 | `handler_table` | 0 |
-| 43 | `int_ratio` | 0 |
-| 44 | `kernel_guard` | 2 |
-| 45 | `kspin` | 2 |
-| 46 | `lazyinit` | 0 |
-| 47 | `linked_list_r4l` | 0 |
-| 48 | `memory_addr` | 0 |
-| 49 | `memory_set` | 2 |
-| 50 | `page_table_entry` | 4 |
-| 51 | `page_table_multiarch` | 5 |
-| 52 | `percpu` | 4 |
-| 53 | `percpu_macros` | 3 |
-| 54 | `riscv_plic` | 1 |
-| 55 | `timer_list` | 0 |
-
-#### starry-os (5 个)
-
-| 序号 | 组件名称 | 直接依赖数 |
-|------|----------|------------|
-| 1 | `axbacktrace` | 3 |
-| 2 | `axfs-ng-vfs` | 9 |
-| 3 | `axpoll` | 3 |
-| 4 | `rsext4` | 3 |
-| 5 | `scope-local` | 2 |
-
-#### rcore-os (13 个)
-
-| 序号 | 组件名称 | 直接依赖数 |
-|------|----------|------------|
-| 1 | `any-uart` | 5 |
-| 2 | `arm-gic-driver` | 7 |
-| 3 | `bindeps-simple` | 6 |
-| 4 | `bitmap-allocator` | 1 |
-| 5 | `kasm-aarch64` | 4 |
-| 6 | `kdef-pgtable` | 4 |
-| 7 | `num-align` | 0 |
-| 8 | `page-table-generic` | 4 |
-| 9 | `pie-boot-if` | 1 |
-| 10 | `pie-boot-loader-aarch64` | 16 |
-| 11 | `pie-boot-macros` | 4 |
-| 12 | `somehal` | 21 |
-| 13 | `virtio-drivers` | 4 |
-
-#### drivercraft (22 个)
-
-| 序号 | 组件名称 | 直接依赖数 |
-|------|----------|------------|
-| 1 | `aarch64-cpu-ext` | 2 |
-| 2 | `dma-api` | 4 |
-| 3 | `fitimage` | 11 |
-| 4 | `jkconfig` | 15 |
-| 5 | `mbarrier` | 0 |
-| 6 | `ostool` | 30 |
-| 7 | `pcie` | 7 |
-| 8 | `phytium-mci` | 10 |
-| 9 | `rdif-base` | 5 |
-| 10 | `rdif-block` | 6 |
-| 11 | `rdif-clk` | 1 |
-| 12 | `rdif-def` | 1 |
-| 13 | `rdif-intc` | 3 |
-| 14 | `rdif-pcie` | 3 |
-| 15 | `rdrive` | 9 |
-| 16 | `rdrive-macros` | 3 |
-| 17 | `release-dep` | 8 |
-| 18 | `rk3568_clk` | 5 |
-| 19 | `rk3588-clk` | 3 |
-| 20 | `rockchip-pm` | 6 |
-| 21 | `sdmmc` | 12 |
-| 22 | `uboot-shell` | 2 |
-
-### 5.3 各架构特有组件
-
-#### aarch64 (ARM64)
-
-- **arceos-org**: `axplat-aarch64-qemu-virt` • `axplat-aarch64-peripherals`
-- **arceos-hypervisor**: `arm-vcpu` • `arm-vgic` • `axplat-dyn`
-- **drivercraft**: `aarch64-cpu-ext` • `phytium-mci` • `release-dep`
-- **rcore-os**: `any-uart` • `arm-gic-driver` • `kasm-aarch64` • `pie-boot-loader-aarch64` • `bindeps-simple` • `somehal`
-
-#### riscv64
-
-- **arceos-org**: `axplat-riscv64-qemu-virt` • `riscv-plic`
-- **arceos-hypervisor**: `riscv-vcpu` • `riscv-vplic` • `riscv-h`
-
-#### x86_64
-
-- **arceos-org**: `axplat-x86-pc`
-- **arceos-hypervisor**: `x86-vcpu` • `x86-vlapic`
-
-#### loongarch64
-
-- **arceos-org**: `axplat-loongarch64-qemu-virt`
+| 类别 | 数量 | 示例 crate |
+|------|------|------------|
+| 序列化/数据格式 | 25 | `serde` `serde_json` `toml` `base64` `hex` `url` `mime` |
+| 异步/并发 | 31 | `tokio` `futures` `crossbeam` `parking_lot` `async-trait` |
+| 网络/HTTP | 39 | `http` `hyper` `axum` `tower` `h2` `rustls` `webpki` |
+| 加密/安全 | 24 | `digest` `sha2` `rand` `aead` `aws-lc-rs` `ring` |
+| 日志/错误 | 8 | `log` `tracing` `anyhow` `thiserror` `env_logger` |
+| 命令行/配置 | 22 | `clap` `anstyle` `bitflags` `cargo_metadata` `semver` |
+| 系统/平台 | 40 | `libc` `cc` `cmake` `memchr` `linux-raw-sys` `mio` |
+| 测试/基准 | 1 | `bare-test-macros` |
+| 宏/代码生成 | 36 | `syn` `quote` `proc-macro2` `derive_more` `borsh-derive` |
+| 工具库 | 23 | `bitvec` `bytemuck` `bytes` `chrono` `uuid` `smallvec` |
+| 其他依赖 | 219 | `aho-corasick` `regex` `unicode-*` `itertools` 等 |
+| **合计** | **468** | - |
