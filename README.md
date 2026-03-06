@@ -53,9 +53,9 @@ axcrates/
 | arceos-hypervisor | 20 | 19 | **axvisor_api：** axvisor_api、axvisor_api_proc <br> **arm_vcpu：** arm_vcpu、arm_vgic <br> **riscv_vcpu：** riscv_vcpu、riscv_vplic、riscv-h <br> **x86_vcpu：** x86_vcpu、x86_vlapic <br> 其他组件为独立仓库 |
 | arceos-org | 55 | 26 | **arceos：** arceos_api、axalloc、axconfig、axdriver、axfeat、axhal、axlog、axmm、axruntime、axstd、axsync、axtask、axfs、axfs_devfs、axfs_ramfs、axfs_vfs <br> **axmm_crates：** memory_addr、memory_set <br> **axplat_crates：** axplat、axplat-macros、axplat-aarch64-*、axplat-riscv64-*、axplat-loongarch64-*、axplat-x86-* <br> **page_table_multiarch：** page_table_entry、page_table_multiarch <br> **percpu：** percpu、percpu-macros <br> **ctor_bare：** ctor_bare、ctor_bare_macros <br> **axdriver_crates：** axdriver_base、axdriver_pci、axdriver_block、axdriver_virtio <br> 其他组件为独立仓库 |
 | rcore-os | 13 | 5 | **somehal：** somehal、page-table-generic、bindeps-simple、kasm-*、kdef-*、num-align、pie-* <br> 其他组件为独立仓库 |
-| Starry-OS | 5 | 5 | 组件均为独立仓库 |
+| Starry-OS | 6 | 6 | 组件均为独立仓库 |
 | drivercraft | 22 | 0 | **rdrive：** rdrive、rdrive-macros、rdif-base、rdif-block、rdif-clk、rdif-def、rdif-intc、rdif-pcie <br> **ostool：** fitimage、jkconfig、ostool、uboot-shell <br> 其他组件为独立仓库 |
-| **总计** | **115** | **55** | |
+| **总计** | **116** | **56** | |
 
 > **注**：此外还依赖约 300+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -174,6 +174,7 @@ axcrates/
 | axfs-ng-vfs | [![Crates.io](https://img.shields.io/crates/v/axfs-ng-vfs)](https://crates.io/crates/axfs-ng-vfs) | https://github.com/Starry-OS/axfs-ng-vfs | `components/axfs-ng-vfs` | 虚拟文件系统层 |
 | rsext4 | [![Crates.io](https://img.shields.io/crates/v/rsext4)](https://crates.io/crates/rsext4) | https://github.com/Starry-OS/rsext4 | `components/rsext4` | 轻量级 ext4 文件系统 |
 | scope-local | [![Crates.io](https://img.shields.io/crates/v/scope-local)](https://crates.io/crates/scope-local) | https://github.com/Starry-OS/scope-local | `components/scope-local` | 作用域本地存储 |
+| StarryOS | N/A | https://github.com/Starry-OS/StarryOS | `os/StarryOS` | Starry 操作系统 |
 
 ### 2.5 drivercraft 组织组件
 
