@@ -100,7 +100,7 @@ axcrates/
 | drivercraft | 22 | 0 | **rdrive：** rdrive、rdrive-macros、rdif-base、rdif-block、rdif-clk、rdif-def、rdif-intc、rdif-pcie <br> **ostool：** fitimage、jkconfig、ostool、uboot-shell <br> 其他组件为独立仓库 |
 | **总计** | **120** | **60** | |
 
-> **注**：此外还依赖约 300+ 个第三方库，主要包括：
+> **注**：此外还依赖约 400+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
 > - **rust-osdev**：x86 等底层硬件库
 > - **其他 crates.io 库**：log, spin, bitflags, cfg-if, hashbrown, fdt-parser 等
