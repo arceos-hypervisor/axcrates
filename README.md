@@ -94,11 +94,11 @@ axcrates/
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
 | arceos-hypervisor | 20 | 19 | **axvisor_api：** axvisor_api、axvisor_api_proc <br> **arm_vcpu：** arm_vcpu、arm_vgic <br> **riscv_vcpu：** riscv_vcpu、riscv_vplic、riscv-h <br> **x86_vcpu：** x86_vcpu、x86_vlapic <br> 其他组件为独立仓库 |
-| arceos-org | 56 | 26 | **arceos：** arceos_api、axalloc、axconfig、axdriver、axfeat、axhal、axlog、axmm、axruntime、axstd、axsync、axtask、axfs、axfs_devfs、axfs_ramfs、axfs_vfs <br> **axmm_crates：** memory_addr、memory_set <br> **axplat_crates：** axplat、axplat-macros、axplat-aarch64-*、axplat-riscv64-*、axplat-loongarch64-*、axplat-x86-* <br> **page_table_multiarch：** page_table_entry、page_table_multiarch <br> **percpu：** percpu、percpu-macros <br> **ctor_bare：** ctor_bare、ctor_bare_macros <br> **axdriver_crates：** axdriver_base、axdriver_pci、axdriver_block、axdriver_virtio <br> 其他组件为独立仓库 |
+| arceos-org | 57 | 26 | **arceos：** arceos_api、axalloc、axconfig、axdriver、axfeat、axhal、axlog、axmm、axruntime、axstd、axsync、axtask、axfs、axfs_devfs、axfs_ramfs、axfs_vfs、axplat-dyn <br> **axmm_crates：** memory_addr、memory_set <br> **axplat_crates：** axplat、axplat-macros、axplat-aarch64-*、axplat-riscv64-*、axplat-loongarch64-*、axplat-x86-* <br> **page_table_multiarch：** page_table_entry、page_table_multiarch <br> **percpu：** percpu、percpu-macros <br> **ctor_bare：** ctor_bare、ctor_bare_macros <br> **axdriver_crates：** axdriver_base、axdriver_pci、axdriver_block、axdriver_virtio <br> 其他组件为独立仓库 |
 | rcore-os | 13 | 5 | **somehal：** somehal、page-table-generic、bindeps-simple、kasm-*、kdef-*、num-align、pie-* <br> 其他组件为独立仓库 |
 | Starry-OS | 10 | 10 | 组件均为独立仓库 |
 | drivercraft | 22 | 0 | **rdrive：** rdrive、rdrive-macros、rdif-base、rdif-block、rdif-clk、rdif-def、rdif-intc、rdif-pcie <br> **ostool：** fitimage、jkconfig、ostool、uboot-shell <br> 其他组件为独立仓库 |
-| **总计** | **120** | **60** | |
+| **总计** | **121** | **60** | |
 
 > **注**：此外还依赖约 400+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -179,6 +179,7 @@ axcrates/
 | axfs_devfs | [![Crates.io](https://img.shields.io/crates/v/axfs_devfs)](https://crates.io/crates/axfs_devfs) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 设备文件系统 |
 | axfs_ramfs | [![Crates.io](https://img.shields.io/crates/v/axfs_ramfs)](https://crates.io/crates/axfs_ramfs) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 内存文件系统 |
 | axfs_vfs | [![Crates.io](https://img.shields.io/crates/v/axfs_vfs)](https://crates.io/crates/axfs_vfs) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 虚拟文件系统 |
+| axplat-dyn | [![Crates.io](https://img.shields.io/crates/v/axplat-dyn)](https://crates.io/crates/axplat-dyn) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 动态平台抽象层 |
 | axplat-aarch64-peripherals | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-peripherals)](https://crates.io/crates/axplat-aarch64-peripherals) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | ARM64 外设平台 |
 | axplat-aarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-qemu-virt)](https://crates.io/crates/axplat-aarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | ARM64 QEMU 平台 |
 | axplat-riscv64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-riscv64-qemu-virt)](https://crates.io/crates/axplat-riscv64-qemu-virt) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | RISC-V QEMU 平台 |
