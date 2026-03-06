@@ -52,10 +52,10 @@ axcrates/
 |-----|---------|---------------|------|
 | arceos-hypervisor | 19 | 18 | **axvisor_api：** axvisor_api, axvisor_api_proc <br> **arm_vcpu：** arm_vcpu, arm_vgic <br> **riscv_vcpu：** riscv_vcpu, riscv_vplic, riscv-h <br> **x86_vcpu：** x86_vcpu, x86_vlapic <br> 其他独立 |
 | arceos-org | 48 | 25 | **arceos：** arceos_api, axalloc, axconfig, axdriver, axfeat, axhal, axlog, axmm, axruntime, axstd, axsync, axtask <br> **axmm_crates：** memory_addr, memory_set <br> **axplat_crates：** axplat, axplat-macros, axplat-aarch64-*, axplat-riscv64-*, axplat-loongarch64-*, axplat-x86-* <br> **page_table_multiarch：** page_table_entry, page_table_multiarch <br> **percpu：** percpu, percpu-macros <br> **ctor_bare：** ctor_bare, ctor_bare_macros <br> **axdriver_crates：** axdriver_base, axdriver_pci <br> **独立 submodule：** axallocator, axcpu, axerrno, axio, axsched, cpumask, crate_interface, handler_table, kernel_guard, kspin, lazyinit, linked_list_r4l, timer_list, axconfig-gen, int_ratio, arm_pl011, arm_pl031, riscv_plic |
-| rcore-os | 13 | 1 | **bitmap-allocator** (独立) <br> **virtio-drivers** (独立) <br> **arm-gic-driver** (独立) <br> **any-uart** (独立) <br> **somehal：** somehal, page-table-generic, bindeps-simple, kasm-*, kdef-*, num-align, pie-* |
+| rcore-os | 13 | 5 | **bitmap-allocator** (独立) <br> **virtio-drivers** (独立) <br> **arm-gic-driver** (独立) <br> **any-uart** (独立) <br> **somehal：** somehal, page-table-generic, bindeps-simple, kasm-*, kdef-*, num-align, pie-* |
 | Starry-OS | 5 | 5 | **axpoll** (独立) <br> **axbacktrace** (独立) <br> **axfs-ng-vfs** (独立) <br> **rsext4** (独立) <br> **scope-local** (独立) |
 | drivercraft | 12 | 0 | **rdrive：** rdrive, rdrive-macros, rdif-base, rdif-block, rdif-clk, rdif-def, rdif-intc, rdif-pcie  dma-api, aarch64-cpu-ext, release-dep |
-| **总计** | **97** | **49** | |
+| **总计** | **97** | **53** | |
 
 > **注**：此外还依赖约 300+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -74,7 +74,7 @@ axcrates/
 | axklib | [![Crates.io](https://img.shields.io/crates/v/axklib)](https://crates.io/crates/axklib) | https://github.com/arceos-hypervisor/axklib | `components/axklib` | 内核库 |
 | axvcpu | [![Crates.io](https://img.shields.io/crates/v/axvcpu)](https://crates.io/crates/axvcpu) | https://github.com/arceos-hypervisor/axvcpu | `components/axvcpu` | VCPU 抽象层 |
 | axvisor_api | [![Crates.io](https://img.shields.io/crates/v/axvisor_api)](https://crates.io/crates/axvisor_api) | https://github.com/arceos-hypervisor/axvisor_api | `components/axvisor_api` | Hypervisor API |
-| axvisor_api_proc | [![Crates.io](https://img.shields.io/crates/v/axvisor_api_proc)](https://crates.io/crates/axvisor_api_proc) | https://github.com/arceos-hypervisor/axvisor_api | 与 axvisor_api 同仓库 | Hypervisor API 宏 |
+| axvisor_api_proc | [![Crates.io](https://img.shields.io/crates/v/axvisor_api_proc)](https://crates.io/crates/axvisor_api_proc) | https://github.com/arceos-hypervisor/axvisor_api | 与 `axvisor_api` 同仓库 | Hypervisor API 宏 |
 | axvm | [![Crates.io](https://img.shields.io/crates/v/axvm)](https://crates.io/crates/axvm) | https://github.com/arceos-hypervisor/axvm | `components/axvm` | VM 资源管理 |
 | axvmconfig | [![Crates.io](https://img.shields.io/crates/v/axvmconfig)](https://crates.io/crates/axvmconfig) | https://github.com/arceos-hypervisor/axvmconfig | `components/axvmconfig` | VM 配置工具 |
 | range-alloc-arceos | [![Crates.io](https://img.shields.io/crates/v/range-alloc-arceos)](https://crates.io/crates/range-alloc-arceos) | https://github.com/arceos-hypervisor/range-alloc | `components/range-alloc-arceos` | 范围分配器 |
@@ -144,18 +144,18 @@ axcrates/
 | 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
 |---------|:--------:|---------|---------------|------|
 | bitmap-allocator | [![Crates.io](https://img.shields.io/crates/v/bitmap-allocator)](https://crates.io/crates/bitmap-allocator) | https://github.com/rcore-os/bitmap-allocator | `components/bitmap-allocator` | 位图分配器 |
-| virtio-drivers | [![Crates.io](https://img.shields.io/crates/v/virtio-drivers)](https://crates.io/crates/virtio-drivers) | https://github.com/rcore-os/virtio-drivers | 无 (crates.io) | VirtIO 驱动 |
-| arm-gic-driver | [![Crates.io](https://img.shields.io/crates/v/arm-gic-driver)](https://crates.io/crates/arm-gic-driver) | https://github.com/rcore-os/arm-gic-driver | 无 (crates.io) | ARM GIC 驱动 |
-| any-uart | [![Crates.io](https://img.shields.io/crates/v/any-uart)](https://crates.io/crates/any-uart) | https://github.com/rcore-os/any-uart | 无 (crates.io) | 通用 UART 驱动 |
-| somehal | [![Crates.io](https://img.shields.io/crates/v/somehal)](https://crates.io/crates/somehal) | https://github.com/rcore-os/somehal | 无 (crates.io) | 硬件抽象层 |
-| page-table-generic | [![Crates.io](https://img.shields.io/crates/v/page-table-generic)](https://crates.io/crates/page-table-generic) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 通用页表 |
-| bindeps-simple | [![Crates.io](https://img.shields.io/crates/v/bindeps-simple)](https://crates.io/crates/bindeps-simple) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 简单二进制依赖 |
-| kasm-aarch64 | [![Crates.io](https://img.shields.io/crates/v/kasm-aarch64)](https://crates.io/crates/kasm-aarch64) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | ARM64 汇编 |
-| kdef-pgtable | [![Crates.io](https://img.shields.io/crates/v/kdef-pgtable)](https://crates.io/crates/kdef-pgtable) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 页表定义 |
-| num-align | [![Crates.io](https://img.shields.io/crates/v/num-align)](https://crates.io/crates/num-align) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | 数字对齐 |
-| pie-boot-if | [![Crates.io](https://img.shields.io/crates/v/pie-boot-if)](https://crates.io/crates/pie-boot-if) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | PIE 启动接口 |
-| pie-boot-loader-aarch64 | [![Crates.io](https://img.shields.io/crates/v/pie-boot-loader-aarch64)](https://crates.io/crates/pie-boot-loader-aarch64) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | ARM64 PIE 加载器 |
-| pie-boot-macros | [![Crates.io](https://img.shields.io/crates/v/pie-boot-macros)](https://crates.io/crates/pie-boot-macros) | https://github.com/rcore-os/somehal | 无 (crates.io) (同仓库) | PIE 启动宏 |
+| virtio-drivers | [![Crates.io](https://img.shields.io/crates/v/virtio-drivers)](https://crates.io/crates/virtio-drivers) | https://github.com/rcore-os/virtio-drivers | `components/virtio-drivers` | VirtIO 驱动 |
+| arm-gic-driver | [![Crates.io](https://img.shields.io/crates/v/arm-gic-driver)](https://crates.io/crates/arm-gic-driver) | https://github.com/rcore-os/arm-gic-driver | `components/arm-gic-driver` | ARM GIC 驱动 |
+| any-uart | [![Crates.io](https://img.shields.io/crates/v/any-uart)](https://crates.io/crates/any-uart) | https://github.com/rcore-os/any-uart | `components/any-uart` | 通用 UART 驱动 |
+| somehal | [![Crates.io](https://img.shields.io/crates/v/somehal)](https://crates.io/crates/somehal) | https://github.com/rcore-os/somehal | `components/somehal` | 硬件抽象层 |
+| page-table-generic | [![Crates.io](https://img.shields.io/crates/v/page-table-generic)](https://crates.io/crates/page-table-generic) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | 通用页表 |
+| bindeps-simple | [![Crates.io](https://img.shields.io/crates/v/bindeps-simple)](https://crates.io/crates/bindeps-simple) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | 简单二进制依赖 |
+| kasm-aarch64 | [![Crates.io](https://img.shields.io/crates/v/kasm-aarch64)](https://crates.io/crates/kasm-aarch64) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | ARM64 汇编 |
+| kdef-pgtable | [![Crates.io](https://img.shields.io/crates/v/kdef-pgtable)](https://crates.io/crates/kdef-pgtable) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | 页表定义 |
+| num-align | [![Crates.io](https://img.shields.io/crates/v/num-align)](https://crates.io/crates/num-align) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | 数字对齐 |
+| pie-boot-if | [![Crates.io](https://img.shields.io/crates/v/pie-boot-if)](https://crates.io/crates/pie-boot-if) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | PIE 启动接口 |
+| pie-boot-loader-aarch64 | [![Crates.io](https://img.shields.io/crates/v/pie-boot-loader-aarch64)](https://crates.io/crates/pie-boot-loader-aarch64) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | ARM64 PIE 加载器 |
+| pie-boot-macros | [![Crates.io](https://img.shields.io/crates/v/pie-boot-macros)](https://crates.io/crates/pie-boot-macros) | https://github.com/rcore-os/somehal | 与 `somehal` 同仓库 | PIE 启动宏 |
 
 ### 2.4 Starry-OS 组织组件
 

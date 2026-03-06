@@ -145,3 +145,15 @@
 [submodule "components/scope-local"]
 	path = components/scope-local
 	url = https://github.com/Starry-OS/scope-local
+[submodule "components/virtio-drivers"]
+	path = components/virtio-drivers
+	url = https://github.com/rcore-os/virtio-drivers
+[submodule "components/arm-gic-driver"]
+	path = components/arm-gic-driver
+	url = https://github.com/rcore-os/arm-gic-driver
+[submodule "components/any-uart"]
+	path = components/any-uart
+	url = https://github.com/rcore-os/any-uart
+[submodule "components/somehal"]
+	path = components/somehal
+	url = https://github.com/rcore-os/somehal
