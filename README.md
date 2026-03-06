@@ -51,11 +51,11 @@ axcrates/
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
 | arceos-hypervisor | 20 | 19 | **axvisor_api：** axvisor_api、axvisor_api_proc <br> **arm_vcpu：** arm_vcpu、arm_vgic <br> **riscv_vcpu：** riscv_vcpu、riscv_vplic、riscv-h <br> **x86_vcpu：** x86_vcpu、x86_vlapic <br> 其他组件为独立仓库 |
-| arceos-org | 48 | 25 | **arceos：** arceos_api、axalloc、axconfig、axdriver、axfeat、axhal、axlog、axmm、axruntime、axstd、axsync、axtask <br> **axmm_crates：** memory_addr、memory_set <br> **axplat_crates：** axplat、axplat-macros、axplat-aarch64-*、axplat-riscv64-*、axplat-loongarch64-*、axplat-x86-* <br> **page_table_multiarch：** page_table_entry、page_table_multiarch <br> **percpu：** percpu、percpu-macros <br> **ctor_bare：** ctor_bare、ctor_bare_macros <br> **axdriver_crates：** axdriver_base、axdriver_pci <br> 其他组件为独立仓库 |
+| arceos-org | 54 | 25 | **arceos：** arceos_api、axalloc、axconfig、axdriver、axfeat、axhal、axlog、axmm、axruntime、axstd、axsync、axtask、axfs、axfs_devfs、axfs_ramfs、axfs_vfs <br> **axmm_crates：** memory_addr、memory_set <br> **axplat_crates：** axplat、axplat-macros、axplat-aarch64-*、axplat-riscv64-*、axplat-loongarch64-*、axplat-x86-* <br> **page_table_multiarch：** page_table_entry、page_table_multiarch <br> **percpu：** percpu、percpu-macros <br> **ctor_bare：** ctor_bare、ctor_bare_macros <br> **axdriver_crates：** axdriver_base、axdriver_pci、axdriver_block、axdriver_virtio <br> 其他组件为独立仓库 |
 | rcore-os | 13 | 5 | **somehal：** somehal、page-table-generic、bindeps-simple、kasm-*、kdef-*、num-align、pie-* <br> 其他组件为独立仓库 |
 | Starry-OS | 5 | 5 | 组件均为独立仓库 |
 | drivercraft | 12 | 0 | **rdrive：** rdrive、rdrive-macros、rdif-base、rdif-block、rdif-clk、rdif-def、rdif-intc、rdif-pcie  dma-api、aarch64-cpu-ext、release-dep |
-| **总计** | **98** | **54** | |
+| **总计** | **104** | **54** | |
 
 > **注**：此外还依赖约 300+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -91,29 +91,29 @@ axcrates/
 
 | 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
 |---------|:--------:|---------|---------------|------|
-| arceos_api | [![Crates.io](https://img.shields.io/crates/v/arceos_api)](https://crates.io/crates/arceos_api) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | ArceOS API |
-| axalloc | [![Crates.io](https://img.shields.io/crates/v/axalloc)](https://crates.io/crates/axalloc) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 内存分配模块 |
+| arceos_api | [![Crates.io](https://img.shields.io/crates/v/arceos_api)](https://crates.io/crates/arceos_api) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | ArceOS API |
+| axalloc | [![Crates.io](https://img.shields.io/crates/v/axalloc)](https://crates.io/crates/axalloc) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 内存分配模块 |
 | axallocator | [![Crates.io](https://img.shields.io/crates/v/axallocator)](https://crates.io/crates/axallocator) | https://github.com/arceos-org/allocator | `components/axallocator` | 内存分配器接口 |
-| axconfig | [![Crates.io](https://img.shields.io/crates/v/axconfig)](https://crates.io/crates/axconfig) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 配置模块 |
+| axconfig | [![Crates.io](https://img.shields.io/crates/v/axconfig)](https://crates.io/crates/axconfig) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 配置模块 |
 | axconfig-gen | [![Crates.io](https://img.shields.io/crates/v/axconfig-gen)](https://crates.io/crates/axconfig-gen) | https://github.com/arceos-org/axconfig-gen | `components/axconfig-gen` | 配置生成工具 |
 | axconfig-macros | [![Crates.io](https://img.shields.io/crates/v/axconfig-macros)](https://crates.io/crates/axconfig-macros) | https://github.com/arceos-org/axconfig-gen | `components/axconfig-gen` (同仓库) | 配置宏 |
 | axcpu | [![Crates.io](https://img.shields.io/crates/v/axcpu)](https://crates.io/crates/axcpu) | https://github.com/arceos-org/axcpu | `components/axcpu` | CPU 抽象层 |
 | axerrno | [![Crates.io](https://img.shields.io/crates/v/axerrno)](https://crates.io/crates/axerrno) | https://github.com/arceos-org/axerrno | `components/axerrno` | 错误码定义 |
-| axfeat | [![Crates.io](https://img.shields.io/crates/v/axfeat)](https://crates.io/crates/axfeat) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 特性管理 |
-| axhal | [![Crates.io](https://img.shields.io/crates/v/axhal)](https://crates.io/crates/axhal) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 硬件抽象层 |
+| axfeat | [![Crates.io](https://img.shields.io/crates/v/axfeat)](https://crates.io/crates/axfeat) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 特性管理 |
+| axhal | [![Crates.io](https://img.shields.io/crates/v/axhal)](https://crates.io/crates/axhal) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 硬件抽象层 |
 | axio | [![Crates.io](https://img.shields.io/crates/v/axio)](https://crates.io/crates/axio) | https://github.com/arceos-org/axio | `components/axio` | IO 抽象 |
-| axlog | [![Crates.io](https://img.shields.io/crates/v/axlog)](https://crates.io/crates/axlog) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 日志模块 |
-| axmm | [![Crates.io](https://img.shields.io/crates/v/axmm)](https://crates.io/crates/axmm) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 内存管理模块 |
+| axlog | [![Crates.io](https://img.shields.io/crates/v/axlog)](https://crates.io/crates/axlog) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 日志模块 |
+| axmm | [![Crates.io](https://img.shields.io/crates/v/axmm)](https://crates.io/crates/axmm) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 内存管理模块 |
 | axplat | [![Crates.io](https://img.shields.io/crates/v/axplat)](https://crates.io/crates/axplat) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` | 平台抽象层 |
-| axplat-macros | [![Crates.io](https://img.shields.io/crates/v/axplat-macros)](https://crates.io/crates/axplat-macros) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | 平台抽象层宏 |
-| axruntime | [![Crates.io](https://img.shields.io/crates/v/axruntime)](https://crates.io/crates/axruntime) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 运行时模块 |
+| axplat-macros | [![Crates.io](https://img.shields.io/crates/v/axplat-macros)](https://crates.io/crates/axplat-macros) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | 平台抽象层宏 |
+| axruntime | [![Crates.io](https://img.shields.io/crates/v/axruntime)](https://crates.io/crates/axruntime) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 运行时模块 |
 | axsched | [![Crates.io](https://img.shields.io/crates/v/axsched)](https://crates.io/crates/axsched) | https://github.com/arceos-org/axsched | `components/axsched` | 调度器 |
-| axstd | [![Crates.io](https://img.shields.io/crates/v/axstd)](https://crates.io/crates/axstd) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 标准库 |
-| axsync | [![Crates.io](https://img.shields.io/crates/v/axsync)](https://crates.io/crates/axsync) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 同步原语 |
-| axtask | [![Crates.io](https://img.shields.io/crates/v/axtask)](https://crates.io/crates/axtask) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | 任务管理 |
+| axstd | [![Crates.io](https://img.shields.io/crates/v/axstd)](https://crates.io/crates/axstd) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 标准库 |
+| axsync | [![Crates.io](https://img.shields.io/crates/v/axsync)](https://crates.io/crates/axsync) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 同步原语 |
+| axtask | [![Crates.io](https://img.shields.io/crates/v/axtask)](https://crates.io/crates/axtask) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 任务管理 |
 | cpumask | [![Crates.io](https://img.shields.io/crates/v/cpumask)](https://crates.io/crates/cpumask) | https://github.com/arceos-org/cpumask | `components/cpumask` | CPU 掩码 |
 | crate_interface | [![Crates.io](https://img.shields.io/crates/v/crate_interface)](https://crates.io/crates/crate_interface) | https://github.com/arceos-org/crate_interface | `components/crate_interface` | Crate 接口宏 |
-| ctor_bare_macros | [![Crates.io](https://img.shields.io/crates/v/ctor_bare_macros)](https://crates.io/crates/ctor_bare_macros) | https://github.com/arceos-org/ctor_bare | `components/ctor_bare` (同仓库) | 裸机构造器宏 |
+| ctor_bare_macros | [![Crates.io](https://img.shields.io/crates/v/ctor_bare_macros)](https://crates.io/crates/ctor_bare_macros) | https://github.com/arceos-org/ctor_bare | 与 `ctor_bare` 同仓库 | 裸机构造器宏 |
 | ctor_bare |  [![Crates.io](https://img.shields.io/crates/v/ctor_bare)](https://crates.io/crates/ctor_bare)  | https://github.com/arceos-org/ctor_bare | `components/ctor_bare` | 裸机构造器 |
 | handler_table | [![Crates.io](https://img.shields.io/crates/v/handler_table)](https://crates.io/crates/handler_table) | https://github.com/arceos-org/handler_table | `components/handler_table` | 处理函数表 |
 | kernel_guard | [![Crates.io](https://img.shields.io/crates/v/kernel_guard)](https://crates.io/crates/kernel_guard) | https://github.com/arceos-org/kernel_guard | `components/kernel_guard` | 内核临界区保护 |
@@ -127,14 +127,20 @@ axcrates/
 | percpu | [![Crates.io](https://img.shields.io/crates/v/percpu)](https://crates.io/crates/percpu) | https://github.com/arceos-org/percpu | `components/percpu` | Per-CPU 变量 |
 | percpu-macros | [![Crates.io](https://img.shields.io/crates/v/percpu-macros)](https://crates.io/crates/percpu-macros) | https://github.com/arceos-org/percpu | `components/percpu` (同仓库) | Per-CPU 宏 |
 | timer_list |  [![Crates.io](https://img.shields.io/crates/v/timer_list)](https://crates.io/crates/timer_list) | https://github.com/arceos-org/timer_list | `components/timer_list` | 定时器列表 |
-| axdriver | [![Crates.io](https://img.shields.io/crates/v/axdriver)](https://crates.io/crates/axdriver) | https://github.com/arceos-org/arceos | `components/arceos` (同仓库) | ArceOS 驱动框架 |
+| axdriver | [![Crates.io](https://img.shields.io/crates/v/axdriver)](https://crates.io/crates/axdriver) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | ArceOS 驱动框架 |
 | axdriver_base | [![Crates.io](https://img.shields.io/crates/v/axdriver_base)](https://crates.io/crates/axdriver_base) | https://github.com/arceos-org/axdriver_crates | `components/axdriver_crates` | 驱动基础 trait |
 | axdriver_pci | [![Crates.io](https://img.shields.io/crates/v/axdriver_pci)](https://crates.io/crates/axdriver_pci) | https://github.com/arceos-org/axdriver_crates | `components/axdriver_crates` (同仓库) | PCI 驱动 |
-| axplat-aarch64-peripherals | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-peripherals)](https://crates.io/crates/axplat-aarch64-peripherals) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | ARM64 外设平台 |
-| axplat-aarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-qemu-virt)](https://crates.io/crates/axplat-aarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | ARM64 QEMU 平台 |
-| axplat-riscv64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-riscv64-qemu-virt)](https://crates.io/crates/axplat-riscv64-qemu-virt) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | RISC-V QEMU 平台 |
-| axplat-loongarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-loongarch64-qemu-virt)](https://crates.io/crates/axplat-loongarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | LoongArch QEMU 平台 |
-| axplat-x86-pc | [![Crates.io](https://img.shields.io/crates/v/axplat-x86-pc)](https://crates.io/crates/axplat-x86-pc) | https://github.com/arceos-org/axplat_crates | `components/axplat_crates` (同仓库) | x86 PC 平台 |
+| axdriver_block | [![Crates.io](https://img.shields.io/crates/v/axdriver_block)](https://crates.io/crates/axdriver_block) | https://github.com/arceos-org/axdriver_crates | `components/axdriver_crates` (同仓库) | 块设备驱动 |
+| axdriver_virtio | [![Crates.io](https://img.shields.io/crates/v/axdriver_virtio)](https://crates.io/crates/axdriver_virtio) | https://github.com/arceos-org/axdriver_crates | `components/axdriver_crates` (同仓库) | VirtIO 驱动 |
+| axfs | [![Crates.io](https://img.shields.io/crates/v/axfs)](https://crates.io/crates/axfs) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 文件系统 |
+| axfs_devfs | [![Crates.io](https://img.shields.io/crates/v/axfs_devfs)](https://crates.io/crates/axfs_devfs) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 设备文件系统 |
+| axfs_ramfs | [![Crates.io](https://img.shields.io/crates/v/axfs_ramfs)](https://crates.io/crates/axfs_ramfs) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 内存文件系统 |
+| axfs_vfs | [![Crates.io](https://img.shields.io/crates/v/axfs_vfs)](https://crates.io/crates/axfs_vfs) | https://github.com/arceos-org/arceos | 与 `arceos` 同仓库 | 虚拟文件系统 |
+| axplat-aarch64-peripherals | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-peripherals)](https://crates.io/crates/axplat-aarch64-peripherals) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | ARM64 外设平台 |
+| axplat-aarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-qemu-virt)](https://crates.io/crates/axplat-aarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | ARM64 QEMU 平台 |
+| axplat-riscv64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-riscv64-qemu-virt)](https://crates.io/crates/axplat-riscv64-qemu-virt) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | RISC-V QEMU 平台 |
+| axplat-loongarch64-qemu-virt | [![Crates.io](https://img.shields.io/crates/v/axplat-loongarch64-qemu-virt)](https://crates.io/crates/axplat-loongarch64-qemu-virt) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | LoongArch QEMU 平台 |
+| axplat-x86-pc | [![Crates.io](https://img.shields.io/crates/v/axplat-x86-pc)](https://crates.io/crates/axplat-x86-pc) | https://github.com/arceos-org/axplat_crates | 与 `axplat_crates` 同仓库 | x86 PC 平台 |
 | int_ratio | [![Crates.io](https://img.shields.io/crates/v/int_ratio)](https://crates.io/crates/int_ratio) | https://github.com/arceos-org/int_ratio | `components/int_ratio` | 整数比例 |
 | arm_pl011 | [![Crates.io](https://img.shields.io/crates/v/arm_pl011)](https://crates.io/crates/arm_pl011) | https://github.com/arceos-org/arm_pl011 | `components/arm_pl011` | ARM PL011 UART |
 | arm_pl031 | [![Crates.io](https://img.shields.io/crates/v/arm_pl031)](https://crates.io/crates/arm_pl031) | https://github.com/arceos-org/arm_pl031 | `components/arm_pl031` | ARM PL031 RTC |
