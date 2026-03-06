@@ -77,7 +77,7 @@ axcrates/
 | axvisor_api_proc | [![Crates.io](https://img.shields.io/crates/v/axvisor_api_proc)](https://crates.io/crates/axvisor_api_proc) | https://github.com/arceos-hypervisor/axvisor_api | 与 axvisor_api 同仓库 | Hypervisor API 宏 |
 | axvm | [![Crates.io](https://img.shields.io/crates/v/axvm)](https://crates.io/crates/axvm) | https://github.com/arceos-hypervisor/axvm | `components/axvm` | VM 资源管理 |
 | axvmconfig | [![Crates.io](https://img.shields.io/crates/v/axvmconfig)](https://crates.io/crates/axvmconfig) | https://github.com/arceos-hypervisor/axvmconfig | `components/axvmconfig` | VM 配置工具 |
-| range-alloc | [![Crates.io](https://img.shields.io/crates/v/range-alloc)](https://crates.io/crates/range-alloc) | https://github.com/arceos-hypervisor/range-alloc | `components/range-alloc-arceos` | 范围分配器 |
+| range-alloc-arceos | [![Crates.io](https://img.shields.io/crates/v/range-alloc-arceos)](https://crates.io/crates/range-alloc-arceos) | https://github.com/arceos-hypervisor/range-alloc | `components/range-alloc-arceos` | 范围分配器 |
 | x86_vcpu | [![Crates.io](https://img.shields.io/crates/v/x86_vcpu)](https://crates.io/crates/x86_vcpu) | https://github.com/arceos-hypervisor/x86_vcpu | `components/x86_vcpu` | x86 VCPU 实现 |
 | x86_vlapic | [![Crates.io](https://img.shields.io/crates/v/x86_vlapic)](https://crates.io/crates/x86_vlapic) | https://github.com/arceos-hypervisor/x86_vlapic | `components/x86_vlapic` | x86 虚拟 Local APIC |
 | arm_vcpu | [![Crates.io](https://img.shields.io/crates/v/arm_vcpu)](https://crates.io/crates/arm_vcpu) | https://github.com/arceos-hypervisor/arm_vcpu | `components/arm_vcpu` | ARM VCPU 实现 |
