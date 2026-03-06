@@ -50,12 +50,12 @@ axcrates/
 
 | 组织 | 组件数量 | Submodule 数量 | 备注 |
 |-----|---------|---------------|------|
-| arceos-hypervisor | 19 | 18 | **axvisor_api：** axvisor_api、axvisor_api_proc <br> **arm_vcpu：** arm_vcpu、arm_vgic <br> **riscv_vcpu：** riscv_vcpu、riscv_vplic、riscv-h <br> **x86_vcpu：** x86_vcpu、x86_vlapic <br> 其他组件为独立仓库 |
+| arceos-hypervisor | 20 | 19 | **axvisor_api：** axvisor_api、axvisor_api_proc <br> **arm_vcpu：** arm_vcpu、arm_vgic <br> **riscv_vcpu：** riscv_vcpu、riscv_vplic、riscv-h <br> **x86_vcpu：** x86_vcpu、x86_vlapic <br> 其他组件为独立仓库 |
 | arceos-org | 48 | 25 | **arceos：** arceos_api、axalloc、axconfig、axdriver、axfeat、axhal、axlog、axmm、axruntime、axstd、axsync、axtask <br> **axmm_crates：** memory_addr、memory_set <br> **axplat_crates：** axplat、axplat-macros、axplat-aarch64-*、axplat-riscv64-*、axplat-loongarch64-*、axplat-x86-* <br> **page_table_multiarch：** page_table_entry、page_table_multiarch <br> **percpu：** percpu、percpu-macros <br> **ctor_bare：** ctor_bare、ctor_bare_macros <br> **axdriver_crates：** axdriver_base、axdriver_pci <br> 其他组件为独立仓库 |
 | rcore-os | 13 | 5 | **somehal：** somehal、page-table-generic、bindeps-simple、kasm-*、kdef-*、num-align、pie-* <br> 其他组件为独立仓库 |
 | Starry-OS | 5 | 5 | 组件均为独立仓库 |
 | drivercraft | 12 | 0 | **rdrive：** rdrive、rdrive-macros、rdif-base、rdif-block、rdif-clk、rdif-def、rdif-intc、rdif-pcie  dma-api、aarch64-cpu-ext、release-dep |
-| **总计** | **97** | **53** | |
+| **总计** | **98** | **54** | |
 
 > **注**：此外还依赖约 300+ 个第三方库，主要包括：
 > - **rust-embedded**：aarch64-cpu, riscv, x86_64 等架构特定库
@@ -67,6 +67,7 @@ axcrates/
 | 组件名称 | crates.io | 仓库地址 | Submodule 路径 | 描述 |
 |---------|:--------:|---------|---------------|------|
 | axvisor | [![Crates.io](https://img.shields.io/crates/v/axvisor)](https://crates.io/crates/axvisor) | https://github.com/arceos-hypervisor/axvisor | `os/axvisor` | ArceOS Hypervisor 主项目 |
+| aarch64_sysreg | [![Crates.io](https://img.shields.io/crates/v/aarch64_sysreg)](https://crates.io/crates/aarch64_sysreg) | https://github.com/arceos-hypervisor/aarch64_sysreg | `components/aarch64_sysreg` | 系统寄存器地址转换 |
 | axaddrspace | [![Crates.io](https://img.shields.io/crates/v/axaddrspace)](https://crates.io/crates/axaddrspace) | https://github.com/arceos-hypervisor/axaddrspace | `components/axaddrspace` | Guest 地址空间管理 |
 | axdevice | [![Crates.io](https://img.shields.io/crates/v/axdevice)](https://crates.io/crates/axdevice) | https://github.com/arceos-hypervisor/axdevice | `components/axdevice` | 设备抽象层 |
 | axdevice_base | [![Crates.io](https://img.shields.io/crates/v/axdevice_base)](https://crates.io/crates/axdevice_base) | https://github.com/arceos-hypervisor/axdevice_base | `components/axdevice_base` | 设备模拟基础 trait |

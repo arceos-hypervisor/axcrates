@@ -157,3 +157,6 @@
 [submodule "components/somehal"]
 	path = components/somehal
 	url = https://github.com/rcore-os/somehal
+[submodule "components/aarch64_sysreg"]
+	path = components/aarch64_sysreg
+	url = https://github.com/arceos-hypervisor/aarch64_sysreg
