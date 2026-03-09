@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 组件同步脚本 - 批量同步指定或全部子模块到远程最新
-# 用法: scripts/sync.sh <crate|all> [branch]
+# 组件同步脚本 - 批量同步指定或全部子模块到当前分支最新
+# 用法: scripts/sync.sh <crate|all>
 
 set -euo pipefail
 
@@ -14,30 +14,26 @@ source "${SCRIPT_DIR}/common.sh"
 # Configuration
 # =============================================================================
 
-DEFAULT_BRANCH="dev"
-
 usage() {
     printf '%s\n' \
-        "组件同步脚本 - 批量同步指定或全部子模块到远程最新" \
+        "组件同步脚本 - 批量同步指定或全部子模块到当前分支最新" \
         "" \
         "用法:" \
-        "  scripts/sync.sh <crate|all> [branch]" \
+        "  scripts/sync.sh <crate|all>" \
         "" \
         "参数:" \
-        "  crate     组件名称，如 axvcpu、axaddrspace 等" \
-        "  all       同步所有组件" \
-        "  branch    目标分支（可选，默认为 dev）" \
+        "  crate  组件名称，如 axvcpu、axaddrspace 等" \
+        "  all    同步所有组件" \
         "" \
         "示例:" \
-        "  scripts/sync.sh axvcpu              # 同步 axvcpu 到 dev 分支最新" \
-        "  scripts/sync.sh axvcpu main         # 同步 axvcpu 到 main 分支最新" \
-        "  scripts/sync.sh all                 # 同步所有组件到 dev 分支最新" \
-        "  scripts/sync.sh all main            # 同步所有组件到 main 分支最新" \
-        "  scripts/sync.sh arm_vcpu,axvcpu     # 同步多个组件" \
+        "  scripts/sync.sh axvcpu           # 同步 axvcpu 当前分支最新" \
+        "  scripts/sync.sh all              # 同步所有组件当前分支最新" \
+        "  scripts/sync.sh arm_vcpu,axvcpu  # 同步多个组件" \
         "" \
         "注意:" \
-        "  - 同步操作会更新子模块到远程分支的最新 commit" \
-        "  - 如果子模块有未提交的变更，会被提示" \
+        "  - 同步操作会初始化子模块并更新到当前分支的最新 commit" \
+        "  - 不会切换分支，保持子模块当前所在分支" \
+        "  - 如果子模块有未提交的变更，会被跳过" \
         "  - 同步后需要在主仓库提交 submodule 引用更新"
 }
 
@@ -68,7 +64,6 @@ get_current_branch() {
 
 sync_crate() {
     local crate="$1"
-    local branch="$2"
     local crate_dir
     crate_dir=$(find_crate_abs_path "${crate}")
     
@@ -100,43 +95,24 @@ sync_crate() {
     
     # 检查是否有本地修改
     if has_local_changes "${crate_dir}"; then
-        warn "[${crate}] 有未提交的本地修改"
+        warn "[${crate}] 有未提交的本地修改，跳过"
         info "[${crate}] 本地修改内容:"
         git status --short | while read -r line; do
             printf '  %s\n' "${line}"
         done
-        warn "[${crate}] 请先提交或 stash 本地修改后再同步"
         popd >/dev/null
-        return 1
-    fi
-    
-    # 切换到目标分支
-    if [[ "${current_branch}" != "${branch}" ]]; then
-        info "[${crate}] 切换到分支 ${branch}..."
-        if git checkout "${branch}" >/dev/null 2>&1; then
-            success "[${crate}] 已切换到 ${branch}"
-        else
-            warn "[${crate}] 无法切换到 ${branch}，尝试获取远程分支..."
-            if git fetch origin "${branch}:${branch}" >/dev/null 2>&1; then
-                git checkout "${branch}" >/dev/null 2>&1
-                success "[${crate}] 已获取并切换到 ${branch}"
-            else
-                warn "[${crate}] 无法获取 ${branch}，跳过"
-                popd >/dev/null
-                return 1
-            fi
-        fi
+        return 0
     fi
     
     # 记录同步前的 commit
     local old_commit
-    old_commit=$(git rev-parse --short HEAD)
+    old_commit=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
     
-    # 拉取最新代码
-    info "[${crate}] 拉取 ${branch} 分支最新代码..."
-    if git pull origin "${branch}" >/dev/null 2>&1; then
+    # 拉取最新代码（保持当前分支）
+    info "[${crate}] 拉取 ${current_branch} 分支最新代码..."
+    if git pull origin "${current_branch}" >/dev/null 2>&1; then
         local new_commit
-        new_commit=$(git rev-parse --short HEAD)
+        new_commit=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
         
         if [[ "${old_commit}" == "${new_commit}" ]]; then
             info "[${crate}] 已经是最新 (${new_commit})"
@@ -144,9 +120,7 @@ sync_crate() {
             success "[${crate}] 同步完成: ${old_commit} → ${new_commit}"
         fi
     else
-        warn "[${crate}] 拉取失败"
-        popd >/dev/null
-        return 1
+        warn "[${crate}] 拉取失败（可能是新分支或无上游）"
     fi
     
     popd >/dev/null
@@ -154,24 +128,25 @@ sync_crate() {
 }
 
 sync_all() {
-    local branch="$1"
-    local crates synced=() skipped=() failed=()
+    local crates synced=() skipped=()
     mapfile -t crates < <(get_all_crate_names)
     
-    info "同步所有组件到 ${branch} 分支 (${#crates[@]} 个)..."
+    info "同步所有组件 (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        if sync_crate "${crate}" "${branch}"; then
+        local crate_dir
+        crate_dir=$(find_crate_abs_path "${crate}")
+        
+        # 检查是否有本地修改，用于分类统计
+        if [[ -n "${crate_dir}" ]] && [[ -d "${crate_dir}/.git" ]] && has_local_changes "${crate_dir}"; then
+            skipped+=("${crate} (有本地修改)")
+            continue
+        fi
+        
+        if sync_crate "${crate}"; then
             synced+=("${crate}")
         else
-            # 检查失败原因
-            local crate_dir
-            crate_dir=$(find_crate_abs_path "${crate}")
-            if [[ -d "${crate_dir}" ]] && has_local_changes "${crate_dir}"; then
-                skipped+=("${crate} (有本地修改)")
-            else
-                failed+=("${crate}")
-            fi
+            skipped+=("${crate}")
         fi
     done
     
@@ -196,21 +171,12 @@ sync_all() {
         printf '\n'
     fi
     
-    if [[ ${#failed[@]} -gt 0 ]]; then
-        printf '%b失败 %d 个组件:%b\n' "${RED}" "${#failed[@]}" "${NC}"
-        for crate in "${failed[@]}"; do
-            printf '  %b✗%b %s\n' "${RED}" "${NC}" "${crate}"
-        done
-        printf '\n'
-        die "同步完成，共 ${#failed[@]} 个组件失败"
-    fi
-    
-    success "同步完成！${#synced[@]} 个组件已同步到 ${branch}"
+    success "同步完成！${#synced[@]} 个组件已同步"
     
     # 提示更新主仓库
     printf '\n%b提示:%b 运行以下命令更新主仓库 submodule 引用:\n' "${YELLOW}" "${NC}"
     printf '  git add .\n'
-    printf '  git commit -m "chore: sync submodules to latest %s"\n' "${branch}"
+    printf '  git commit -m "chore: sync submodules"\n'
     printf '  git push origin $(git branch --show-current)\n'
 }
 
@@ -220,25 +186,23 @@ sync_all() {
 
 main() {
     local crate="${1:-}"
-    local branch="${2:-${DEFAULT_BRANCH}}"
     
     if [[ -z "${crate}" ]] || [[ "${crate}" == "-h" ]] || [[ "${crate}" == "--help" ]]; then
         usage; exit 0
     fi
     
     info "工作目录: ${ROOT_DIR}"
-    info "目标分支: ${branch}"
     cd "${ROOT_DIR}"
     
     if [[ "${crate}" == "all" ]]; then
-        sync_all "${branch}"
+        sync_all
     else
         # 支持逗号分隔的多个组件
         IFS=',' read -ra crate_list <<< "${crate}"
         for c in "${crate_list[@]}"; do
             c=$(echo "${c}" | xargs)  # 去除空格
             [[ -n "${c}" ]] || continue
-            sync_crate "${c}" "${branch}" || warn "[${c}] 同步失败"
+            sync_crate "${c}" || warn "[${c}] 同步失败"
         done
     fi
 }
