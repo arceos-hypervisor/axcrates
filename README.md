@@ -8,7 +8,7 @@
 
 ArceOS 组件统一管理仓库，通过 Git Submodule 关联所有组件，提供统一的版本管理和协同开发脚本。
 
-> 📋 详细文档请参考 [协同开发方案](docs/协同开发方案.md) 和 [组件开发及管理规范](https://github.com/orgs/arceos-hypervisor/discussions/371)。
+> 📋 详细文档请参考 [组件开发方案](https://github.com/orgs/arceos-hypervisor/discussions/372) 和 [组件开发及管理规范](https://github.com/orgs/arceos-hypervisor/discussions/371)。
 
 ### 1.1 目录结构
 
@@ -260,7 +260,7 @@ axcrates/
 
 #### Starry
 
-TODO
+参见 [Starry 组件依赖关系与层级图](docs/starryos-dependency.md)
 
 ---
 
