@@ -2,9 +2,9 @@
 name = "axcrates"
 version = "0.2.0"
 edition = "2024"
-authors = ["ArceOS Hypervisor Contributors"]
-description = "Meta crate bundle for ArceOS Hypervisor workspace - contains arm_vcpu, arm_vgic and related components"
-keywords = ["hypervisor", "aarch64", "arceos", "no-std", "virtualization"]
+authors = ["ArceOS Contributors"]
+description = "Meta crate bundle for ArceOS workspace - contains arm_vcpu, arm_vgic and related components"
+keywords = ["os", "aarch64", "arceos", "no-std", "components", "bundles"]
 categories = ["no-std", "embedded", "os"]
 license = "Apache-2.0"
 repository = "https://github.com/arceos-hypervisor/axcrates"
@@ -12,18 +12,15 @@ homepage = "https://github.com/arceos-hypervisor/axcrates"
 documentation = "https://docs.rs/axcrates"
 readme = "README.md"
 
-# Include only necessary files for distribution
+# Only include necessary files
 include = [
     "Cargo.toml",
+    "Cargo.lock",
     "README.md",
     "LICENSE",
-    ".gitignore",
-    ".gitmodules",
     "src/**",
     "bundle/submodules.tar.gz",
-    "scripts/compress_submodules.sh",
-    "scripts/extract_submodules.sh",
-    "scripts/crates.txt",
+    "scripts/unpack.sh",
 ]
 
 [profile.dev]
