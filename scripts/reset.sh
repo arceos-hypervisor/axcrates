@@ -16,21 +16,21 @@ usage() {
         "组件更改撤销脚本" \
         "" \
         "用法:" \
-        "  scripts/reset.sh <crate|all> [-f|--force] [-b|--branch]" \
+        "  scripts/reset.sh [-f|--force] [-b|--branch] <crate|all>" \
         "" \
         "参数:" \
-        "  crate        组件名称，如 axvcpu、axaddrspace 等" \
-        "  all          撤销所有组件的更改" \
         "  -f, --force  强制执行，不显示未跟踪文件" \
         "  -b, --branch 恢复到默认分支 (main/master)" \
+        "  crate        组件名称，如 axvcpu、axaddrspace 等" \
+        "  all          撤销所有组件的更改" \
         "" \
         "示例:" \
         "  scripts/reset.sh axvcpu              # 撤销 axvcpu 的更改" \
-        "  scripts/reset.sh axvcpu -f           # 强制撤销，不提示未跟踪文件" \
-        "  scripts/reset.sh axvcpu -b           # 撤销更改并恢复到默认分支" \
+        "  scripts/reset.sh -f axvcpu           # 强制撤销，不提示未跟踪文件" \
+        "  scripts/reset.sh -b axvcpu           # 撤销更改并恢复到默认分支" \
         "  scripts/reset.sh all                 # 撤销所有组件的更改" \
-        "  scripts/reset.sh all --force         # 强制撤销所有组件" \
-        "  scripts/reset.sh all --branch        # 撤销所有组件并恢复到默认分支"
+        "  scripts/reset.sh --force all         # 强制撤销所有组件" \
+        "  scripts/reset.sh --branch all        # 撤销所有组件并恢复到默认分支"
 }
 
 # =============================================================================
