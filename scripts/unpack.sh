@@ -35,23 +35,21 @@ ARCHIVE_SIZE=$(du -h "${ARCHIVE_PATH}" | cut -f1)
 echo -e "${BLUE}Archive: ${ARCHIVE_PATH}${NC}"
 echo -e "${BLUE}Size: ${ARCHIVE_SIZE}${NC}"
 
-# Ask for confirmation if any crate directories already exist
-EXISTING=()
-while IFS= read -r line; do
-    [[ -z "${line}" ]] && continue
-    # Remove leading ./ from tar listing if present
-    crate="${line#./}"
-    if [[ -d "${ROOT_DIR}/components/${crate}" ]]; then
-        EXISTING+=("${crate}")
-    fi
-done < <(tar -tzf "${ARCHIVE_PATH}" | grep -E '^[^/]+/?$' | sed 's|/$||')
+# Check for existing directories
+COMPONENTS_EXIST=false
+OS_EXIST=false
+if [[ -d "${ROOT_DIR}/components" && "$(ls -A ${ROOT_DIR}/components 2>/dev/null)" ]]; then
+    COMPONENTS_EXIST=true
+fi
+if [[ -d "${ROOT_DIR}/os" && "$(ls -A ${ROOT_DIR}/os 2>/dev/null)" ]]; then
+    OS_EXIST=true
+fi
 
-if [[ ${#EXISTING[@]} -gt 0 ]]; then
+if [[ "${COMPONENTS_EXIST}" == "true" || "${OS_EXIST}" == "true" ]]; then
     echo ""
-    echo -e "${YELLOW}Warning: The following directories already exist:${NC}"
-    for crate in "${EXISTING[@]}"; do
-        echo -e "  ${YELLOW}* ${crate}${NC}"
-    done
+    echo -e "${YELLOW}Warning: Some directories already exist:${NC}"
+    [[ "${COMPONENTS_EXIST}" == "true" ]] && echo -e "  ${YELLOW}* components/${NC}"
+    [[ "${OS_EXIST}" == "true" ]] && echo -e "  ${YELLOW}* os/${NC}"
     echo ""
     read -p "Overwrite existing directories? (y/N): " confirm
     if [[ "${confirm}" != "y" && "${confirm}" != "Y" ]]; then
@@ -60,18 +58,16 @@ if [[ ${#EXISTING[@]} -gt 0 ]]; then
     fi
 fi
 
-# Extract archive
+# Extract archive to root directory
 echo -e "${GREEN}Extracting...${NC}"
-mkdir -p "${ROOT_DIR}/components"
-cd "${ROOT_DIR}/components"
+cd "${ROOT_DIR}"
 tar -xzf "${ARCHIVE_PATH}"
 
 echo -e "${GREEN}=== Extraction Complete ===${NC}"
-echo -e "${GREEN}All submodules have been extracted to: ${ROOT_DIR}/components/${NC}"
 
-# List extracted crates
-echo ""
-echo "Extracted crates:"
-for crate in $(tar -tzf "${ARCHIVE_PATH}" | grep -E '^[^/]+/?$' | sed 's|/$||'); do
-    echo -e "  ${GREEN}* ${crate}${NC}"
-done
+# Count extracted items
+COMPONENT_COUNT=$(tar -tzf "${ARCHIVE_PATH}" | grep -E '^components/[^/]+/$' | wc -l)
+OS_COUNT=$(tar -tzf "${ARCHIVE_PATH}" | grep -E '^os/[^/]+/$' | wc -l)
+
+echo -e "${GREEN}Components extracted to: ${ROOT_DIR}/components/ (${COMPONENT_COUNT} crates)${NC}"
+echo -e "${GREEN}OS submodules extracted to: ${ROOT_DIR}/os/ (${OS_COUNT} submodules)${NC}"
