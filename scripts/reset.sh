@@ -16,23 +16,45 @@ usage() {
         "组件更改撤销脚本" \
         "" \
         "用法:" \
-        "  scripts/reset.sh <crate|all> [-f|--force]" \
+        "  scripts/reset.sh <crate|all> [-f|--force] [-b|--branch]" \
         "" \
         "参数:" \
         "  crate        组件名称，如 axvcpu、axaddrspace 等" \
         "  all          撤销所有组件的更改" \
         "  -f, --force  强制执行，不显示未跟踪文件" \
+        "  -b, --branch 恢复到默认分支 (main/master)" \
         "" \
         "示例:" \
-        "  scripts/reset.sh axvcpu" \
-        "  scripts/reset.sh axvcpu -f" \
-        "  scripts/reset.sh all" \
-        "  scripts/reset.sh all --force"
+        "  scripts/reset.sh axvcpu              # 撤销 axvcpu 的更改" \
+        "  scripts/reset.sh axvcpu -f           # 强制撤销，不提示未跟踪文件" \
+        "  scripts/reset.sh axvcpu -b           # 撤销更改并恢复到默认分支" \
+        "  scripts/reset.sh all                 # 撤销所有组件的更改" \
+        "  scripts/reset.sh all --force         # 强制撤销所有组件" \
+        "  scripts/reset.sh all --branch        # 撤销所有组件并恢复到默认分支"
 }
 
 # =============================================================================
 # Reset Functions
 # =============================================================================
+
+# 获取默认分支名称 (main 或 master)
+get_default_branch() {
+    local branch=""
+    # 尝试获取远程默认分支
+    branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+    if [[ -n "${branch}" ]]; then
+        echo "${branch}"
+        return
+    fi
+    # 回退到检查 main 或 master
+    if git rev-parse --verify main >/dev/null 2>&1; then
+        echo "main"
+    elif git rev-parse --verify master >/dev/null 2>&1; then
+        echo "master"
+    else
+        echo "main"
+    fi
+}
 
 reset_crate() {
     local crate="$1" crate_dir
@@ -62,17 +84,32 @@ reset_crate() {
                 fi
             fi
         fi
-        info "[${crate}] 没有更改，跳过"
-        popd >/dev/null
-        return 0
+        info "[${crate}] 没有更改"
+    else
+        # 撤销更改
+        info "[${crate}] 正在撤销更改..."
+        git checkout -- .
+        git clean -fd
+        success "[${crate}] 更改已撤销"
     fi
     
-    # 撤销更改
-    info "[${crate}] 正在撤销更改..."
-    git checkout -- .
-    git clean -fd
-    
-    success "[${crate}] 更改已撤销"
+    # 如果指定了 -b/--branch 参数，切换到默认分支
+    if [[ "${RESET_BRANCH:-}" == "true" ]]; then
+        local default_branch current_branch
+        default_branch=$(get_default_branch)
+        current_branch=$(git branch --show-current 2>/dev/null || echo "unknown")
+        
+        if [[ "${current_branch}" != "${default_branch}" ]]; then
+            info "[${crate}] 切换到默认分支: ${current_branch} → ${default_branch}"
+            if git checkout "${default_branch}" >/dev/null 2>&1; then
+                success "[${crate}] 已切换到 ${default_branch} 分支"
+            else
+                warn "[${crate}] 切换到 ${default_branch} 分支失败"
+            fi
+        else
+            info "[${crate}] 已在默认分支 ${default_branch}"
+        fi
+    fi
     
     popd >/dev/null
     return 0
@@ -121,7 +158,7 @@ reset_all() {
 # =============================================================================
 
 main() {
-    local crate="" force=false
+    local crate="" force=false reset_branch=false
     
     # 解析参数
     while [[ $# -gt 0 ]]; do
@@ -131,6 +168,10 @@ main() {
                 ;;
             -f|--force)
                 force=true
+                shift
+                ;;
+            -b|--branch)
+                reset_branch=true
                 shift
                 ;;
             *)
@@ -146,7 +187,7 @@ main() {
         usage; exit 0
     fi
     
-    export FORCE="${force}"
+    export FORCE="${force}" RESET_BRANCH="${reset_branch}"
     cd "${ROOT_DIR}"
     
     if [[ "${crate}" == "all" ]]; then
