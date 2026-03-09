@@ -4,52 +4,30 @@ set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
 
-# =============================================================================
-# Colors and Output Functions
-# =============================================================================
-
-if [[ -t 1 ]]; then
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m'
-else
-    RED='' GREEN='' YELLOW='' BLUE='' NC=''
-fi
-
-die() { printf '%b✗%b %s\n' "${RED}" "${NC}" "$*" >&2; exit 1; }
-info() { printf '%b→%b %s\n' "${BLUE}" "${NC}" "$*"; }
-success() { printf '%b✓%b %s\n' "${GREEN}" "${NC}" "$*"; }
-warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
+# Source common functions
+source "${SCRIPT_DIR}/common.sh"
 
 # =============================================================================
 # Helper Functions
 # =============================================================================
 
 usage() {
-    cat << EOF
-组件更改撤销脚本
-
-用法:
-  scripts/reset.sh <crate|all> [-f|--force]
-
-参数:
-  crate     组件名称，如 axvcpu、axaddrspace 等
-  all       撤销所有组件的更改
-  -f, --force  强制执行，不显示未跟踪文件
-
-示例:
-  scripts/reset.sh axvcpu
-  scripts/reset.sh axvcpu -f
-  scripts/reset.sh all
-  scripts/reset.sh all --force
-EOF
-}
-
-# 自动扫描 components 目录获取所有组件
-scan_components() {
-    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
+    printf '%s\n' \
+        "组件更改撤销脚本" \
+        "" \
+        "用法:" \
+        "  scripts/reset.sh <crate|all> [-f|--force]" \
+        "" \
+        "参数:" \
+        "  crate        组件名称，如 axvcpu、axaddrspace 等" \
+        "  all          撤销所有组件的更改" \
+        "  -f, --force  强制执行，不显示未跟踪文件" \
+        "" \
+        "示例:" \
+        "  scripts/reset.sh axvcpu" \
+        "  scripts/reset.sh axvcpu -f" \
+        "  scripts/reset.sh all" \
+        "  scripts/reset.sh all --force"
 }
 
 # =============================================================================
@@ -57,9 +35,10 @@ scan_components() {
 # =============================================================================
 
 reset_crate() {
-    local crate="$1" crate_dir="${ROOT_DIR}/components/${1}"
+    local crate="$1" crate_dir
+    crate_dir=$(find_crate_abs_path "${crate}")
     
-    [[ -d "${crate_dir}" ]] || die "组件 ${crate} 不存在"
+    [[ -n "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
     
     printf '\n%b========== %s ==========%b\n' "${BLUE}" "${crate}" "${NC}"
     
@@ -72,48 +51,41 @@ reset_crate() {
             local untracked
             untracked=$(git ls-files --others --exclude-standard 2>/dev/null || true)
             if [[ -n "${untracked}" ]]; then
-                warn "[${crate}] 没有已跟踪文件的更改，但有未跟踪文件:"
-                echo "${untracked}" | head -5
-                [[ $(echo "${untracked}" | wc -l) -gt 5 ]] && echo "  ..."
-            else
-                info "[${crate}] 没有更改"
+                printf '\n%b⚠ 未跟踪的文件:%b\n' "${YELLOW}" "${NC}"
+                printf '%s\n' "${untracked}"
+                read -p "是否删除未跟踪文件? (y/N): " confirm
+                if [[ "${confirm}" == "y" || "${confirm}" == "Y" ]]; then
+                    git clean -fd
+                    success "[${crate}] 已删除未跟踪文件"
+                else
+                    info "[${crate}] 保留未跟踪文件"
+                fi
             fi
-        else
-            info "[${crate}] 没有更改"
         fi
+        info "[${crate}] 没有更改，跳过"
         popd >/dev/null
         return 0
     fi
     
-    # 显示将要撤销的更改
-    info "[${crate}] 以下更改将被撤销:"
-    git status --short 2>/dev/null | head -10
-    local total
-    total=$(git status --short 2>/dev/null | wc -l)
-    [[ ${total} -gt 10 ]] && echo "  ... 共 ${total} 个文件"
-    
     # 撤销更改
     info "[${crate}] 正在撤销更改..."
-    git checkout -- . 2>/dev/null || git restore . 2>/dev/null
+    git checkout -- .
+    git clean -fd
     
-    # 撤销暂存区的更改
-    if ! git diff --quiet --cached HEAD 2>/dev/null; then
-        git reset HEAD . 2>/dev/null || true
-    fi
+    success "[${crate}] 更改已撤销"
     
     popd >/dev/null
-    success "[${crate}] 更改已撤销"
+    return 0
 }
 
 reset_all() {
     local crates passed=() failed=()
-    mapfile -t crates < <(scan_components)
+    mapfile -t crates < <(get_all_crate_names)
     
-    info "撤销所有组件的更改 (${#crates[@]} 个)..."
+    info "撤销所有组件更改 (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        # 使用子 shell 隔离错误，确保一个组件失败不影响其他组件
-        if (reset_crate "${crate}"); then
+        if reset_crate "${crate}"; then
             passed+=("${crate}")
         else
             failed+=("${crate}")
@@ -121,9 +93,9 @@ reset_all() {
     done
     
     printf '\n%b========================================%b\n' "${BLUE}" "${NC}"
-    printf '%b           撤销结果汇总%b\n' "${BLUE}" "${NC}"
-    printf '%b========================================%b\n\n' "${BLUE}" "${NC}"
-
+    printf '%b           撤销结果汇总           %b\n' "${BLUE}" "${NC}"
+    printf '%b========================================%b\n' "${BLUE}" "${NC}"
+    
     if [[ ${#passed[@]} -gt 0 ]]; then
         success "处理 ${#passed[@]} 个:"
         for crate in "${passed[@]}"; do
@@ -131,7 +103,7 @@ reset_all() {
         done
         printf '\n'
     fi
-
+    
     if [[ ${#failed[@]} -gt 0 ]]; then
         printf '%b失败 %d 个:%b\n' "${RED}" "${#failed[@]}" "${NC}"
         for crate in "${failed[@]}"; do
@@ -171,7 +143,7 @@ main() {
     done
     
     if [[ -z "${crate}" ]]; then
-        usage; exit 1
+        usage; exit 0
     fi
     
     export FORCE="${force}"

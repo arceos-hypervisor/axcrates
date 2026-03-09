@@ -7,24 +7,8 @@ set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
 
-# =============================================================================
-# Colors and Output Functions
-# =============================================================================
-
-if [[ -t 1 ]]; then
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m'
-else
-    RED='' GREEN='' YELLOW='' BLUE='' NC=''
-fi
-
-die() { printf '%b✗%b %s\n' "${RED}" "${NC}" "$*" >&2; exit 1; }
-info() { printf '%b→%b %s\n' "${BLUE}" "${NC}" "$*"; }
-success() { printf '%b✓%b %s\n' "${GREEN}" "${NC}" "$*"; }
-warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
+# Source common functions
+source "${SCRIPT_DIR}/common.sh"
 
 # =============================================================================
 # Configuration
@@ -33,34 +17,28 @@ warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
 DEFAULT_BRANCH="dev"
 
 usage() {
-    cat << EOF
-组件同步脚本 - 批量同步指定或全部子模块到远程最新
-
-用法:
-  scripts/sync.sh <crate|all> [branch]
-
-参数:
-  crate     组件名称，如 axvcpu、axaddrspace 等
-  all       同步所有组件
-  branch    目标分支（可选，默认为 dev）
-
-示例:
-  scripts/sync.sh axvcpu              # 同步 axvcpu 到 dev 分支最新
-  scripts/sync.sh axvcpu main         # 同步 axvcpu 到 main 分支最新
-  scripts/sync.sh all                 # 同步所有组件到 dev 分支最新
-  scripts/sync.sh all main            # 同步所有组件到 main 分支最新
-  scripts/sync.sh arm_vcpu,axvcpu     # 同步多个组件
-
-注意:
-  - 同步操作会更新子模块到远程分支的最新 commit
-  - 如果子模块有未提交的变更，会被提示
-  - 同步后需要在主仓库提交 submodule 引用更新
-EOF
-}
-
-# 自动扫描 components 目录获取所有组件
-scan_components() {
-    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
+    printf '%s\n' \
+        "组件同步脚本 - 批量同步指定或全部子模块到远程最新" \
+        "" \
+        "用法:" \
+        "  scripts/sync.sh <crate|all> [branch]" \
+        "" \
+        "参数:" \
+        "  crate     组件名称，如 axvcpu、axaddrspace 等" \
+        "  all       同步所有组件" \
+        "  branch    目标分支（可选，默认为 dev）" \
+        "" \
+        "示例:" \
+        "  scripts/sync.sh axvcpu              # 同步 axvcpu 到 dev 分支最新" \
+        "  scripts/sync.sh axvcpu main         # 同步 axvcpu 到 main 分支最新" \
+        "  scripts/sync.sh all                 # 同步所有组件到 dev 分支最新" \
+        "  scripts/sync.sh all main            # 同步所有组件到 main 分支最新" \
+        "  scripts/sync.sh arm_vcpu,axvcpu     # 同步多个组件" \
+        "" \
+        "注意:" \
+        "  - 同步操作会更新子模块到远程分支的最新 commit" \
+        "  - 如果子模块有未提交的变更，会被提示" \
+        "  - 同步后需要在主仓库提交 submodule 引用更新"
 }
 
 # =============================================================================
@@ -91,16 +69,23 @@ get_current_branch() {
 sync_crate() {
     local crate="$1"
     local branch="$2"
-    local crate_dir="${ROOT_DIR}/components/${crate}"
+    local crate_dir
+    crate_dir=$(find_crate_abs_path "${crate}")
     
-    [[ -d "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
+    [[ -n "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
     
     printf '\n%b========== %s ==========%b\n' "${BLUE}" "${crate}" "${NC}"
     
     # 检查是否已初始化
     if ! is_initialized "${crate_dir}"; then
         info "[${crate}] 子模块未初始化，正在初始化..."
-        git submodule update --init "components/${crate}" >/dev/null 2>&1 || {
+        local submodule_path
+        if [[ "${crate_dir}" == *"components"* ]]; then
+            submodule_path="components/${crate}"
+        else
+            submodule_path="os/${crate}"
+        fi
+        git submodule update --init "${submodule_path}" >/dev/null 2>&1 || {
             warn "[${crate}] 初始化失败，跳过"
             return 0
         }
@@ -171,7 +156,7 @@ sync_crate() {
 sync_all() {
     local branch="$1"
     local crates synced=() skipped=() failed=()
-    mapfile -t crates < <(scan_components)
+    mapfile -t crates < <(get_all_crate_names)
     
     info "同步所有组件到 ${branch} 分支 (${#crates[@]} 个)..."
     
@@ -180,7 +165,8 @@ sync_all() {
             synced+=("${crate}")
         else
             # 检查失败原因
-            local crate_dir="${ROOT_DIR}/components/${crate}"
+            local crate_dir
+            crate_dir=$(find_crate_abs_path "${crate}")
             if [[ -d "${crate_dir}" ]] && has_local_changes "${crate_dir}"; then
                 skipped+=("${crate} (有本地修改)")
             else
@@ -237,9 +223,7 @@ main() {
     local branch="${2:-${DEFAULT_BRANCH}}"
     
     if [[ -z "${crate}" ]] || [[ "${crate}" == "-h" ]] || [[ "${crate}" == "--help" ]]; then
-        usage
-        [[ -z "${crate}" ]] && exit 1
-        exit 0
+        usage; exit 0
     fi
     
     info "工作目录: ${ROOT_DIR}"

@@ -7,56 +7,34 @@ set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
 
-# =============================================================================
-# Colors and Output Functions
-# =============================================================================
-
-if [[ -t 1 ]]; then
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m'
-else
-    RED='' GREEN='' YELLOW='' BLUE='' NC=''
-fi
-
-die() { printf '%b✗%b %s\n' "${RED}" "${NC}" "$*" >&2; exit 1; }
-info() { printf '%b→%b %s\n' "${BLUE}" "${NC}" "$*"; }
-success() { printf '%b✓%b %s\n' "${GREEN}" "${NC}" "$*"; }
-warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
+# Source common functions
+source "${SCRIPT_DIR}/common.sh"
 
 # =============================================================================
 # Configuration
 # =============================================================================
 
 usage() {
-    cat << EOF
-组件提交脚本 - 批量提交指定或全部组件的变更
-
-用法:
-  scripts/commit.sh <crate|all> <commit_message>
-
-参数:
-  crate          组件名称，如 axvcpu、axaddrspace 等
-  all            提交所有组件
-  commit_message 提交信息
-
-示例:
-  scripts/commit.sh axvcpu "feat: add new vCPU feature"
-  scripts/commit.sh all "chore: update dependencies"
-  scripts/commit.sh arm_vcpu,axvcpu "refactor: update API"
-
-注意:
-  - 只提交有变更的组件
-  - 无变更的组件会自动跳过
-  - 提交后会自动推送到当前分支
-EOF
-}
-
-# 自动扫描 components 目录获取所有组件
-scan_components() {
-    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
+    printf '%s\n' \
+        "组件提交脚本 - 批量提交指定或全部组件的变更" \
+        "" \
+        "用法:" \
+        "  scripts/commit.sh <crate|all> <commit_message>" \
+        "" \
+        "参数:" \
+        "  crate          组件名称，如 axvcpu、axaddrspace 等" \
+        "  all            提交所有组件" \
+        "  commit_message 提交信息" \
+        "" \
+        "示例:" \
+        "  scripts/commit.sh axvcpu \"feat: add new vCPU feature\"" \
+        "  scripts/commit.sh all \"chore: update dependencies\"" \
+        "  scripts/commit.sh arm_vcpu,axvcpu \"refactor: update API\"" \
+        "" \
+        "注意:" \
+        "  - 只提交有变更的组件" \
+        "  - 无变更的组件会自动跳过" \
+        "  - 提交后会自动推送到当前分支"
 }
 
 # =============================================================================
@@ -83,9 +61,10 @@ get_current_branch() {
 commit_crate() {
     local crate="$1"
     local message="$2"
-    local crate_dir="${ROOT_DIR}/components/${crate}"
+    local crate_dir
+    crate_dir=$(find_crate_abs_path "${crate}")
 
-    [[ -d "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
+    [[ -n "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
     [[ -d "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 Git 仓库，跳过"; return 0; }
 
     # 检查是否有变更
@@ -136,14 +115,16 @@ commit_crate() {
 commit_all() {
     local message="$1"
     local crates committed=() skipped=() failed=()
-    mapfile -t crates < <(scan_components)
+    mapfile -t crates < <(get_all_crate_names)
 
     info "检查所有组件 (${#crates[@]} 个)..."
 
     for crate in "${crates[@]}"; do
         if commit_crate "${crate}" "${message}"; then
             # 检查是否真的提交了（有变更）
-            if [[ -n $(cd "${ROOT_DIR}/components/${crate}" 2>/dev/null && git status --porcelain 2>/dev/null) ]]; then
+            local crate_dir
+            crate_dir=$(find_crate_abs_path "${crate}")
+            if [[ -n "${crate_dir}" ]] && [[ -n $(cd "${crate_dir}" 2>/dev/null && git status --porcelain 2>/dev/null) ]]; then
                 skipped+=("${crate}")
             else
                 committed+=("${crate}")
@@ -195,9 +176,7 @@ main() {
     local message="${2:-}"
 
     if [[ -z "${crate}" ]] || [[ -z "${message}" ]] || [[ "${crate}" == "-h" ]] || [[ "${crate}" == "--help" ]]; then
-        usage
-        [[ -z "${crate}" ]] && exit 1
-        exit 0
+        usage; exit 0
     fi
 
     info "工作目录: ${ROOT_DIR}"

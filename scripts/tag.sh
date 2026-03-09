@@ -4,58 +4,40 @@ set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
 
-# =============================================================================
-# Colors and Output Functions
-# =============================================================================
-
-if [[ -t 1 ]]; then
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m'
-else
-    RED='' GREEN='' YELLOW='' BLUE='' NC=''
-fi
-
-die() { printf '%b✗%b %s\n' "${RED}" "${NC}" "$*" >&2; exit 1; }
-info() { printf '%b→%b %s\n' "${BLUE}" "${NC}" "$*"; }
-success() { printf '%b✓%b %s\n' "${GREEN}" "${NC}" "$*"; }
-warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
+# Source common functions
+source "${SCRIPT_DIR}/common.sh"
 
 # =============================================================================
 # Helper Functions
 # =============================================================================
 
 usage() {
-    cat << EOF
-组件标签管理脚本
-
-用法:
-  scripts/tag.sh <crate|all> <tag_name>
-
-参数:
-  crate     组件名称，如 axvcpu、axaddrspace 等
-  all       为所有组件创建标签
-  tag_name  标签名称，如 v0.2.0、v0.2.0-preview.1
-
-注意:
-  - 标签必须在 main/master 分支上创建
-  - 确保 PR 已合并后再创建标签
-  - 标签创建后会自动推送到远程
-
-示例:
-  scripts/tag.sh axvcpu v0.2.0              # 为 axvcpu 创建标签
-  scripts/tag.sh axvcpu v0.2.0-preview.1    # 为 axvcpu 创建预览版标签
-  scripts/tag.sh all v0.2.0                 # 为所有组件创建标签
-  scripts/tag.sh all v0.2.0-preview.1       # 为所有组件创建预览版标签
-EOF
+    printf '%s\n' \
+        "组件标签管理脚本" \
+        "" \
+        "用法:" \
+        "  scripts/tag.sh <crate|all> <tag_name>" \
+        "" \
+        "参数:" \
+        "  crate     组件名称，如 axvcpu、axaddrspace 等" \
+        "  all       为所有组件创建标签" \
+        "  tag_name  标签名称，如 v0.2.0、v0.2.0-preview.1" \
+        "" \
+        "注意:" \
+        "  - 标签必须在 main/master 分支上创建" \
+        "  - 确保 PR 已合并后再创建标签" \
+        "  - 标签创建后会自动推送到远程" \
+        "" \
+        "示例:" \
+        "  scripts/tag.sh axvcpu v0.2.0              # 为 axvcpu 创建标签" \
+        "  scripts/tag.sh axvcpu v0.2.0-preview.1    # 为 axvcpu 创建预览版标签" \
+        "  scripts/tag.sh all v0.2.0                 # 为所有组件创建标签" \
+        "  scripts/tag.sh all v0.2.0-preview.1       # 为所有组件创建预览版标签"
 }
 
-# 自动扫描 components 目录获取所有组件
-scan_components() {
-    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
-}
+# =============================================================================
+# Tag Functions
+# =============================================================================
 
 validate_tag() {
     local tag="$1"
@@ -134,9 +116,10 @@ create_tag() {
 # =============================================================================
 
 tag_crate() {
-    local crate="$1" tag="$2" crate_dir="${ROOT_DIR}/components/${crate}"
+    local crate="$1" tag="$2" crate_dir
+    crate_dir=$(find_crate_abs_path "${crate}")
     
-    [[ -d "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
+    [[ -n "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
     [[ -e "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 git 仓库，跳过"; return 0; }
     
     printf '\n%b========== %s ==========%b\n' "${BLUE}" "${crate}" "${NC}"
@@ -160,13 +143,14 @@ tag_crate() {
 tag_all() {
     local tag="$1"
     local crates tagged=() skipped=() failed=()
-    mapfile -t crates < <(scan_components)
+    mapfile -t crates < <(get_all_crate_names)
     
     info "为所有组件创建标签: ${tag} (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        local crate_dir="${ROOT_DIR}/components/${crate}"
-        if [[ ! -d "${crate_dir}" ]] || [[ ! -e "${crate_dir}/.git" ]]; then
+        local crate_dir
+        crate_dir=$(find_crate_abs_path "${crate}")
+        if [[ -z "${crate_dir}" ]] || [[ ! -e "${crate_dir}/.git" ]]; then
             skipped+=("${crate}")
             continue
         fi

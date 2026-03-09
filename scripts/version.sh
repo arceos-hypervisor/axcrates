@@ -4,57 +4,39 @@ set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
 
-# =============================================================================
-# Colors and Output Functions
-# =============================================================================
-
-if [[ -t 1 ]]; then
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m'
-else
-    RED='' GREEN='' YELLOW='' BLUE='' NC=''
-fi
-
-die() { printf '%b✗%b %s\n' "${RED}" "${NC}" "$*" >&2; exit 1; }
-info() { printf '%b→%b %s\n' "${BLUE}" "${NC}" "$*"; }
-success() { printf '%b✓%b %s\n' "${GREEN}" "${NC}" "$*"; }
-warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
+# Source common functions
+source "${SCRIPT_DIR}/common.sh"
 
 # =============================================================================
 # Helper Functions
 # =============================================================================
 
 usage() {
-    cat << EOF
-组件版本管理脚本
-
-用法:
-  scripts/version.sh <crate|all> <version>
-
-参数:
-  crate     组件名称，如 axvcpu、axaddrspace 等
-  all       更新所有组件版本号
-  version   新版本号，如 0.2.0、0.2.0-preview.1
-
-版本格式:
-  稳定版: X.Y.Z (如 0.2.0)
-  预览版: X.Y.Z-preview.N (如 0.2.0-preview.1)
-
-示例:
-  scripts/version.sh axvcpu 0.2.0              # 更新 axvcpu 版本
-  scripts/version.sh axvcpu 0.2.0-preview.1    # 更新 axvcpu 为预览版
-  scripts/version.sh all 0.2.0                 # 更新所有组件版本
-  scripts/version.sh all 0.2.0-preview.1       # 更新所有组件为预览版
-EOF
+    printf '%s\n' \
+        "组件版本管理脚本" \
+        "" \
+        "用法:" \
+        "  scripts/version.sh <crate|all> <version>" \
+        "" \
+        "参数:" \
+        "  crate     组件名称，如 axvcpu、axaddrspace 等" \
+        "  all       更新所有组件版本号" \
+        "  version   新版本号，如 0.2.0、0.2.0-preview.1" \
+        "" \
+        "版本格式:" \
+        "  稳定版: X.Y.Z (如 0.2.0)" \
+        "  预览版: X.Y.Z-preview.N (如 0.2.0-preview.1)" \
+        "" \
+        "示例:" \
+        "  scripts/version.sh axvcpu 0.2.0              # 更新 axvcpu 版本" \
+        "  scripts/version.sh axvcpu 0.2.0-preview.1    # 更新 axvcpu 为预览版" \
+        "  scripts/version.sh all 0.2.0                 # 更新所有组件版本" \
+        "  scripts/version.sh all 0.2.0-preview.1       # 更新所有组件为预览版"
 }
 
-# 自动扫描 components 目录获取所有组件
-scan_components() {
-    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
-}
+# =============================================================================
+# Version Functions
+# =============================================================================
 
 validate_version() {
     local version="$1"
@@ -85,10 +67,11 @@ update_cargo_toml() {
 # =============================================================================
 
 version_crate() {
-    local crate="$1" version="$2" crate_dir="${ROOT_DIR}/components/${crate}"
-    local cargo_path="${crate_dir}/Cargo.toml"
+    local crate="$1" version="$2" crate_dir cargo_path
+    crate_dir=$(find_crate_abs_path "${crate}")
+    cargo_path="${crate_dir}/Cargo.toml"
     
-    [[ -d "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
+    [[ -n "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
     [[ -f "${cargo_path}" ]] || { warn "[${crate}] Cargo.toml 不存在，跳过"; return 0; }
     
     local current_version
@@ -104,13 +87,15 @@ version_crate() {
 version_all() {
     local version="$1"
     local crates updated=() skipped=()
-    mapfile -t crates < <(scan_components)
+    mapfile -t crates < <(get_all_crate_names)
     
     info "更新所有组件版本号 (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        local cargo_path="${ROOT_DIR}/components/${crate}/Cargo.toml"
-        if [[ -f "${cargo_path}" ]]; then
+        local crate_dir cargo_path
+        crate_dir=$(find_crate_abs_path "${crate}")
+        cargo_path="${crate_dir}/Cargo.toml"
+        if [[ -n "${crate_dir}" ]] && [[ -f "${cargo_path}" ]]; then
             local current_version
             current_version=$(update_cargo_toml "${cargo_path}" "${version}")
             if [[ -n "${current_version}" ]]; then

@@ -7,57 +7,35 @@ set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
 
-# =============================================================================
-# Colors and Output Functions
-# =============================================================================
-
-if [[ -t 1 ]]; then
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m'
-else
-    RED='' GREEN='' YELLOW='' BLUE='' NC=''
-fi
-
-die() { printf '%b✗%b %s\n' "${RED}" "${NC}" "$*" >&2; exit 1; }
-info() { printf '%b→%b %s\n' "${BLUE}" "${NC}" "$*"; }
-success() { printf '%b✓%b %s\n' "${GREEN}" "${NC}" "$*"; }
-warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
+# Source common functions
+source "${SCRIPT_DIR}/common.sh"
 
 # =============================================================================
 # Configuration
 # =============================================================================
 
 usage() {
-    cat << EOF
-组件推送脚本 - 批量推送指定或全部组件的变更
-
-用法:
-  scripts/push.sh <crate|all> [branch]
-
-参数:
-  crate     组件名称，如 axvcpu、axaddrspace 等
-  all       推送所有组件
-  branch    可选，指定推送到哪个分支（默认为当前分支）
-
-示例:
-  scripts/push.sh axvcpu              # 推送 axvcpu 的当前分支
-  scripts/push.sh all                 # 推送所有组件的当前分支
-  scripts/push.sh all dev             # 推送所有组件到 dev 分支
-  scripts/push.sh arm_vcpu,axvcpu     # 推送多个组件
-
-注意:
-  - 只推送有未推送提交的组件
-  - 无未推送提交的组件会自动跳过
-  - 不会自动提交，只推送已提交的变更
-EOF
-}
-
-# 自动扫描 components 目录获取所有组件
-scan_components() {
-    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
+    printf '%s\n' \
+        "组件推送脚本 - 批量推送指定或全部组件的变更" \
+        "" \
+        "用法:" \
+        "  scripts/push.sh <crate|all> [branch]" \
+        "" \
+        "参数:" \
+        "  crate     组件名称，如 axvcpu、axaddrspace 等" \
+        "  all       推送所有组件" \
+        "  branch    可选，指定推送到哪个分支（默认为当前分支）" \
+        "" \
+        "示例:" \
+        "  scripts/push.sh axvcpu              # 推送 axvcpu 的当前分支" \
+        "  scripts/push.sh all                 # 推送所有组件的当前分支" \
+        "  scripts/push.sh all dev             # 推送所有组件到 dev 分支" \
+        "  scripts/push.sh arm_vcpu,axvcpu     # 推送多个组件" \
+        "" \
+        "注意:" \
+        "  - 只推送有未推送提交的组件" \
+        "  - 无未推送提交的组件会自动跳过" \
+        "  - 不会自动提交，只推送已提交的变更"
 }
 
 # =============================================================================
@@ -96,9 +74,10 @@ is_worktree_clean() {
 push_crate() {
     local crate="$1"
     local target_branch="${2:-}"
-    local crate_dir="${ROOT_DIR}/components/${crate}"
+    local crate_dir
+    crate_dir=$(find_crate_abs_path "${crate}")
     
-    [[ -d "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
+    [[ -n "${crate_dir}" ]] || { warn "[${crate}] 组件目录不存在，跳过"; return 0; }
     [[ -d "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 Git 仓库，跳过"; return 0; }
     
     printf '\n%b========== %s ==========%b\n' "${BLUE}" "${crate}" "${NC}"
@@ -171,7 +150,7 @@ push_crate() {
 push_all() {
     local target_branch="${1:-}"
     local crates pushed=() skipped=() failed=()
-    mapfile -t crates < <(scan_components)
+    mapfile -t crates < <(get_all_crate_names)
     
     info "检查所有组件 (${#crates[@]} 个)..."
     [[ -n "${target_branch}" ]] && info "目标分支: ${target_branch}"
@@ -179,8 +158,9 @@ push_all() {
     for crate in "${crates[@]}"; do
         if push_crate "${crate}" "${target_branch}"; then
             # 判断是否实际推送了（有未推送提交且工作区干净）
-            local crate_dir="${ROOT_DIR}/components/${crate}"
-            if [[ -d "${crate_dir}/.git" ]]; then
+            local crate_dir
+            crate_dir=$(find_crate_abs_path "${crate}")
+            if [[ -n "${crate_dir}" ]] && [[ -d "${crate_dir}/.git" ]]; then
                 pushd "${crate_dir}" >/dev/null
                 local branch
                 branch=$(get_current_branch)
@@ -240,9 +220,7 @@ main() {
     local branch="${2:-}"
     
     if [[ -z "${crate}" ]] || [[ "${crate}" == "-h" ]] || [[ "${crate}" == "--help" ]]; then
-        usage
-        [[ -z "${crate}" ]] && exit 1
-        exit 0
+        usage; exit 0
     fi
     
     info "工作目录: ${ROOT_DIR}"

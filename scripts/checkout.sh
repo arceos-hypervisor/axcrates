@@ -4,52 +4,30 @@ set -euo pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
 
-# =============================================================================
-# Colors and Output Functions
-# =============================================================================
-
-if [[ -t 1 ]]; then
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m'
-else
-    RED='' GREEN='' YELLOW='' BLUE='' NC=''
-fi
-
-die() { printf '%b✗%b %s\n' "${RED}" "${NC}" "$*" >&2; exit 1; }
-info() { printf '%b→%b %s\n' "${BLUE}" "${NC}" "$*"; }
-success() { printf '%b✓%b %s\n' "${GREEN}" "${NC}" "$*"; }
-warn() { printf '%b⚠%b %s\n' "${YELLOW}" "${NC}" "$*"; }
+# Source common functions
+source "${SCRIPT_DIR}/common.sh"
 
 # =============================================================================
 # Helper Functions
 # =============================================================================
 
 usage() {
-    cat << EOF
-组件分支切换脚本
-
-用法:
-  scripts/checkout.sh <crate|all> <branch>
-
-参数:
-  crate     组件名称，如 axvcpu、axaddrspace 等
-  all       切换所有组件
-  branch    目标分支名称，如 main、dev、feature/xxx
-
-示例:
-  scripts/checkout.sh axvcpu dev              # 切换 axvcpu 到 dev 分支
-  scripts/checkout.sh axvcpu feature/new-api  # 切换 axvcpu 到 feature 分支
-  scripts/checkout.sh all main                # 切换所有组件到 main 分支
-  scripts/checkout.sh all dev                 # 切换所有组件到 dev 分支
-EOF
-}
-
-# 自动扫描 components 目录获取所有组件
-scan_components() {
-    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
+    printf '%s\n' \
+        "组件分支切换脚本" \
+        "" \
+        "用法:" \
+        "  scripts/checkout.sh <crate|all> <branch>" \
+        "" \
+        "参数:" \
+        "  crate     组件名称，如 axvcpu、axaddrspace 等" \
+        "  all       切换所有组件" \
+        "  branch    目标分支名称，如 main、dev、feature/xxx" \
+        "" \
+        "示例:" \
+        "  scripts/checkout.sh axvcpu dev              # 切换 axvcpu 到 dev 分支" \
+        "  scripts/checkout.sh axvcpu feature/new-api  # 切换 axvcpu 到 feature 分支" \
+        "  scripts/checkout.sh all main                # 切换所有组件到 main 分支" \
+        "  scripts/checkout.sh all dev                 # 切换所有组件到 dev 分支"
 }
 
 # =============================================================================
@@ -57,7 +35,8 @@ scan_components() {
 # =============================================================================
 
 checkout_crate() {
-    local crate="$1" branch="$2" crate_dir="${ROOT_DIR}/components/${crate}"
+    local crate="$1" branch="$2" crate_dir
+    crate_dir=$(find_crate_abs_path "${crate}")
     
     [[ -d "${crate_dir}" ]] || { warn "[${crate}] 目录不存在，跳过"; return 0; }
     [[ -e "${crate_dir}/.git" ]] || { warn "[${crate}] 不是 git 仓库，跳过"; return 0; }
@@ -114,20 +93,23 @@ checkout_crate() {
         return 0
     fi
     
-    die "[${crate}] 切换分支失败: ${branch}"
+    warn "[${crate}] 切换分支失败: ${branch}"
     popd >/dev/null
     return 1
 }
 
 checkout_all() {
     local branch="$1"
-    local crates skipped=() switched=() failed=()
-    mapfile -t crates < <(scan_components)
+    local crates switched=() skipped=() failed=()
+    mapfile -t crates < <(get_all_crate_names)
     
     info "切换所有组件到 ${branch} 分支 (${#crates[@]} 个)..."
     
     for crate in "${crates[@]}"; do
-        if [[ ! -d "${ROOT_DIR}/components/${crate}" ]]; then
+        local crate_dir
+        crate_dir=$(find_crate_abs_path "${crate}")
+        
+        if [[ -z "${crate_dir}" ]]; then
             skipped+=("${crate}")
             continue
         fi
