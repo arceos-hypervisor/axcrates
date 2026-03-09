@@ -24,45 +24,23 @@
 //! This will extract all component crates from the bundle directory,
 //! enabling you to build and develop the full workspace.
 //!
-//! # Components
+//! # Submodules
 //!
-//! ## Core Components
+//! This bundle contains two categories of submodules:
 //!
-//! - **axaddrspace**: Guest address space management module
-//! - **axvmconfig**: VM configuration tool with TOML support
-//! - **axhvc**: HyperCall definitions for guest-hypervisor communication
-//! - **axvcpu**: Virtual CPU abstraction layer
-//! - **axvisor_api**: Basic API for hypervisor components
-//! - **axdevice_base**: Basic traits and structures for emulated devices
-//! - **axdevice**: Reusable device abstraction layer
-//! - **axvm**: Virtual machine resource management
+//! ## Components (`components/`)
 //!
-//! ## Architecture-Specific Components
+//! All component crates including:
+//! - Hypervisor core (axaddrspace, axvcpu, axvm, etc.)
+//! - Architecture-specific virtualization (arm_vcpu, x86_vcpu, riscv_vcpu, etc.)
+//! - Memory management, device drivers, utilities, and more
 //!
-//! ### AArch64
-//! - **arm_vcpu**: AArch64 VCPU implementation
-//! - **arm_vgic**: ARM Virtual Generic Interrupt Controller (VGIC)
+//! See [`SUBMODULE_CRATES`] for the complete list.
 //!
-//! ### x86_64
-//! - **x86_vcpu**: x86_64 VCPU implementation with VMX support
-//! - **x86_vlapic**: x86 Virtual Local APIC
+//! ## OS Submodules (`os/`)
 //!
-//! ### RISC-V
-//! - **riscv_vcpu**: RISC-V VCPU implementation with H-extension
-//! - **riscv-h**: RISC-V virtualization-related registers
-//!
-//! # Dependency Layers
-//!
-//! The crates are organized in dependency layers:
-//!
-//! ```text
-//! Layer 0: axaddrspace, axvmconfig, axhvc, riscv-h (no internal deps)
-//! Layer 1: axdevice_base, axvisor_api, axvcpu (depend on L0)
-//! Layer 2: arm_vgic, x86_vlapic (depend on L0-L1)
-//! Layer 3: arm_vcpu, x86_vcpu, riscv_vcpu (depend on L0-L2)
-//! Layer 4: axdevice (depend on L0-L3)
-//! Layer 5: axvm (depend on L0-L4)
-//! ```
+//! - **axvisor**: AxVisor hypervisor implementation
+//! - **StarryOS**: StarryOS operating system
 
 /// Crate identifier for the workspace bundle.
 pub const BUNDLE_NAME: &str = "axcrates";
@@ -76,72 +54,100 @@ pub const REPOSITORY_URL: &str = "https://github.com/arceos-hypervisor/axcrates"
 /// Documentation URL.
 pub const DOCUMENTATION_URL: &str = "https://docs.rs/axcrates";
 
-/// List of all included submodule crates.
+/// List of all included submodule crates from components/ directory.
 pub const SUBMODULE_CRATES: &[&str] = &[
-    // Layer 0: Basic components (no internal dependencies)
-    "axaddrspace",
-    "axvmconfig",
-    "axhvc",
-    "riscv-h",
-    // Layer 1: Core components
-    "axdevice_base",
-    "axvisor_api",
-    "axvcpu",
-    // Layer 2: Interrupt controllers
-    "arm_vgic",
-    "x86_vlapic",
-    // Layer 3: Architecture-specific VCPU
+    // Architecture-specific registers
+    "aarch64_sysreg",
+    // UART drivers
+    "any-uart",
+    "arm_pl011",
+    "arm_pl031",
+    // ArceOS framework
+    "arceos",
+    // ARM GIC driver
+    "arm-gic-driver",
+    // ARM Virtualization
     "arm_vcpu",
-    "x86_vcpu",
-    "riscv_vcpu",
-    // Layer 4: Device abstraction
-    "axdevice",
-    // Layer 5: VM management
-    "axvm",
-];
-
-/// Core components (no architecture-specific code).
-pub const CORE_CRATES: &[&str] = &[
+    "arm_vgic",
+    // Axvisor Core Components
     "axaddrspace",
     "axvmconfig",
     "axhvc",
-    "axvcpu",
-    "axvisor_api",
     "axdevice_base",
+    "axvisor_api",
+    "axvcpu",
     "axdevice",
     "axvm",
+    // Memory management
+    "axallocator",
+    "axmm_crates",
+    "bitmap-allocator",
+    "page_table_multiarch",
+    "range-alloc-arceos",
+    // Platform abstraction
+    "axplat_crates",
+    "axcpu",
+    // Utilities
+    "axbacktrace",
+    "axconfig-gen",
+    "axerrno",
+    "axfs-ng-vfs",
+    "axio",
+    "axklib",
+    "axpoll",
+    "axsched",
+    // Drivers
+    "axdriver_crates",
+    "virtio-drivers",
+    // Capabilities and access control
+    "cap_access",
+    "cpumask",
+    // Concurrency and synchronization
+    "crate_interface",
+    "ctor_bare",
+    "kernel_guard",
+    "kspin",
+    "lazyinit",
+    "percpu",
+    "scope-local",
+    // Data structures
+    "handler_table",
+    "int_ratio",
+    "linked_list_r4l",
+    "timer_list",
+    // RISC-V Virtualization
+    "riscv-h",
+    "riscv_plic",
+    "riscv_vcpu",
+    "riscv_vplic",
+    // x86 Virtualization
+    "x86_vcpu",
+    "x86_vlapic",
+    // StarryOS
+    "starry-process",
+    "starry-signal",
+    "starry-smoltcp",
+    "starry-vm",
+    // File system
+    "rsext4",
+    // HAL
+    "somehal",
 ];
 
-/// AArch64-specific components.
-pub const AARCH64_CRATES: &[&str] = &["arm_vcpu", "arm_vgic"];
+/// OS-level submodules from os/ directory.
+pub const OS_SUBMODULES: &[&str] = &["axvisor", "StarryOS"];
 
-/// x86_64-specific components.
-pub const X86_64_CRATES: &[&str] = &["x86_vcpu", "x86_vlapic"];
-
-/// RISC-V-specific components.
-pub const RISCV_CRATES: &[&str] = &["riscv_vcpu", "riscv-h"];
-
-/// Returns the total number of included crates.
-pub fn crate_count() -> usize {
+/// Returns the number of component crates.
+pub fn component_count() -> usize {
     SUBMODULE_CRATES.len()
 }
 
-/// Returns the number of core crates.
-pub fn core_crate_count() -> usize {
-    CORE_CRATES.len()
+/// Returns the number of OS-level submodules.
+pub fn os_count() -> usize {
+    OS_SUBMODULES.len()
 }
 
-/// Returns the number of AArch64-specific crates.
-pub fn aarch64_crate_count() -> usize {
-    AARCH64_CRATES.len()
-}
-
-/// Returns the number of x86_64-specific crates.
-pub fn x86_64_crate_count() -> usize {
-    X86_64_CRATES.len()
-}
-
-/// Returns the number of RISC-V-specific crates.
-pub fn riscv_crate_count() -> usize {
-    RISCV_CRATES.len()
+/// Returns the total number of all submodules (components + OS).
+pub fn total_count() -> usize {
+    SUBMODULE_CRATES.len() + OS_SUBMODULES.len()
 }

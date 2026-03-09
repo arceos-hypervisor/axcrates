@@ -9,7 +9,6 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 BUNDLE_DIR="${ROOT_DIR}/bundle"
 ARCHIVE_NAME="submodules.tar.gz"
 ARCHIVE_PATH="${BUNDLE_DIR}/${ARCHIVE_NAME}"
-CRATES_FILE="${SCRIPT_DIR}/crates.txt"
 
 # Colors for output
 RED='\033[0;31m'
@@ -24,27 +23,25 @@ echo "Root directory: ${ROOT_DIR}"
 # Ensure bundle directory exists
 mkdir -p "${BUNDLE_DIR}"
 
-# Read crates list
-if [[ ! -f "${CRATES_FILE}" ]]; then
-    echo -e "${RED}Error: crates.txt not found at ${CRATES_FILE}${NC}"
-    exit 1
-fi
+# Collect all crates from components/ directory
+COMPONENT_CRATES=()
+while IFS= read -r -d '' crate_dir; do
+    crate=$(basename "${crate_dir}")
+    COMPONENT_CRATES+=("${crate}")
+    echo -e "${BLUE}Found component: ${crate}${NC}"
+done < <(find "${ROOT_DIR}/components" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
 
-# Collect existing crate directories
-CRATES=()
-while IFS= read -r crate; do
-    [[ -z "${crate}" ]] && continue
-    CRATE_PATH="${ROOT_DIR}/components/${crate}"
-    if [[ -d "${CRATE_PATH}" ]]; then
-        CRATES+=("${crate}")
-        echo -e "${BLUE}Found: ${crate}${NC}"
-    else
-        echo -e "${YELLOW}Warning: ${crate} not found, skipping${NC}"
-    fi
-done < "${CRATES_FILE}"
+# Collect all submodules from os/ directory
+OS_SUBMODULES=()
+while IFS= read -r -d '' os_dir; do
+    os_name=$(basename "${os_dir}")
+    OS_SUBMODULES+=("${os_name}")
+    echo -e "${BLUE}Found OS submodule: ${os_name}${NC}"
+done < <(find "${ROOT_DIR}/os" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
 
-if [[ ${#CRATES[@]} -eq 0 ]]; then
-    echo -e "${RED}Error: No crate directories found${NC}"
+TOTAL_COUNT=$((${#COMPONENT_CRATES[@]} + ${#OS_SUBMODULES[@]}))
+if [[ ${TOTAL_COUNT} -eq 0 ]]; then
+    echo -e "${RED}Error: No directories found${NC}"
     exit 1
 fi
 
@@ -58,15 +55,35 @@ fi
 # Use -h to dereference symlinks (follow symbolic links)
 # Exclude target and .git directories to reduce size
 echo -e "${GREEN}Creating archive: ${ARCHIVE_PATH}${NC}"
-cd "${ROOT_DIR}/components"
+
+# Create temp directory structure for archiving
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf ${TEMP_DIR}" EXIT
+
+# Copy all component crates
+mkdir -p "${TEMP_DIR}/components"
+for crate in "${COMPONENT_CRATES[@]}"; do
+    cp -r "${ROOT_DIR}/components/${crate}" "${TEMP_DIR}/components/"
+done
+
+# Copy all OS submodules
+mkdir -p "${TEMP_DIR}/os"
+for os in "${OS_SUBMODULES[@]}"; do
+    cp -r "${ROOT_DIR}/os/${os}" "${TEMP_DIR}/os/"
+done
+
+# Create archive
+cd "${TEMP_DIR}"
 tar -czhf "${ARCHIVE_PATH}" \
     --exclude='target' \
     --exclude='.git' \
-    "${CRATES[@]}"
+    components os
 
 # Show result
 ARCHIVE_SIZE=$(du -h "${ARCHIVE_PATH}" | cut -f1)
 echo -e "${GREEN}=== Archive Created ===${NC}"
 echo -e "Path: ${ARCHIVE_PATH}"
 echo -e "Size: ${ARCHIVE_SIZE}"
-echo -e "Crates included: ${#CRATES[@]}"
+echo -e "Components included: ${#COMPONENT_CRATES[@]}"
+echo -e "OS submodules included: ${#OS_SUBMODULES[@]}"
+echo -e "Total: ${TOTAL_COUNT}"
