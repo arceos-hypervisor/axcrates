@@ -3,7 +3,6 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
-CRATES_FILE="${SCRIPT_DIR}/crates.txt"
 
 # =============================================================================
 # Colors and Output Functions
@@ -53,14 +52,9 @@ usage() {
 EOF
 }
 
-read_crates() {
-    local crates=()
-    while IFS= read -r crate || [[ -n "${crate}" ]]; do
-        crate="${crate%$'\r'}"
-        [[ -z "${crate}" ]] && continue
-        crates+=("${crate}")
-    done < "${CRATES_FILE}"
-    printf '%s\n' "${crates[@]}"
+# 自动扫描 components 目录获取所有组件
+scan_components() {
+    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
 }
 
 validate_tag() {
@@ -166,7 +160,7 @@ tag_crate() {
 tag_all() {
     local tag="$1"
     local crates tagged=() skipped=() failed=()
-    mapfile -t crates < <(read_crates)
+    mapfile -t crates < <(scan_components)
     
     info "为所有组件创建标签: ${tag} (${#crates[@]} 个)..."
     

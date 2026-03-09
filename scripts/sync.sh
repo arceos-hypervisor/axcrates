@@ -6,7 +6,6 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd -P)
-CRATES_FILE="${SCRIPT_DIR}/crates.txt"
 
 # =============================================================================
 # Colors and Output Functions
@@ -59,14 +58,9 @@ usage() {
 EOF
 }
 
-read_crates() {
-    local crates=()
-    while IFS= read -r crate || [[ -n "${crate}" ]]; do
-        crate="${crate%$'\r'}"
-        [[ -z "${crate}" ]] && continue
-        crates+=("${crate}")
-    done < "${CRATES_FILE}"
-    printf '%s\n' "${crates[@]}"
+# 自动扫描 components 目录获取所有组件
+scan_components() {
+    ls -1 "${ROOT_DIR}/components" 2>/dev/null || true
 }
 
 # =============================================================================
@@ -177,7 +171,7 @@ sync_crate() {
 sync_all() {
     local branch="$1"
     local crates synced=() skipped=() failed=()
-    mapfile -t crates < <(read_crates)
+    mapfile -t crates < <(scan_components)
     
     info "同步所有组件到 ${branch} 分支 (${#crates[@]} 个)..."
     
